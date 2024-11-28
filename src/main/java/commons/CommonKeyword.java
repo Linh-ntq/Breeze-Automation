@@ -1,40 +1,16 @@
 package commons;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import io.appium.java_client.PerformsTouchActions;
-import io.appium.java_client.TouchAction;
-import io.appium.java_client.touch.WaitOptions;
-import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
-import org.openqa.selenium.interactions.SourceType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import pages.LoginPage;
 
 import java.time.Duration;
-import java.util.Optional;
 
 public class CommonKeyword extends Setup{
-    public void pause(int time) {
-        try {
-            if (time >= 1000) {
-                for (int i = 0; i < time / 1000; i++) {
-                    if (time > 1000) {
-                        System.out.println("Sleep " + (i + 1) + "s");
-                    }
-                    Thread.sleep(1000);
-                }
-            } else {
-                Thread.sleep(time);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void waitForElementVisible(String xpathExpression, String... text) {
         if (text != null) {
@@ -74,25 +50,16 @@ public class CommonKeyword extends Setup{
 
         Dimension size = driver.manage().window().getSize();
         System.out.println("Screen Size = " + size);
-        System.out.println("");
 
         Point midPoint = new Point((int) (size.width * 0.5), (int) (size.height * 0.5));
 
         int a = (int) (midPoint.x * scrollRatio); //half of midPoint.x
         int b = (int) (midPoint.y * scrollRatio); //half of midPoint.y
 
-        int bottom = midPoint.y + b; // 50 + 25 -> B
-        int top = midPoint.y - b;    // 50 - 25 -> A
-        int left = midPoint.x + a;   // 25 - 12.5 -> N
-        int right = midPoint.x - a;  // 25 + 12.5 -> M
-
-        System.out.println("Midpoint: " + midPoint);
-        System.out.println("a - half of midPoint.x: " + a);
-        System.out.println("b - half of midPoint.y: " + b);
-        System.out.println("Bottom: " + bottom);
-        System.out.println("Top: " + top);
-        System.out.println("Left: " + left);
-        System.out.println("Right: " + right);
+        int bottom = midPoint.y + b;
+        int top = midPoint.y - b;
+        int left = midPoint.x + a;
+        int right = midPoint.x - a;
 
         if (pageDirection == "UP") {
             swipe(new Point(midPoint.x, top), new Point(midPoint.x, bottom), SCROLL_DUR);
