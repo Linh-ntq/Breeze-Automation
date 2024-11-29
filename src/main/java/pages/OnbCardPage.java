@@ -18,22 +18,18 @@ public class OnbCardPage extends BaseTest {
 
     public void verifyFirstCard(){
         commonKeyword.waitForElementVisible(lblTitleCard1);
-        commonKeyword.clickElement(lblTitleCard1);
     }
 
     public void verify2ndCard(){
         commonKeyword.waitForElementVisible(lblTitleCard2);
-        commonKeyword.clickElement(lblTitleCard2);
     }
 
     public void verify3rdCard(){
         commonKeyword.waitForElementVisible(lblTitleCard3);
-        commonKeyword.clickElement(lblTitleCard3);
     }
 
     public void verify4thCard(){
         commonKeyword.waitForElementVisible(lblTitleCard4);
-        commonKeyword.clickElement(lblTitleCard4);
     }
 
     public void clickSkipBtn() {
