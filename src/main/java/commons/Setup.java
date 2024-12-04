@@ -2,11 +2,15 @@ package commons;
 
 import datas.Datas;
 import features.LoginFeature;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -14,12 +18,40 @@ import java.util.concurrent.TimeUnit;
 public class Setup extends BaseTest{
     public Datas datas;
     public LoginFeature loginFeature;
+    private AppiumDriverLocalService service;
 
     @BeforeMethod
     public void openApp() {
         datas = new Datas();
+        startAppiumServer(datas.pathAppiumJS);
         openAppWithDeviceInfo(datas.deviceName, datas.udid, datas.platformName, datas.platformVersion, datas.automationName, datas.appPackage, datas.appActivity);
         loginFeature = new LoginFeature(driver);
+
+    }
+
+    public void startAppiumServer(String pathJS) {
+        service = new AppiumServiceBuilder()
+                .withAppiumJS(new File(pathJS))
+                .withIPAddress("127.0.0.1")
+                .usingPort(4723)
+                .build();
+        service.start();
+
+        if (service.isRunning()) {
+            System.out.println("Appium server started successfully.");
+        } else {
+            System.out.println("Failed to start Appium server.");
+        }
+
+    }
+
+    public void stopAppiumServer() {
+        if (service != null && service.isRunning()) {
+            service.stop();
+            System.out.println("Appium server stopped successfully.");
+        } else {
+            System.out.println("Appium server is not running or already stopped.");
+        }
 
     }
 
@@ -51,5 +83,6 @@ public class Setup extends BaseTest{
     @AfterMethod
     public void teardown (){
         driver.quit();
+        stopAppiumServer();
     }
 }
