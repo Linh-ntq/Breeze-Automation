@@ -71,7 +71,15 @@ public class LoginFeature extends BaseTest {
         nameEntryPage.enterName(username);
         commonKeyword.closeKeyboard();
         nameEntryPage.clickNextBtn();
-//        onbVehiclePage.clickSkipForNowBtn();
 
     }
+
+    public void goToOnbVehicleSetting(String username){
+        onbCardPage.clickSkipBtn();
+        loginPage.clickSkipForNowBtn();
+        nameEntryPage.enterName(username);
+        commonKeyword.closeKeyboard();
+        nameEntryPage.clickNextBtn();
+    }
+
 }

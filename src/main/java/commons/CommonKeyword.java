@@ -22,6 +22,16 @@ public class CommonKeyword extends Setup{
         }
     }
 
+    public void elementNotVisible(String xpathExpression, String... text) {
+        if (text != null) {
+            String xpath = String.format(xpathExpression, (String[]) text);
+            waitDriverApp.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpath)));
+
+        } else {
+            waitDriverApp.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpathExpression)));
+        }
+    }
+
     public void clickElement(String xpathExpression) {
         waitForElementVisible(xpathExpression);
         driver.findElement(By.xpath(xpathExpression)).click();
@@ -36,6 +46,8 @@ public class CommonKeyword extends Setup{
         waitForElementVisible(xpathExpression);
         driver.findElement(By.xpath(xpathExpression)).click();
         driver.findElement(By.xpath(xpathExpression)).sendKeys(keyWord);
+        String dynamicXpath = String.format("//android.widget.EditText[@text=\"%s\"]", keyWord);
+        waitForElementVisible(dynamicXpath);
     }
 
     public void closeKeyboard() {
