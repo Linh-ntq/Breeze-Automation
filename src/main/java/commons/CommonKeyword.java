@@ -1,14 +1,18 @@
 package commons;
 
 import com.google.common.collect.ImmutableList;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
+import io.appium.java_client.AppiumBy;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By;
 
 public class CommonKeyword extends Setup{
 
@@ -37,10 +41,12 @@ public class CommonKeyword extends Setup{
         driver.findElement(By.xpath(xpathExpression)).click();
     }
 
-    public void clickIdElement(String idExpression) {
-        waitForElementVisible(idExpression);
-        driver.findElement(By.id(idExpression)).click();
+    public void clickElement(String xpathExpression, String text) {
+        String dynamicXpath = String.format(xpathExpression, text);
+        waitForElementVisible(dynamicXpath);
+        driver.findElement(By.xpath(dynamicXpath)).click();
     }
+
 
     public void sendKey(String xpathExpression, String keyWord){
         waitForElementVisible(xpathExpression);
@@ -93,6 +99,47 @@ public class CommonKeyword extends Setup{
         swipe.addAction(input.createPointerMove(duration, PointerInput.Origin.viewport(), end.x, end.y));
         swipe.addAction(input.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
         driver.perform(ImmutableList.of(swipe));
+    }
+
+    public List<String> getListText(String xpathExpression){
+        List<WebElement> elements = driver.findElements(By.xpath(xpathExpression));
+        List<String> listStrings = new ArrayList<>();
+        for (WebElement el : elements) {
+            String text = el.getText();
+            listStrings.add(text);
+        }
+        return getListText(xpathExpression);
+    }
+
+    public void scrollToElementByText(String text){
+        driver.findElement(AppiumBy.androidUIAutomator(
+                "new UiScrollable(new UiSelector().scrollable(true).instance(0))" +
+                        ".scrollIntoView(new UiSelector().text(\"" + text + "\"))"
+        ));
+    }
+
+    public void scrollToElementByXPath(String xpathExpression) {
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + scrollTimeOut;
+        while (System.currentTimeMillis() < endTime) {
+            try {
+                driver.findElement(AppiumBy.xpath(xpathExpression));
+                return;
+            } catch (NoSuchElementException e) {
+                    driver.findElement(AppiumBy.androidUIAutomator(
+                            "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollForward();"
+                    ));
+            }
+        }
+        throw new NoSuchElementException(
+                "Element with XPath '" + xpathExpression + "' not found within " + scrollTimeOut + " seconds."
+        );
+    }
+
+    public String getRandom10Digits(){
+        Random random = new Random();
+        long getRandom10DigitNumber = 1_000_000_000L + (long)(random.nextDouble() * 9_000_000_000L);
+        return String.valueOf(getRandom10DigitNumber);
     }
 
 }

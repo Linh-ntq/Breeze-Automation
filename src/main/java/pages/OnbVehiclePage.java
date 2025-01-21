@@ -1,26 +1,25 @@
 package pages;
 
 import commons.BaseTest;
-import commons.CommonKeyword;
-import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
 
 public class OnbVehiclePage extends BaseTest {
-    CommonKeyword commonKeyword = new CommonKeyword();
     public String lblPageTitle = "//android.widget.TextView[@text=\"Enter vehicle details\"]";
-    public String lblPageDesc = "//android.widget.TextView[@text=\"Complete the following to access insurance, vouchers, and track ERP and parking costs per trip. Your data will be stored only on your device.\"]";
+    public String lblPageDesc = "//android.widget.TextView[@text=\"Complete the following to access insurance, vouchers, and track ERP and parking costs per trip.\n\nYour data will be stored only on your device.\"]";
     public String lblVehicleType = "//android.widget.TextView[@text=\"Vehicle Type\"]";
     public String ddlVehicleType = "//android.widget.TextView[@text=\"%s\"]";
+    public String btnArrowVehicleType = "//android.widget.TextView[@text=\"Vehicle Type\"]/following-sibling::android.view.ViewGroup/android.widget.ImageView";
     public String lblVehicleNo = "//android.widget.TextView[@text=\"Vehicle licence plate no.\"]";
     public String txtVehicleNoEmpty = "//android.widget.EditText";
-    public String ddlVehicleNo = "//android.widget.TextView[@text=\"%s\"]";
+    public String ddlVehicleNo = "//android.widget.EditText[@text=\"%s\"]";
     public String lblVehicleBrand = "//android.widget.TextView[@text=\"Vehicle Brand\"]";
     public String ddlVehicleBrandEmpty = "//android.widget.TextView[@text=\"Vehicle Brand\"]/following-sibling::android.view.ViewGroup/android.widget.EditText";
-    public String ddlVehicleBrand = "//android.widget.TextView[@text=\"%s\"]";
+    public String ddlVehicleBrand = "//android.widget.EditText[@text=\"%s\"]";
     public String lblOBU = "//android.widget.TextView[@text=\"I have installed my OBU\"]";
     public String chkYes = "//android.widget.TextView[@text=\"Yes\"]/preceding-sibling::android.view.ViewGroup";
     public String chkNo = "//android.widget.TextView[@text=\"No\"]/preceding-sibling::android.view.ViewGroup";
     public String lblUINumber = "//android.widget.TextView[@text=\"IU number (Optional)\"]";
-    public String txtUINumber = "//android.widget.TextView[@text=\"%s\"]";
+    public String txtUINumber = "//android.widget.EditText[@text=\"%s\"]";
     public String txtUINumberEmpty = "//android.widget.TextView[@text=\"IU number (Optional)\"]/following-sibling::android.view.ViewGroup/android.widget.EditText";
     public String lblGuideTitle = "//android.widget.TextView[@text=\"Where to get your vehicle IU/ OBU no.?\"]";
     public String btnArrow = "//android.widget.TextView[@text=\"Where to get your vehicle IU/ OBU no.?\"]/following-sibling::\tandroid.widget.ImageView";
@@ -42,140 +41,150 @@ public class OnbVehiclePage extends BaseTest {
     public String btnConfirm = "//android.widget.TextView[@text=\"Confirm\"]";
 
 
-    public OnbVehiclePage(AppiumDriver driver){
+    public OnbVehiclePage(AndroidDriver driver){
         super(driver);
     }
 
     public void verifyScreenTitle() {
-        commonKeyword.waitForElementVisible(lblPageTitle);
+        classDecl.commonKeyword.waitForElementVisible(lblPageTitle);
     }
     public void verifyScreenDescription() {
-        commonKeyword.waitForElementVisible(lblPageDesc);
+        classDecl.commonKeyword.waitForElementVisible(lblPageDesc);
     }
 
     public void verifyVehicleTypeField(String vehicleType) {
-        commonKeyword.waitForElementVisible(lblVehicleType);
-        commonKeyword.waitForElementVisible(ddlVehicleType, vehicleType);
+        classDecl.commonKeyword.waitForElementVisible(lblVehicleType);
+        classDecl.commonKeyword.waitForElementVisible(ddlVehicleType, vehicleType);
     }
 
     public void verifyVehicleLicencePlateNoField(String vehicleNo) {
-        commonKeyword.waitForElementVisible(lblVehicleNo);
+        classDecl.commonKeyword.waitForElementVisible(lblVehicleNo);
         if (vehicleNo.equals("empty")) {
-            commonKeyword.waitForElementVisible(txtVehicleNoEmpty);
+            classDecl.commonKeyword.waitForElementVisible(txtVehicleNoEmpty);
         } else {
-            commonKeyword.waitForElementVisible(ddlVehicleNo, vehicleNo);
+            classDecl.commonKeyword.waitForElementVisible(ddlVehicleNo, vehicleNo);
         }
 
     }
 
     public void verifyVehicleBrandField(String vehicleBrand) {
-        commonKeyword.waitForElementVisible(lblVehicleBrand);
+        classDecl.commonKeyword.scrollToElementByXPath(lblOBU);
+        classDecl.commonKeyword.waitForElementVisible(lblVehicleBrand);
         if (vehicleBrand.equals("empty")) {
-            commonKeyword.waitForElementVisible(ddlVehicleBrandEmpty);
+            classDecl.commonKeyword.waitForElementVisible(ddlVehicleBrandEmpty);
         } else {
-            commonKeyword.waitForElementVisible(ddlVehicleBrand, vehicleBrand);
+            classDecl.commonKeyword.waitForElementVisible(ddlVehicleBrand, vehicleBrand);
         }
     }
 
     public void verifyOBUInstallationField() {
-        commonKeyword.waitForElementVisible(lblOBU);
-        commonKeyword.waitForElementVisible(chkYes);
-        commonKeyword.waitForElementVisible(chkNo);
+        classDecl.commonKeyword.waitForElementVisible(lblOBU);
+        classDecl.commonKeyword.waitForElementVisible(chkYes);
+        classDecl.commonKeyword.waitForElementVisible(chkNo);
     }
 
     public void verifyIUNumberField(String vehicleIUNumber) {
-        commonKeyword.waitForElementVisible(lblUINumber);
+        classDecl.commonKeyword.scrollToElementByXPath(lblUINumber);
         if (vehicleIUNumber.equals("empty")) {
-            commonKeyword.waitForElementVisible(txtUINumberEmpty);
+            classDecl.commonKeyword.waitForElementVisible(txtUINumberEmpty);
         } else {
-            commonKeyword.waitForElementVisible(txtUINumber, vehicleIUNumber);
+            classDecl.commonKeyword.waitForElementVisible(txtUINumber, vehicleIUNumber);
         }
     }
 
     public void clickOnGuidanceArrowBtn() {
-        commonKeyword.clickElement(btnArrow);
+        classDecl.commonKeyword.clickElement(btnArrow);
     }
 
     public void verifyGuidanceField(String status) {
-        commonKeyword.waitForElementVisible(lblGuideTitle);
-        commonKeyword.waitForElementVisible(btnArrow);
+        classDecl.commonKeyword.waitForElementVisible(lblGuideTitle);
+        classDecl.commonKeyword.waitForElementVisible(btnArrow);
 
-        if (status == "collapse") {
-            commonKeyword.elementNotVisible(lblPointOneTitle);
-            commonKeyword.elementNotVisible(lblPointTwoTitle);
-            commonKeyword.elementNotVisible(lblPointThreeTitle);
-            commonKeyword.elementNotVisible(lblPointFourTitle);
+        if (status.equals("collapse")) {
+            classDecl.commonKeyword.elementNotVisible(lblPointOneTitle);
+            classDecl.commonKeyword.elementNotVisible(lblPointTwoTitle);
+            classDecl.commonKeyword.elementNotVisible(lblPointThreeTitle);
+            classDecl.commonKeyword.elementNotVisible(lblPointFourTitle);
         } else {
-            commonKeyword.waitForElementVisible(lblPointOneTitle);
-            commonKeyword.waitForElementVisible(lblPointOneDesc);
-            commonKeyword.waitForElementVisible(lblPointTwoTitle);
-            commonKeyword.waitForElementVisible(lblPointTwoDesc);
-            commonKeyword.waitForElementVisible(lblPointThreeTitle);
-            commonKeyword.waitForElementVisible(lblPointThreeDesc);
-            commonKeyword.waitForElementVisible(lblPointFourTitle);
-            commonKeyword.waitForElementVisible(lblPointFourDesc);
+            classDecl.commonKeyword.scrollToElementByXPath(lblPointFourTitle);
+            classDecl.commonKeyword.waitForElementVisible(lblPointOneTitle);
+            classDecl.commonKeyword.waitForElementVisible(lblPointOneDesc);
+            classDecl.commonKeyword.waitForElementVisible(lblPointTwoTitle);
+            classDecl.commonKeyword.waitForElementVisible(lblPointTwoDesc);
+            classDecl.commonKeyword.waitForElementVisible(lblPointThreeTitle);
+            classDecl.commonKeyword.waitForElementVisible(lblPointThreeDesc);
+            classDecl.commonKeyword.waitForElementVisible(lblPointFourTitle);
+            classDecl.commonKeyword.waitForElementVisible(lblPointFourDesc);
         }
 
     }
 
     public void verifyEnergyTypeField() {
-        commonKeyword.waitForElementVisible(lblEnergyType);
-        commonKeyword.waitForElementVisible(chkPetrolDiesel);
-        commonKeyword.waitForElementVisible(chkEV);
+        classDecl.commonKeyword.scrollToElementByXPath(lblEnergyType);
+        classDecl.commonKeyword.waitForElementVisible(chkPetrolDiesel);
+        classDecl.commonKeyword.waitForElementVisible(chkEV);
     }
 
     public void clickSaveBtn() {
-        commonKeyword.clickElement(btnSave);
+        classDecl.commonKeyword.clickElement(btnSave);
     }
 
     public void clickSkipForNowBtn() {
-        commonKeyword.clickElement(btnSkipForNow);
+        classDecl.commonKeyword.clickElement(btnSkipForNow);
     }
 
     public void verifyVehicleDetailDialog(String status) {
-        if (status == "not visible") {
-            commonKeyword.elementNotVisible(lblConfirmMsg);
-            commonKeyword.elementNotVisible(btnCancel);
-            commonKeyword.elementNotVisible(btnConfirm);
+        if (status.equals("not visible")) {
+            classDecl.commonKeyword.elementNotVisible(lblConfirmMsg);
+            classDecl.commonKeyword.elementNotVisible(btnCancel);
+            classDecl.commonKeyword.elementNotVisible(btnConfirm);
         } else {
-            commonKeyword.waitForElementVisible(lblConfirmMsg);
-            commonKeyword.waitForElementVisible(btnCancel);
-            commonKeyword.waitForElementVisible(btnConfirm);
+            classDecl.commonKeyword.waitForElementVisible(lblConfirmMsg);
+            classDecl.commonKeyword.waitForElementVisible(btnCancel);
+            classDecl.commonKeyword.waitForElementVisible(btnConfirm);
         }
 
     }
 
-    public void selectVehicleType(String vehicleType) {
+    public void clickConfirmBtn(){
+        classDecl.commonKeyword.clickElement(btnConfirm);
+    }
 
+    public void selectVehicleType(String vehicleType) {
+        //implement later
     }
 
     public void enterVehicleLicenceNo(String vehicleNo) {
-        commonKeyword.sendKey(txtVehicleNoEmpty, vehicleNo);
+        classDecl.commonKeyword.sendKey(txtVehicleNoEmpty, vehicleNo);
     }
 
     public void selectVehicleBrand(String vehicleBrand) {
-
+        classDecl.commonKeyword.scrollToElementByXPath(ddlVehicleBrandEmpty);
+        classDecl.commonKeyword.sendKey(ddlVehicleBrandEmpty, vehicleBrand);
     }
 
     public void selectOBUOpt(String opt) {
+        classDecl.commonKeyword.scrollToElementByXPath(chkYes);
         if (opt.equals("Yes")) {
-            commonKeyword.clickElement(chkYes);
+            classDecl.commonKeyword.clickElement(chkYes);
         } else if (opt.equals("No")) {
-            commonKeyword.clickElement(chkNo);
+            classDecl.commonKeyword.clickElement(chkNo);
         } else {
             System.out.println("keep default option");
         }
     }
 
     public void enterIUNumber(String vehicleIUNumber) {
-        commonKeyword.sendKey(txtUINumberEmpty, vehicleIUNumber);
+        classDecl.commonKeyword.scrollToElementByXPath(txtUINumberEmpty);
+        classDecl.commonKeyword.sendKey(txtUINumberEmpty, vehicleIUNumber);
     }
 
     public void selectEnergyOpt(String opt) {
+        classDecl.commonKeyword.scrollToElementByXPath(chkPetrolDiesel);
         if (opt.equals("Petrol/Diesel")) {
-            commonKeyword.clickElement(chkPetrolDiesel);
+            classDecl.commonKeyword.clickElement(chkPetrolDiesel);
         } else if (opt.equals("EV")) {
-            commonKeyword.clickElement(chkEV);
+            classDecl.commonKeyword.clickElement(chkEV);
         } else {
             System.out.println("keep default option");
         }

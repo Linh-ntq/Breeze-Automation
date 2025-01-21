@@ -1,17 +1,36 @@
 package datas;
 
+import commons.Setup;
+
 public class Datas {
 
-    // virtual device
-    public String deviceName = "sdk_gphone64_x86_64";
-    public String udid = "emulator-5554";
+//    // Virtual device
+//    public String deviceName = "sdk_gphone64_x86_64";
+//    public String udid = "emulator-5554";
+//    public String platformName = "Android";
+//    public String platformVersion = "14";
+//    public String automationName = "UiAutomator2";
+//    public String appPackage = "com.ncs.breeze.demo";
+//    public String appActivity = "com.ncs.breeze.ui.splash.SplashActivity";
+
+    // Real device
+    public String deviceName = "Galaxy A72";
+    public String udid = "R58R362PFEW";
     public String platformName = "Android";
     public String platformVersion = "14";
     public String automationName = "UiAutomator2";
     public String appPackage = "com.ncs.breeze.demo";
     public String appActivity = "com.ncs.breeze.ui.splash.SplashActivity";
 
-    //path
+    // Path
     public String pathAppiumJS = "C:\\Users\\linh.nguyen39\\AppData\\Roaming\\npm\\node_modules\\appium\\build\\lib\\main.js";
+
+    // Landing tabs
+    public String incomeOrangeForce = "Income Orange Force";
+    public String obuOnBreeze = "OBU On Breeze";
+    public String parkingCalculator = "Parking Calculator";
+    public String erpChecker = "ERP Checker";
+    public String liveTraffic = "Live Traffic";
+
 }
 

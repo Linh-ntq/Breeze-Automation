@@ -1,7 +1,6 @@
 package commons;
 
-import datas.Datas;
-import features.LoginFeature;
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -9,23 +8,19 @@ import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Setup extends BaseTest{
-    public Datas datas;
-    public LoginFeature loginFeature;
     private AppiumDriverLocalService service;
 
     @BeforeMethod
     public void openApp() {
-        datas = new Datas();
-        startAppiumServer(datas.pathAppiumJS);
-        openAppWithDeviceInfo(datas.deviceName, datas.udid, datas.platformName, datas.platformVersion, datas.automationName, datas.appPackage, datas.appActivity);
-        loginFeature = new LoginFeature(driver);
+        classDecl = new ClassDeclaration();
+        startAppiumServer(classDecl.datas.pathAppiumJS);
+        openAppWithDeviceInfo(classDecl.datas.deviceName, classDecl.datas.udid, classDecl.datas.platformName, classDecl.datas.platformVersion, classDecl.datas.automationName, classDecl.datas.appPackage, classDecl.datas.appActivity);
 
     }
 
@@ -70,7 +65,7 @@ public class Setup extends BaseTest{
         System.out.println("Application started");
         try {
             URL url = new URL("http://127.0.0.1:4723/");
-            driver = new AppiumDriver(url, desiredCapabilities);
+            driver = new AndroidDriver(url, desiredCapabilities);
             driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
             waitDriverApp = new WebDriverWait(driver, timeoutExWait);
 

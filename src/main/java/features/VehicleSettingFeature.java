@@ -1,62 +1,92 @@
 package features;
 
 import commons.BaseTest;
-import commons.CommonKeyword;
-import io.appium.java_client.AppiumDriver;
-import pages.LoginPage;
-import pages.NameEntryPage;
-import pages.OnbCardPage;
-import pages.OnbVehiclePage;
+import io.appium.java_client.android.AndroidDriver;
+
 
 public class VehicleSettingFeature extends BaseTest {
-    OnbCardPage onbCardPage;
-    LoginPage loginPage;
-    NameEntryPage nameEntryPage;
-    CommonKeyword commonKeyword;
-    OnbVehiclePage onbVehiclePage;
-    public VehicleSettingFeature(AppiumDriver driver){
+
+    public VehicleSettingFeature(AndroidDriver driver){
         super(driver);
-        onbCardPage = new OnbCardPage(driver);
-        loginPage = new LoginPage(driver);
-        nameEntryPage = new NameEntryPage(driver);
-        commonKeyword = new CommonKeyword();
-        onbVehiclePage = new OnbVehiclePage(driver);
     }
 
     public void verifyScreenDescription(){
-        onbVehiclePage.verifyScreenTitle();
-        onbVehiclePage.verifyScreenDescription();
+        classDecl.onbVehiclePage.verifyScreenTitle();
+        classDecl.onbVehiclePage.verifyScreenDescription();
     }
 
-    public void verifyOnbVehicleDefaultValue(){
-        onbVehiclePage.verifyVehicleTypeField("Car");
-        onbVehiclePage.verifyVehicleLicencePlateNoField("empty");
-        onbVehiclePage.verifyVehicleBrandField("empty");
-        onbVehiclePage.verifyOBUInstallationField();
-        onbVehiclePage.verifyIUNumberField("empty");
-        onbVehiclePage.verifyGuidanceField("collapse");
-        onbVehiclePage.verifyEnergyTypeField();
+    public void verifyOnbVehicleValue(String vehicleType, String vehicleNo, String vehicleBrand, String uiNumber){
+        classDecl.onbVehiclePage.verifyVehicleTypeField(vehicleType);
+        classDecl.onbVehiclePage.verifyVehicleLicencePlateNoField(vehicleNo);
+        classDecl.onbVehiclePage.verifyVehicleBrandField(vehicleBrand);
+        classDecl.onbVehiclePage.verifyOBUInstallationField();
+        classDecl.onbVehiclePage.verifyIUNumberField(uiNumber);
+        classDecl.onbVehiclePage.verifyEnergyTypeField();
     }
 
     public void verifyGuidanceDescription(){
-        onbVehiclePage.clickOnGuidanceArrowBtn();
-        onbVehiclePage.verifyGuidanceField("expand");
-        onbVehiclePage.clickOnGuidanceArrowBtn();
-        onbVehiclePage.verifyGuidanceField("collapse");
+        classDecl.onbVehiclePage.clickOnGuidanceArrowBtn();
+        classDecl.onbVehiclePage.verifyGuidanceField("expand");
+        classDecl.onbVehiclePage.clickOnGuidanceArrowBtn();
+        classDecl.onbVehiclePage.verifyGuidanceField("collapse");
     }
 
-    public void verifySaveButtonIsDisabled(){
-        onbVehiclePage.clickSaveBtn();
-        onbVehiclePage.verifyVehicleDetailDialog("not visible");
+    public void verifySaveButtonStatus(String status){
+        classDecl.onbVehiclePage.clickSaveBtn();
+        if (status.equals("not visible")) {
+            classDecl.onbVehiclePage.verifyVehicleDetailDialog("not visible");
+        } else {
+            classDecl.onbVehiclePage.verifyVehicleDetailDialog("visible");
+        }
     }
 
-    public void verifySaveButtonIsEnabled(){
-        onbVehiclePage.clickSaveBtn();
-        onbVehiclePage.verifyVehicleDetailDialog("visible");
+    public void confirmVehicleDetail(){
+        classDecl.onbVehiclePage.clickSaveBtn();
+        classDecl.onbVehiclePage.clickConfirmBtn();
     }
 
     public void verifySkipButtonIsEnabled(){
-        onbVehiclePage.clickSkipForNowBtn();
-        //verify Landing
+        classDecl.onbVehiclePage.clickSkipForNowBtn();
     }
+
+    public void verifySkipButtonIsNotVisible(){
+        classDecl.commonKeyword.elementNotVisible(classDecl.onbVehiclePage.btnSkipForNow);
+    }
+
+    public void inputVehicleInfo(String vehicleType, String vehicleNo, String vehicleBrand, String installOBU, String uiNumber, String energyType){
+        if (vehicleType != null && !vehicleType.isEmpty()){
+            classDecl.onbVehiclePage.selectVehicleType(vehicleType);
+        }
+
+        if (vehicleNo != null && !vehicleNo.isEmpty()){
+            classDecl.onbVehiclePage.enterVehicleLicenceNo(vehicleNo);
+            classDecl.commonKeyword.closeKeyboard();
+        }
+
+        if (vehicleBrand != null && !vehicleBrand.isEmpty()){
+            classDecl.onbVehiclePage.selectVehicleBrand(vehicleBrand);
+            classDecl.commonKeyword.closeKeyboard();
+        }
+
+        if (installOBU != null && !installOBU.isEmpty()){
+            classDecl.onbVehiclePage.selectOBUOpt(installOBU);
+        }
+
+        if (uiNumber != null && !uiNumber.isEmpty()){
+            classDecl.onbVehiclePage.enterIUNumber(uiNumber);
+            classDecl.commonKeyword.closeKeyboard();
+        }
+
+        if (energyType != null && !energyType.isEmpty()){
+            classDecl.onbVehiclePage.selectEnergyOpt(energyType);
+        }
+    }
+
+    public void goToVehicleSetting(){
+        classDecl.commonPage.tabOnMenu("More");
+        classDecl.commonPage.tabOnMenu("Breeze\nSettings");
+        classDecl.commonPage.tabOnMenu("Profile");
+        classDecl.commonPage.tabOnMenu("Vehicle Profile");
+    }
+
 }
