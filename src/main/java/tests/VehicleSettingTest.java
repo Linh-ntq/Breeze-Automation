@@ -5,15 +5,16 @@ import org.testng.annotations.Test;
 
 public class VehicleSettingTest extends Setup {
 
-    @Test()
+    // Fail in step verify guidance description
+    @Test(priority = 0)
     public void verify_vehicle_default_value_in_onboarding(){
         classDecl.loginFeature.goToOnbVehicleSetting("Guest");
         classDecl.vehicleSettingFeature.verifyScreenDescription();
         classDecl.vehicleSettingFeature.verifyOnbVehicleValue(
                 "Car",
-                "empty",
-                "empty",
-                "empty"
+                "",
+                "",
+                ""
         );
         classDecl.vehicleSettingFeature.verifyGuidanceDescription();
         classDecl.vehicleSettingFeature.verifySaveButtonStatus("not visible");
@@ -21,71 +22,70 @@ public class VehicleSettingTest extends Setup {
         classDecl.landingFeature.verifySearchBarText("Guest");
     }
 
-    @Test()
-    public void verify_orange_force_tab_is_focused_after_entering_insure_income_number_in_onboarding(){
+    @Test(priority = 1)
+    public void verify_orange_force_tab_is_focused_after_entering_income_insured_number_in_onboarding(){
         classDecl.loginFeature.goToOnbVehicleSetting("Guest");
         classDecl.vehicleSettingFeature.inputVehicleInfo(
                 "",
-                "LLU8471T",
-                "ADIVA",
+                classDecl.datas.incomeInsuredNo,
+                classDecl.datas.vehicleBrand,
                 "No",
-                "0123456780",
+                classDecl.datas.UINumber,
                 "EV");
         classDecl.vehicleSettingFeature.confirmVehicleDetail();
         classDecl.landingFeature.verifySearchBarText("Guest");
         classDecl.landingFeature.verifyFocusedTab(classDecl.datas.incomeOrangeForce);
     }
 
-    // Bug: BREEZE2-5391
-    @Test()
-    public void verify_OBU_On_Breeze_tab_is_focused_after_select_Yes_option_in_onboarding(){
+    @Test(priority = 2)
+    public void verify_OBU_On_Breeze_tab_is_focused_after_selecting_Yes_option_in_onboarding(){
         classDecl.loginFeature.goToOnbVehicleSetting("Guest");
         classDecl.vehicleSettingFeature.inputVehicleInfo(
                 "",
-                "LLU8471t",
-                "KIA",
+                classDecl.datas.incomeInsuredNo,
+                classDecl.datas.vehicleBrand,
                 "Yes",
-                "0123456780",
+                classDecl.datas.UINumber,
                 "EV");
         classDecl.vehicleSettingFeature.confirmVehicleDetail();
         classDecl.landingFeature.verifySearchBarText("Guest");
         classDecl.landingFeature.verifyFocusedTab(classDecl.datas.obuOnBreeze);
     }
 
-    @Test()
+    @Test(priority = 3)
     public void verify_Parking_Calculator_tab_is_focused_as_default_when_inputting_detail_in_onboarding(){
         classDecl.loginFeature.goToOnbVehicleSetting("Guest");
         classDecl.vehicleSettingFeature.inputVehicleInfo(
                 "",
-                "LLU8471t",
-                "MAZDA",
+                classDecl.datas.nonIncomeInsuredNo,
+                classDecl.datas.vehicleBrand,
                 "No",
-                "0123456780",
+                classDecl.datas.UINumber,
                 "Petrol/Diesel");
         classDecl.vehicleSettingFeature.confirmVehicleDetail();
         classDecl.landingFeature.verifySearchBarText("Guest");
         classDecl.landingFeature.verifyFocusedTab(classDecl.datas.parkingCalculator);
     }
 
-    @Test()
+    @Test(priority = 4)
     public void verify_Parking_Calculator_tab_is_focused_as_default_when_not_inputting_detail_in_onboarding(){
         classDecl.loginFeature.goToOnbVehicleSetting("Guest");
-        classDecl.onbVehiclePage.clickSkipForNowBtn();
+        classDecl.vehicleSettingPage.clickSkipForNowBtn();
         classDecl.landingFeature.verifySearchBarText("Guest");
         classDecl.landingFeature.verifyFocusedTab(classDecl.datas.parkingCalculator);
     }
 
     //Fail in IU number step due to element not visible - will ask dev help to add this
-    @Test()
+    @Test(priority = 5)
     public void verify_vehicle_default_value_in_Breeze_setting(){
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         classDecl.vehicleSettingFeature.goToVehicleSetting();
         classDecl.vehicleSettingFeature.verifyScreenDescription();
         classDecl.vehicleSettingFeature.verifyOnbVehicleValue(
                 "Car",
-                "empty",
-                "empty",
-                "empty"
+                "",
+                "",
+                ""
         );
         classDecl.vehicleSettingFeature.verifyGuidanceDescription();
         classDecl.vehicleSettingFeature.verifySaveButtonStatus("not visible");
@@ -93,27 +93,55 @@ public class VehicleSettingTest extends Setup {
     }
 
     //Fail in IU number step due to element not visible - will ask dev help to add this
-    @Test()
+    @Test(priority = 6)
     public void verify_vehicle_detail_in_Breeze_setting_will_be_displayed_same_with_onboarding(){
         classDecl.loginFeature.goToOnbVehicleSetting("Guest");
         classDecl.vehicleSettingFeature.inputVehicleInfo(
                 "",
-                "Sba1234g",
-                "MAZDA",
+                classDecl.datas.nonIncomeInsuredNo,
+                classDecl.datas.vehicleBrand,
                 "No",
-                "0123458067",
+                classDecl.datas.UINumber,
                 "Petrol/Diesel");
         classDecl.vehicleSettingFeature.confirmVehicleDetail();
         classDecl.vehicleSettingFeature.goToVehicleSetting();
         classDecl.vehicleSettingFeature.verifyOnbVehicleValue(
                 "Car",
-                "Sba1234g",
-                "MAZDA",
-                "0123458067"
+                classDecl.datas.nonIncomeInsuredNo,
+                classDecl.datas.vehicleBrand,
+                classDecl.datas.UINumber
         );
         classDecl.vehicleSettingFeature.verifySaveButtonStatus("not visible");
         classDecl.vehicleSettingFeature.verifySkipButtonIsNotVisible();
 
     }
+
+    //Fail in IU number step due to element not visible - will ask dev help to add this
+    @Test(priority = 7)
+    public void verify_orange_force_tab_is_focused_after_updating_income_insured_number_in_setting(){
+        classDecl.loginFeature.goToOnbVehicleSetting("Guest");
+        classDecl.vehicleSettingFeature.inputVehicleInfo(
+                "",
+                classDecl.datas.nonIncomeInsuredNo,
+                classDecl.datas.vehicleBrand,
+                "No",
+                classDecl.datas.UINumber,
+                "Petrol/Diesel");
+        classDecl.vehicleSettingFeature.confirmVehicleDetail();
+        classDecl.vehicleSettingFeature.goToVehicleSetting();
+        classDecl.vehicleSettingFeature.inputVehicleInfo(
+                "",
+                classDecl.datas.incomeInsuredNo,
+                "",
+                "",
+                "",
+                "");
+        classDecl.vehicleSettingFeature.confirmVehicleDetail();
+        classDecl.landingFeature.verifyFocusedTab(classDecl.datas.incomeOrangeForce);
+    }
+
+    // verify focused tab from breeze setting: income update, obu new, parking new - update - check
+    // verify can input value from breeze setting
+    // verify ui number error
 
 }

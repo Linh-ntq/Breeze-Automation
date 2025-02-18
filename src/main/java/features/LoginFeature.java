@@ -48,7 +48,7 @@ public class LoginFeature extends BaseTest {
         classDecl.nameEntryPage.enterName(username);
         classDecl.commonKeyword.closeKeyboard();
         classDecl.nameEntryPage.clickNextBtn();
-        classDecl.onbVehiclePage.clickSkipForNowBtn();
+        classDecl.vehicleSettingPage.clickSkipForNowBtn();
     }
 
     public void goToLandingPageByGG(String username){

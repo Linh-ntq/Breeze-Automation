@@ -11,74 +11,74 @@ public class VehicleSettingFeature extends BaseTest {
     }
 
     public void verifyScreenDescription(){
-        classDecl.onbVehiclePage.verifyScreenTitle();
-        classDecl.onbVehiclePage.verifyScreenDescription();
+        classDecl.vehicleSettingPage.verifyScreenTitle();
+        classDecl.vehicleSettingPage.verifyScreenDescription();
     }
 
     public void verifyOnbVehicleValue(String vehicleType, String vehicleNo, String vehicleBrand, String uiNumber){
-        classDecl.onbVehiclePage.verifyVehicleTypeField(vehicleType);
-        classDecl.onbVehiclePage.verifyVehicleLicencePlateNoField(vehicleNo);
-        classDecl.onbVehiclePage.verifyVehicleBrandField(vehicleBrand);
-        classDecl.onbVehiclePage.verifyOBUInstallationField();
-        classDecl.onbVehiclePage.verifyIUNumberField(uiNumber);
-        classDecl.onbVehiclePage.verifyEnergyTypeField();
+        classDecl.vehicleSettingPage.verifyVehicleTypeField(vehicleType);
+        classDecl.vehicleSettingPage.verifyVehicleLicencePlateNoField(vehicleNo);
+        classDecl.vehicleSettingPage.verifyVehicleBrandField(vehicleBrand);
+        classDecl.vehicleSettingPage.verifyOBUInstallationField();
+        classDecl.vehicleSettingPage.verifyIUNumberField(uiNumber);
+        classDecl.vehicleSettingPage.verifyEnergyTypeField();
     }
 
     public void verifyGuidanceDescription(){
-        classDecl.onbVehiclePage.clickOnGuidanceArrowBtn();
-        classDecl.onbVehiclePage.verifyGuidanceField("expand");
-        classDecl.onbVehiclePage.clickOnGuidanceArrowBtn();
-        classDecl.onbVehiclePage.verifyGuidanceField("collapse");
+        classDecl.vehicleSettingPage.clickOnGuidanceArrowBtn();
+        classDecl.vehicleSettingPage.verifyGuidanceField("expand");
+        classDecl.vehicleSettingPage.clickOnGuidanceArrowBtn();
+        classDecl.vehicleSettingPage.verifyGuidanceField("collapse");
     }
 
     public void verifySaveButtonStatus(String status){
-        classDecl.onbVehiclePage.clickSaveBtn();
+        classDecl.vehicleSettingPage.clickSaveBtn();
         if (status.equals("not visible")) {
-            classDecl.onbVehiclePage.verifyVehicleDetailDialog("not visible");
+            classDecl.vehicleSettingPage.verifyVehicleDetailDialog("not visible");
         } else {
-            classDecl.onbVehiclePage.verifyVehicleDetailDialog("visible");
+            classDecl.vehicleSettingPage.verifyVehicleDetailDialog("visible");
         }
     }
 
     public void confirmVehicleDetail(){
-        classDecl.onbVehiclePage.clickSaveBtn();
-        classDecl.onbVehiclePage.clickConfirmBtn();
+        classDecl.vehicleSettingPage.clickSaveBtn();
+        classDecl.vehicleSettingPage.clickConfirmBtn();
     }
 
     public void verifySkipButtonIsEnabled(){
-        classDecl.onbVehiclePage.clickSkipForNowBtn();
+        classDecl.vehicleSettingPage.clickSkipForNowBtn();
     }
 
     public void verifySkipButtonIsNotVisible(){
-        classDecl.commonKeyword.elementNotVisible(classDecl.onbVehiclePage.btnSkipForNow);
+        classDecl.commonKeyword.elementNotVisible(classDecl.vehicleSettingPage.btnSkipForNow);
     }
 
     public void inputVehicleInfo(String vehicleType, String vehicleNo, String vehicleBrand, String installOBU, String uiNumber, String energyType){
         if (vehicleType != null && !vehicleType.isEmpty()){
-            classDecl.onbVehiclePage.selectVehicleType(vehicleType);
+            classDecl.vehicleSettingPage.selectVehicleType(vehicleType);
         }
 
         if (vehicleNo != null && !vehicleNo.isEmpty()){
-            classDecl.onbVehiclePage.enterVehicleLicenceNo(vehicleNo);
+            classDecl.vehicleSettingPage.enterVehicleLicenceNo(vehicleNo);
             classDecl.commonKeyword.closeKeyboard();
         }
 
         if (vehicleBrand != null && !vehicleBrand.isEmpty()){
-            classDecl.onbVehiclePage.selectVehicleBrand(vehicleBrand);
+            classDecl.vehicleSettingPage.enterVehicleBrand(vehicleBrand);
             classDecl.commonKeyword.closeKeyboard();
         }
 
         if (installOBU != null && !installOBU.isEmpty()){
-            classDecl.onbVehiclePage.selectOBUOpt(installOBU);
+            classDecl.vehicleSettingPage.selectOBUOpt(installOBU);
         }
 
         if (uiNumber != null && !uiNumber.isEmpty()){
-            classDecl.onbVehiclePage.enterIUNumber(uiNumber);
+            classDecl.vehicleSettingPage.enterIUNumber(uiNumber);
             classDecl.commonKeyword.closeKeyboard();
         }
 
         if (energyType != null && !energyType.isEmpty()){
-            classDecl.onbVehiclePage.selectEnergyOpt(energyType);
+            classDecl.vehicleSettingPage.selectEnergyOpt(energyType);
         }
     }
 

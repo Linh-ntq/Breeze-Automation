@@ -13,6 +13,7 @@ import java.util.Random;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 
 public class CommonKeyword extends Setup{
 
@@ -140,6 +141,11 @@ public class CommonKeyword extends Setup{
         Random random = new Random();
         long getRandom10DigitNumber = 1_000_000_000L + (long)(random.nextDouble() * 9_000_000_000L);
         return String.valueOf(getRandom10DigitNumber);
+    }
+
+    public void verifyText(String xpathExpression, String expectedText){
+        String actualText = driver.findElement(By.xpath(xpathExpression)).getText();
+        Assert.assertEquals(actualText, expectedText);
     }
 
 }

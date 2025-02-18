@@ -18,6 +18,6 @@ public class ClassDeclaration extends BaseTest {
     public LoginPage loginPage = new LoginPage(driver);
     public NameEntryPage nameEntryPage = new NameEntryPage(driver);
     public OnbCardPage onbCardPage = new OnbCardPage(driver);
-    public OnbVehiclePage onbVehiclePage = new OnbVehiclePage(driver);
+    public VehicleSettingPage vehicleSettingPage = new VehicleSettingPage(driver);
 
 }

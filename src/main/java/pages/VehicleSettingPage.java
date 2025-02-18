@@ -2,25 +2,23 @@ package pages;
 
 import commons.BaseTest;
 import io.appium.java_client.android.AndroidDriver;
+import org.openqa.selenium.By;
 
-public class OnbVehiclePage extends BaseTest {
+public class VehicleSettingPage extends BaseTest {
     public String lblPageTitle = "//android.widget.TextView[@text=\"Enter vehicle details\"]";
     public String lblPageDesc = "//android.widget.TextView[@text=\"Complete the following to access insurance, vouchers, and track ERP and parking costs per trip.\n\nYour data will be stored only on your device.\"]";
     public String lblVehicleType = "//android.widget.TextView[@text=\"Vehicle Type\"]";
     public String ddlVehicleType = "//android.widget.TextView[@text=\"%s\"]";
     public String btnArrowVehicleType = "//android.widget.TextView[@text=\"Vehicle Type\"]/following-sibling::android.view.ViewGroup/android.widget.ImageView";
     public String lblVehicleNo = "//android.widget.TextView[@text=\"Vehicle licence plate no.\"]";
-    public String txtVehicleNoEmpty = "//android.widget.EditText";
-    public String ddlVehicleNo = "//android.widget.EditText[@text=\"%s\"]";
+    public String txtVehicleNo = "//android.widget.TextView[@text=\"Vehicle licence plate no.\"]/following-sibling::android.view.ViewGroup[1]/android.widget.EditText";
     public String lblVehicleBrand = "//android.widget.TextView[@text=\"Vehicle Brand\"]";
-    public String ddlVehicleBrandEmpty = "//android.widget.TextView[@text=\"Vehicle Brand\"]/following-sibling::android.view.ViewGroup/android.widget.EditText";
-    public String ddlVehicleBrand = "//android.widget.EditText[@text=\"%s\"]";
+    public String txtVehicleBrand = "//android.widget.TextView[@text=\"Vehicle Brand\"]/following-sibling::android.view.ViewGroup/android.widget.EditText";
     public String lblOBU = "//android.widget.TextView[@text=\"I have installed my OBU\"]";
     public String chkYes = "//android.widget.TextView[@text=\"Yes\"]/preceding-sibling::android.view.ViewGroup";
     public String chkNo = "//android.widget.TextView[@text=\"No\"]/preceding-sibling::android.view.ViewGroup";
     public String lblUINumber = "//android.widget.TextView[@text=\"IU number (Optional)\"]";
-    public String txtUINumber = "//android.widget.EditText[@text=\"%s\"]";
-    public String txtUINumberEmpty = "//android.widget.TextView[@text=\"IU number (Optional)\"]/following-sibling::android.view.ViewGroup/android.widget.EditText";
+    public String txtUINumber = "//android.widget.TextView[@text=\"IU number (Optional)\"]/following-sibling::android.view.ViewGroup[1]/android.widget.EditText";
     public String lblGuideTitle = "//android.widget.TextView[@text=\"Where to get your vehicle IU/ OBU no.?\"]";
     public String btnArrow = "//android.widget.TextView[@text=\"Where to get your vehicle IU/ OBU no.?\"]/following-sibling::\tandroid.widget.ImageView";
     public String lblPointOneTitle = "//android.widget.TextView[@text=\"1. Via Singpass App\"]";
@@ -41,7 +39,7 @@ public class OnbVehiclePage extends BaseTest {
     public String btnConfirm = "//android.widget.TextView[@text=\"Confirm\"]";
 
 
-    public OnbVehiclePage(AndroidDriver driver){
+    public VehicleSettingPage(AndroidDriver driver){
         super(driver);
     }
 
@@ -59,25 +57,20 @@ public class OnbVehiclePage extends BaseTest {
 
     public void verifyVehicleLicencePlateNoField(String vehicleNo) {
         classDecl.commonKeyword.waitForElementVisible(lblVehicleNo);
-        if (vehicleNo.equals("empty")) {
-            classDecl.commonKeyword.waitForElementVisible(txtVehicleNoEmpty);
-        } else {
-            classDecl.commonKeyword.waitForElementVisible(ddlVehicleNo, vehicleNo);
-        }
+        classDecl.commonKeyword.verifyText(txtVehicleNo, vehicleNo);
 
     }
 
     public void verifyVehicleBrandField(String vehicleBrand) {
-        classDecl.commonKeyword.scrollToElementByXPath(lblOBU);
+        classDecl.commonKeyword.scrollToElementByXPath(lblVehicleBrand);
         classDecl.commonKeyword.waitForElementVisible(lblVehicleBrand);
-        if (vehicleBrand.equals("empty")) {
-            classDecl.commonKeyword.waitForElementVisible(ddlVehicleBrandEmpty);
-        } else {
-            classDecl.commonKeyword.waitForElementVisible(ddlVehicleBrand, vehicleBrand);
-        }
+        classDecl.commonKeyword.verifyText(txtVehicleBrand, vehicleBrand);
     }
 
     public void verifyOBUInstallationField() {
+        classDecl.commonKeyword.scrollToElementByXPath(lblUINumber);
+        // brand list displays after scrolling. Input brand & close keyword works, but the inputted keyword there so can't compare with setting
+        // need to find solution here
         classDecl.commonKeyword.waitForElementVisible(lblOBU);
         classDecl.commonKeyword.waitForElementVisible(chkYes);
         classDecl.commonKeyword.waitForElementVisible(chkNo);
@@ -85,11 +78,7 @@ public class OnbVehiclePage extends BaseTest {
 
     public void verifyIUNumberField(String vehicleIUNumber) {
         classDecl.commonKeyword.scrollToElementByXPath(lblUINumber);
-        if (vehicleIUNumber.equals("empty")) {
-            classDecl.commonKeyword.waitForElementVisible(txtUINumberEmpty);
-        } else {
-            classDecl.commonKeyword.waitForElementVisible(txtUINumber, vehicleIUNumber);
-        }
+        classDecl.commonKeyword.verifyText(txtUINumber, vehicleIUNumber);
     }
 
     public void clickOnGuidanceArrowBtn() {
@@ -155,12 +144,12 @@ public class OnbVehiclePage extends BaseTest {
     }
 
     public void enterVehicleLicenceNo(String vehicleNo) {
-        classDecl.commonKeyword.sendKey(txtVehicleNoEmpty, vehicleNo);
+        classDecl.commonKeyword.sendKey(txtVehicleNo, vehicleNo);
     }
 
-    public void selectVehicleBrand(String vehicleBrand) {
-        classDecl.commonKeyword.scrollToElementByXPath(ddlVehicleBrandEmpty);
-        classDecl.commonKeyword.sendKey(ddlVehicleBrandEmpty, vehicleBrand);
+    public void enterVehicleBrand(String vehicleBrand) {
+        classDecl.commonKeyword.scrollToElementByXPath(txtVehicleBrand);
+        classDecl.commonKeyword.sendKey(txtVehicleBrand, vehicleBrand);
     }
 
     public void selectOBUOpt(String opt) {
@@ -175,8 +164,8 @@ public class OnbVehiclePage extends BaseTest {
     }
 
     public void enterIUNumber(String vehicleIUNumber) {
-        classDecl.commonKeyword.scrollToElementByXPath(txtUINumberEmpty);
-        classDecl.commonKeyword.sendKey(txtUINumberEmpty, vehicleIUNumber);
+        classDecl.commonKeyword.scrollToElementByXPath(txtUINumber);
+        classDecl.commonKeyword.sendKey(txtUINumber, vehicleIUNumber);
     }
 
     public void selectEnergyOpt(String opt) {
