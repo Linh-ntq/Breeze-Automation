@@ -1,13 +1,8 @@
 package features;
 
 import commons.BaseTest;
-import io.appium.java_client.android.AndroidDriver;
 
 public class LoginFeature extends BaseTest {
-
-    public LoginFeature(AndroidDriver driver){
-        super(driver);
-    }
 
     public void swipeToLeftAndVerifyCardUI(){
         classDecl.onbCardPage.verifyFirstCard();
@@ -49,6 +44,7 @@ public class LoginFeature extends BaseTest {
         classDecl.commonKeyword.closeKeyboard();
         classDecl.nameEntryPage.clickNextBtn();
         classDecl.vehicleSettingPage.clickSkipForNowBtn();
+        classDecl.landingFeature.verifySearchBarText(username);
     }
 
     public void goToLandingPageByGG(String username){

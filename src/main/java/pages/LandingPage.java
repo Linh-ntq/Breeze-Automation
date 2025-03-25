@@ -1,7 +1,6 @@
 package pages;
 
 import commons.BaseTest;
-import io.appium.java_client.android.AndroidDriver;
 import org.testng.Assert;
 import java.util.List;
 
@@ -22,17 +21,10 @@ public class LandingPage extends BaseTest {
     public String lblERPCheckerTxt = "//android.widget.TextView[contains(@text,\"Check ERP along your route\")]";
     public String lblLiveTrafficTxt = "//android.widget.TextView[@text=\"CTE\"]";
 
-    public LandingPage(AndroidDriver driver){
-        super(driver);
-    }
 
     public void verifyHeaderList(List<String> expectedHeaderOrder){
         List<String> actualHeaderOrder = classDecl.commonKeyword.getListText(lstHeaderTab);
         Assert.assertEquals(actualHeaderOrder, expectedHeaderOrder);
-    }
-
-    public void closeInAppAlerts(){
-        classDecl.commonKeyword.clickElement(btnCloseDialogue);
     }
 
     public void verifySearchBarText(String userName){

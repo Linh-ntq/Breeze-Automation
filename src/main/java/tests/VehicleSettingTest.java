@@ -10,7 +10,7 @@ public class VehicleSettingTest extends Setup {
     public void verify_vehicle_default_value_in_onboarding(){
         classDecl.loginFeature.goToOnbVehicleSetting("Guest");
         classDecl.vehicleSettingFeature.verifyScreenDescription();
-        classDecl.vehicleSettingFeature.verifyOnbVehicleValue(
+        classDecl.vehicleSettingFeature.verifyVehicleValue(
                 "Car",
                 "",
                 "",
@@ -31,7 +31,7 @@ public class VehicleSettingTest extends Setup {
                 classDecl.datas.vehicleBrand,
                 "No",
                 classDecl.datas.UINumber,
-                "EV");
+                classDecl.datas.energy_EV);
         classDecl.vehicleSettingFeature.confirmVehicleDetail();
         classDecl.landingFeature.verifySearchBarText("Guest");
         classDecl.landingFeature.verifyFocusedTab(classDecl.datas.incomeOrangeForce);
@@ -61,7 +61,7 @@ public class VehicleSettingTest extends Setup {
                 classDecl.datas.vehicleBrand,
                 "No",
                 classDecl.datas.UINumber,
-                "Petrol/Diesel");
+                classDecl.datas.energy_PetrolDiesel);
         classDecl.vehicleSettingFeature.confirmVehicleDetail();
         classDecl.landingFeature.verifySearchBarText("Guest");
         classDecl.landingFeature.verifyFocusedTab(classDecl.datas.parkingCalculator);
@@ -81,7 +81,7 @@ public class VehicleSettingTest extends Setup {
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         classDecl.vehicleSettingFeature.goToVehicleSetting();
         classDecl.vehicleSettingFeature.verifyScreenDescription();
-        classDecl.vehicleSettingFeature.verifyOnbVehicleValue(
+        classDecl.vehicleSettingFeature.verifyVehicleValue(
                 "Car",
                 "",
                 "",
@@ -102,15 +102,17 @@ public class VehicleSettingTest extends Setup {
                 classDecl.datas.vehicleBrand,
                 "No",
                 classDecl.datas.UINumber,
-                "Petrol/Diesel");
+                classDecl.datas.energy_PetrolDiesel);
         classDecl.vehicleSettingFeature.confirmVehicleDetail();
         classDecl.vehicleSettingFeature.goToVehicleSetting();
-        classDecl.vehicleSettingFeature.verifyOnbVehicleValue(
+        classDecl.vehicleSettingFeature.verifyScreenDescription();
+        classDecl.vehicleSettingFeature.verifyVehicleValue(
                 "Car",
                 classDecl.datas.nonIncomeInsuredNo,
                 classDecl.datas.vehicleBrand,
                 classDecl.datas.UINumber
         );
+        classDecl.vehicleSettingFeature.verifyGuidanceDescription();
         classDecl.vehicleSettingFeature.verifySaveButtonStatus("not visible");
         classDecl.vehicleSettingFeature.verifySkipButtonIsNotVisible();
 
@@ -126,7 +128,7 @@ public class VehicleSettingTest extends Setup {
                 classDecl.datas.vehicleBrand,
                 "No",
                 classDecl.datas.UINumber,
-                "Petrol/Diesel");
+                classDecl.datas.energy_PetrolDiesel);
         classDecl.vehicleSettingFeature.confirmVehicleDetail();
         classDecl.vehicleSettingFeature.goToVehicleSetting();
         classDecl.vehicleSettingFeature.inputVehicleInfo(
@@ -140,8 +142,38 @@ public class VehicleSettingTest extends Setup {
         classDecl.landingFeature.verifyFocusedTab(classDecl.datas.incomeOrangeForce);
     }
 
-    // verify focused tab from breeze setting: income update, obu new, parking new - update - check
-    // verify can input value from breeze setting
-    // verify ui number error
+    @Test(priority = 8)
+    public void verify_OBU_On_Breeze_tab_is_focused_after_selecting_Yes_option_in_setting(){
+        classDecl.loginFeature.goToLandingPageByGuest("Guest");
+        classDecl.vehicleSettingFeature.goToVehicleSetting();
+        classDecl.vehicleSettingFeature.inputVehicleInfo(
+                "",
+                classDecl.datas.incomeInsuredNo,
+                classDecl.datas.vehicleBrand,
+                "Yes",
+                "",
+                "");
+        classDecl.vehicleSettingFeature.confirmVehicleDetail();
+        classDecl.landingFeature.verifyFocusedTab(classDecl.datas.obuOnBreeze);
+    }
+
+    @Test(priority = 9)
+    public void verify_Parking_Calculator_tab_is_focused_after_inputting_detail_in_setting(){
+        classDecl.loginFeature.goToLandingPageByGuest("Guest");
+        classDecl.vehicleSettingFeature.goToVehicleSetting();
+        classDecl.vehicleSettingFeature.inputVehicleInfo(
+                "",
+                classDecl.datas.nonIncomeInsuredNo,
+                classDecl.datas.vehicleBrand,
+                "No",
+                classDecl.datas.UINumber,
+                classDecl.datas.energy_EV);
+        classDecl.vehicleSettingFeature.confirmVehicleDetail();
+        classDecl.commonPage.tabOnMenu("Home");
+        classDecl.landingFeature.verifyFocusedTab(classDecl.datas.parkingCalculator);
+    }
+    
+    // verify can update value from breeze setting
+    // verify income insurance field
 
 }

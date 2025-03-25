@@ -15,7 +15,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 
-public class CommonKeyword extends Setup{
+public class CommonKeyword extends BaseTest{
 
     public void waitForElementVisible(String xpathExpression, String... text) {
         if (text != null) {
@@ -148,4 +148,43 @@ public class CommonKeyword extends Setup{
         Assert.assertEquals(actualText, expectedText);
     }
 
+    private boolean isAlertDisplayed(String xpath) {
+        try {
+            return driver.findElement(By.xpath(xpath)).isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public void closeInAppAlertsIfVisible() {
+        String btnCloseDialogue = "//android.widget.ImageView[@resource-id='com.ncs.breeze.demo:id/imgCloseDialog']";
+
+        while (isAlertDisplayed(btnCloseDialogue)) {
+            try {
+                System.out.println("Close the in-app alert");
+                classDecl.commonKeyword.clickElement(btnCloseDialogue);
+                pause(5000);
+            } catch (Exception e) {
+                System.out.println("Error while closing the alert: " + e.getMessage());
+                break;
+            }
+        }
+    }
+
+    public void pause(int time) {
+        try {
+            if (time >= 1000) {
+                for (int i = 0; i < time / 1000; i++) {
+                    if (time > 1000) {
+                        System.out.println("Sleep " + (i + 1) + "s");
+                    }
+                    Thread.sleep(1000);
+                }
+            } else {
+                Thread.sleep(time);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

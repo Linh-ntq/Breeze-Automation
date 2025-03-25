@@ -1,16 +1,12 @@
 package pages;
 
 import commons.BaseTest;
-import io.appium.java_client.android.AndroidDriver;
 
 public class LoginPage extends BaseTest {
     public String lblTitle = "//android.widget.TextView[normalize-space(@text)='Enjoy smoother, safer journeys with']";
     public String btnLoginWithGG = "//android.widget.TextView[@text=\"Continue with Google\"]";
     public String btnSkipForNow = "//android.widget.TextView[@text=\"Skip for now\"]";
 
-    public LoginPage(AndroidDriver driver){
-        super(driver);
-    }
 
     public void verifyLoginTitle(){
         classDecl.commonKeyword.waitForElementVisible(lblTitle);

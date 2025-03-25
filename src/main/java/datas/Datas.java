@@ -37,6 +37,9 @@ public class Datas {
     public String incomeInsuredNo = "LLU8471T";
     public String nonIncomeInsuredNo = "Sba1234G";
     public String vehicleBrand = "MAZDA";
+    public String vehicleBrand2 = "ALPINE";
+    public String energy_PetrolDiesel = "Petrol/Diesel";
+    public String energy_EV = "EV";
     public String UINumber = commonKeyword.getRandom10Digits();
 
 }

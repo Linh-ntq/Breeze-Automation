@@ -6,18 +6,18 @@ import features.LoginFeature;
 import features.VehicleSettingFeature;
 import pages.*;
 
-public class ClassDeclaration extends BaseTest {
+public class ClassDeclaration {
 
     public CommonKeyword commonKeyword = new CommonKeyword();
     public Datas datas = new Datas();
-    public LandingFeature landingFeature = new LandingFeature(driver);
-    public LoginFeature loginFeature = new LoginFeature(driver);
-    public VehicleSettingFeature vehicleSettingFeature = new VehicleSettingFeature(driver);
-    public CommonPage commonPage = new CommonPage(driver);
-    public LandingPage landingPage = new LandingPage(driver);
-    public LoginPage loginPage = new LoginPage(driver);
-    public NameEntryPage nameEntryPage = new NameEntryPage(driver);
-    public OnbCardPage onbCardPage = new OnbCardPage(driver);
-    public VehicleSettingPage vehicleSettingPage = new VehicleSettingPage(driver);
+    public LandingFeature landingFeature = new LandingFeature();
+    public LoginFeature loginFeature = new LoginFeature();
+    public VehicleSettingFeature vehicleSettingFeature = new VehicleSettingFeature();
+    public CommonPage commonPage = new CommonPage();
+    public LandingPage landingPage = new LandingPage();
+    public LoginPage loginPage = new LoginPage();
+    public NameEntryPage nameEntryPage = new NameEntryPage();
+    public OnbCardPage onbCardPage = new OnbCardPage();
+    public VehicleSettingPage vehicleSettingPage = new VehicleSettingPage();
 
 }

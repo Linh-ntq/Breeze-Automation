@@ -1,21 +1,15 @@
 package features;
 
 import commons.BaseTest;
-import io.appium.java_client.android.AndroidDriver;
-
 
 public class VehicleSettingFeature extends BaseTest {
-
-    public VehicleSettingFeature(AndroidDriver driver){
-        super(driver);
-    }
 
     public void verifyScreenDescription(){
         classDecl.vehicleSettingPage.verifyScreenTitle();
         classDecl.vehicleSettingPage.verifyScreenDescription();
     }
 
-    public void verifyOnbVehicleValue(String vehicleType, String vehicleNo, String vehicleBrand, String uiNumber){
+    public void verifyVehicleValue(String vehicleType, String vehicleNo, String vehicleBrand, String uiNumber){
         classDecl.vehicleSettingPage.verifyVehicleTypeField(vehicleType);
         classDecl.vehicleSettingPage.verifyVehicleLicencePlateNoField(vehicleNo);
         classDecl.vehicleSettingPage.verifyVehicleBrandField(vehicleBrand);
@@ -85,6 +79,7 @@ public class VehicleSettingFeature extends BaseTest {
     public void goToVehicleSetting(){
         classDecl.commonPage.tabOnMenu("More");
         classDecl.commonPage.tabOnMenu("Breeze\nSettings");
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.commonPage.tabOnMenu("Profile");
         classDecl.commonPage.tabOnMenu("Vehicle Profile");
     }

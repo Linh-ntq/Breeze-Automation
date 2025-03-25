@@ -1,8 +1,6 @@
 package pages;
 
 import commons.BaseTest;
-import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.By;
 
 public class VehicleSettingPage extends BaseTest {
     public String lblPageTitle = "//android.widget.TextView[@text=\"Enter vehicle details\"]";
@@ -39,10 +37,6 @@ public class VehicleSettingPage extends BaseTest {
     public String btnConfirm = "//android.widget.TextView[@text=\"Confirm\"]";
 
 
-    public VehicleSettingPage(AndroidDriver driver){
-        super(driver);
-    }
-
     public void verifyScreenTitle() {
         classDecl.commonKeyword.waitForElementVisible(lblPageTitle);
     }
@@ -69,9 +63,7 @@ public class VehicleSettingPage extends BaseTest {
 
     public void verifyOBUInstallationField() {
         classDecl.commonKeyword.scrollToElementByXPath(lblUINumber);
-        // brand list displays after scrolling. Input brand & close keyword works, but the inputted keyword there so can't compare with setting
-        // need to find solution here
-        classDecl.commonKeyword.waitForElementVisible(lblOBU);
+        classDecl.commonKeyword.clickElement(lblOBU); //To close vehicle brand list
         classDecl.commonKeyword.waitForElementVisible(chkYes);
         classDecl.commonKeyword.waitForElementVisible(chkNo);
     }
