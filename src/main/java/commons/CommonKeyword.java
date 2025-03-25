@@ -1,16 +1,21 @@
 package commons;
 
 import com.google.common.collect.ImmutableList;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
+import io.appium.java_client.AppiumBy;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-public class CommonKeyword extends Setup{
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By;
+import org.testng.Assert;
+
+public class CommonKeyword extends BaseTest{
 
     public void waitForElementVisible(String xpathExpression, String... text) {
         if (text != null) {
@@ -22,20 +27,34 @@ public class CommonKeyword extends Setup{
         }
     }
 
+    public void elementNotVisible(String xpathExpression, String... text) {
+        if (text != null) {
+            String xpath = String.format(xpathExpression, (String[]) text);
+            waitDriverApp.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpath)));
+
+        } else {
+            waitDriverApp.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpathExpression)));
+        }
+    }
+
     public void clickElement(String xpathExpression) {
         waitForElementVisible(xpathExpression);
         driver.findElement(By.xpath(xpathExpression)).click();
     }
 
-    public void clickIdElement(String idExpression) {
-        waitForElementVisible(idExpression);
-        driver.findElement(By.id(idExpression)).click();
+    public void clickElement(String xpathExpression, String text) {
+        String dynamicXpath = String.format(xpathExpression, text);
+        waitForElementVisible(dynamicXpath);
+        driver.findElement(By.xpath(dynamicXpath)).click();
     }
+
 
     public void sendKey(String xpathExpression, String keyWord){
         waitForElementVisible(xpathExpression);
         driver.findElement(By.xpath(xpathExpression)).click();
         driver.findElement(By.xpath(xpathExpression)).sendKeys(keyWord);
+        String dynamicXpath = String.format("//android.widget.EditText[@text=\"%s\"]", keyWord);
+        waitForElementVisible(dynamicXpath);
     }
 
     public void closeKeyboard() {
@@ -83,4 +102,89 @@ public class CommonKeyword extends Setup{
         driver.perform(ImmutableList.of(swipe));
     }
 
+    public List<String> getListText(String xpathExpression){
+        List<WebElement> elements = driver.findElements(By.xpath(xpathExpression));
+        List<String> listStrings = new ArrayList<>();
+        for (WebElement el : elements) {
+            String text = el.getText();
+            listStrings.add(text);
+        }
+        return getListText(xpathExpression);
+    }
+
+    public void scrollToElementByText(String text){
+        driver.findElement(AppiumBy.androidUIAutomator(
+                "new UiScrollable(new UiSelector().scrollable(true).instance(0))" +
+                        ".scrollIntoView(new UiSelector().text(\"" + text + "\"))"
+        ));
+    }
+
+    public void scrollToElementByXPath(String xpathExpression) {
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + scrollTimeOut;
+        while (System.currentTimeMillis() < endTime) {
+            try {
+                driver.findElement(AppiumBy.xpath(xpathExpression));
+                return;
+            } catch (NoSuchElementException e) {
+                    driver.findElement(AppiumBy.androidUIAutomator(
+                            "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollForward();"
+                    ));
+            }
+        }
+        throw new NoSuchElementException(
+                "Element with XPath '" + xpathExpression + "' not found within " + scrollTimeOut + " seconds."
+        );
+    }
+
+    public String getRandom10Digits(){
+        Random random = new Random();
+        long getRandom10DigitNumber = 1_000_000_000L + (long)(random.nextDouble() * 9_000_000_000L);
+        return String.valueOf(getRandom10DigitNumber);
+    }
+
+    public void verifyText(String xpathExpression, String expectedText){
+        String actualText = driver.findElement(By.xpath(xpathExpression)).getText();
+        Assert.assertEquals(actualText, expectedText);
+    }
+
+    private boolean isAlertDisplayed(String xpath) {
+        try {
+            return driver.findElement(By.xpath(xpath)).isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public void closeInAppAlertsIfVisible() {
+        String btnCloseDialogue = "//android.widget.ImageView[@resource-id='com.ncs.breeze.demo:id/imgCloseDialog']";
+
+        while (isAlertDisplayed(btnCloseDialogue)) {
+            try {
+                System.out.println("Close the in-app alert");
+                classDecl.commonKeyword.clickElement(btnCloseDialogue);
+                pause(5000);
+            } catch (Exception e) {
+                System.out.println("Error while closing the alert: " + e.getMessage());
+                break;
+            }
+        }
+    }
+
+    public void pause(int time) {
+        try {
+            if (time >= 1000) {
+                for (int i = 0; i < time / 1000; i++) {
+                    if (time > 1000) {
+                        System.out.println("Sleep " + (i + 1) + "s");
+                    }
+                    Thread.sleep(1000);
+                }
+            } else {
+                Thread.sleep(time);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
