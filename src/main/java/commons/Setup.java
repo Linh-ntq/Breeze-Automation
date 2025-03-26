@@ -66,7 +66,7 @@ public class Setup extends BaseTest{
         try {
             URL url = new URL("http://127.0.0.1:4723/");
             driver = new AndroidDriver(url, desiredCapabilities);
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
             waitDriverApp = new WebDriverWait(driver, timeoutExWait);
 
         } catch (MalformedURLException e) {
