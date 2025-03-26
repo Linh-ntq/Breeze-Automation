@@ -1,6 +1,7 @@
 package commons;
 
 import datas.Datas;
+import datas.ExcelReader;
 import features.LandingFeature;
 import features.LoginFeature;
 import features.VehicleSettingFeature;
@@ -19,5 +20,6 @@ public class ClassDeclaration {
     public NameEntryPage nameEntryPage = new NameEntryPage();
     public OnbCardPage onbCardPage = new OnbCardPage();
     public VehicleSettingPage vehicleSettingPage = new VehicleSettingPage();
+    public ExcelReader excelReader = new ExcelReader();
 
 }
