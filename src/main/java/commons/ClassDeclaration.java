@@ -5,6 +5,7 @@ import datas.ExcelReader;
 import features.LandingFeature;
 import features.LoginFeature;
 import features.VehicleSettingFeature;
+import features.VoucherDiscoveryFeature;
 import pages.*;
 
 public class ClassDeclaration {
@@ -21,5 +22,8 @@ public class ClassDeclaration {
     public OnbCardPage onbCardPage = new OnbCardPage();
     public VehicleSettingPage vehicleSettingPage = new VehicleSettingPage();
     public ExcelReader excelReader = new ExcelReader();
+    public VoucherDiscoveryFeature voucherDiscoveryFeature = new VoucherDiscoveryFeature();
+    public DestinationSearchPage searchDestinationPage = new DestinationSearchPage();
+    public VoucherModuleSearchPage voucherModuleSearchPage = new VoucherModuleSearchPage();
 
 }

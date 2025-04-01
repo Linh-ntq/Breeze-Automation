@@ -5,8 +5,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ExcelReader {
     private static final Logger logger = Logger.getLogger(ExcelReader.class.getName());
@@ -93,13 +96,34 @@ public class ExcelReader {
         return cellValue;
     }
 
-    public void getVoucherData(String filePath, String sheetName, String rowName, String colName) {
+    public String getVoucherData(String filePath, String sheetName, String rowName, String colName) throws IOException {
+        String cellValue = getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
+        return cellValue;
+    }
+
+    public List<String> getVoucherDataList(String filePath, String sheetName, String rowName, String colName) {
+        List<String> itemList = null;
         try {
             String cellValue = getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
-            System.out.println("The value in row '" + rowName + "' and column '" + colName + "' is: " + cellValue);
+            String[] splitArray = cellValue.split("\n");
+            if (colName.equals("Voucher card details")){
+                //handle for duplicated voucher title (eg. Global Art-1 => Global Art)
+                if (rowName.matches(".*-\\d.*")) {
+                    rowName = rowName.replaceAll("-\\d", "");
+                }
+                String finalRowName = rowName;
+                itemList = Arrays.stream(splitArray)
+                        .map(item -> finalRowName + " - " + item)
+                        .collect(Collectors.toList());
+            }else {
+                itemList = Arrays.asList(splitArray);
+            }
+            System.out.println("Expected vouchers: " + itemList);
+
         } catch (IOException e) {
             // Log the exception with a severity level of SEVERE
             logger.log(Level.SEVERE, "Error reading Excel data", e);
         }
+        return itemList;
     }
 }

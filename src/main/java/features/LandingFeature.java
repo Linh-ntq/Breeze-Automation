@@ -9,8 +9,14 @@ public class LandingFeature extends BaseTest {
     }
 
     public void verifyFocusedTab(String headerTab){
-        classDecl.commonKeyword.pause(3000); // wait until page completely load
+        classDecl.commonKeyword.pause(3); // wait until page completely load
         classDecl.landingPage.expandBottomSheet();
         classDecl.landingPage.verifyFocusedTab(headerTab);
     }
+
+    public void searchByKeyword(String address){
+        classDecl.landingPage.clickOnSearchBar();
+        classDecl.searchDestinationPage.inputAddress(address);
+    }
+
 }
