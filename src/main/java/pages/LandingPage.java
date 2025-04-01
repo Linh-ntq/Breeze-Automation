@@ -12,7 +12,8 @@ public class LandingPage extends BaseTest {
     public String lblLiveTraffic = "//android.widget.TextView[@text=\"Live Traffic\"]";
     public String btnHeaderArrow = "//android.widget.HorizontalScrollView/following-sibling::android.view.ViewGroup/android.widget.ImageView";
     public String btnCloseDialogue = "//android.widget.ImageView[@resource-id=\"com.ncs.breeze.demo:id/imgCloseDialog\"]";
-    public String lblSearchBar = "//android.widget.TextView[@text=\"%s\"]";
+    public String lblSearchBarName = "//android.widget.TextView[@text=\"%s\"]";
+    public String lblSearchBar = "//android.widget.TextView[contains(@text, \"where to\")]";
     public String lstHeaderTab = "//android.widget.HorizontalScrollView//android.widget.TextView";
     public String seekBar = "//android.widget.SeekBar[contains(@content-desc, 'Bottom Sheet handle')]";
     public String lblOrangeForceTxt = "//android.widget.TextView[@text=\"Accident?\nBreeze can help.\"]";
@@ -29,7 +30,7 @@ public class LandingPage extends BaseTest {
 
     public void verifySearchBarText(String userName){
         String formattedText = String.format("Hi %s, where to?", userName);
-        classDecl.commonKeyword.waitForElementVisible(lblSearchBar, formattedText);
+        classDecl.commonKeyword.waitForElementVisible(lblSearchBarName, formattedText);
     }
 
     public void expandBottomSheet(){
@@ -72,6 +73,10 @@ public class LandingPage extends BaseTest {
             classDecl.commonKeyword.waitForElementVisible(lblOrangeForceTxt);
             System.out.println("Focus on the first tab");
         }
+    }
+
+    public void clickOnSearchBar(){
+        classDecl.commonKeyword.clickElement(lblSearchBar);
     }
 
 }

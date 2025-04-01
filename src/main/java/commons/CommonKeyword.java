@@ -48,7 +48,6 @@ public class CommonKeyword extends BaseTest{
         driver.findElement(By.xpath(dynamicXpath)).click();
     }
 
-
     public void sendKey(String xpathExpression, String keyWord){
         waitForElementVisible(xpathExpression);
         driver.findElement(By.xpath(xpathExpression)).click();
@@ -102,14 +101,28 @@ public class CommonKeyword extends BaseTest{
         driver.perform(ImmutableList.of(swipe));
     }
 
-    public List<String> getListText(String xpathExpression){
-        List<WebElement> elements = driver.findElements(By.xpath(xpathExpression));
-        List<String> listStrings = new ArrayList<>();
-        for (WebElement el : elements) {
-            String text = el.getText();
-            listStrings.add(text);
+    public List<String> getListText(String xpathExpression, String...texts){
+        String xpath = String.format(xpathExpression, (Object[]) texts);
+        if (texts != null){
+            System.out.println("Test1");
+            List<WebElement> elements = driver.findElements(By.xpath(xpath));
+            List<String> listStrings = new ArrayList<>();
+            for (WebElement el : elements) {
+                String text = el.getText();
+                listStrings.add(text);
+                System.out.println("text");
+            }
+            return listStrings;
+        } else {
+            List<WebElement> elements = driver.findElements(By.xpath(xpathExpression));
+            List<String> listStrings = new ArrayList<>();
+            for (WebElement el : elements) {
+                String text = el.getText();
+                listStrings.add(text);
+            }
+            return getListText(xpathExpression);
         }
-        return getListText(xpathExpression);
+
     }
 
     public void scrollToElementByText(String text){
@@ -163,7 +176,7 @@ public class CommonKeyword extends BaseTest{
             try {
                 System.out.println("Close the in-app alert");
                 classDecl.commonKeyword.clickElement(btnCloseDialogue);
-                pause(5000);
+                pause(5);
             } catch (Exception e) {
                 System.out.println("Error while closing the alert: " + e.getMessage());
                 break;
@@ -171,17 +184,18 @@ public class CommonKeyword extends BaseTest{
         }
     }
 
-    public void pause(int time) {
+    public void pause(int seconds) {
+        int timeInSeconds = seconds * 1000;
         try {
-            if (time >= 1000) {
-                for (int i = 0; i < time / 1000; i++) {
-                    if (time > 1000) {
+            if (seconds >= 1) {
+                for (int i = 0; i < seconds; i++) {
+                    if (seconds > 1) {
                         System.out.println("Sleep " + (i + 1) + "s");
                     }
                     Thread.sleep(1000);
                 }
             } else {
-                Thread.sleep(time);
+                Thread.sleep(timeInSeconds);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
