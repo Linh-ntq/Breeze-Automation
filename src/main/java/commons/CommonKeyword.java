@@ -2,6 +2,8 @@ package commons;
 
 import com.google.common.collect.ImmutableList;
 import io.appium.java_client.AppiumBy;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
@@ -156,6 +158,11 @@ public class CommonKeyword extends BaseTest{
         return String.valueOf(getRandom10DigitNumber);
     }
 
+    public String getText(String xpathExpression){
+        waitForElementVisible(xpathExpression);
+        return driver.findElement(By.xpath(xpathExpression)).getText();
+    }
+
     public void verifyText(String xpathExpression, String expectedText){
         String actualText = driver.findElement(By.xpath(xpathExpression)).getText();
         Assert.assertEquals(actualText, expectedText);
@@ -182,6 +189,10 @@ public class CommonKeyword extends BaseTest{
                 break;
             }
         }
+    }
+
+    public void tapOnNativeBackBtn(){
+        driver.pressKey(new KeyEvent(AndroidKey.BACK));
     }
 
     public void pause(int seconds) {

@@ -96,6 +96,11 @@ public class ExcelReader {
         return cellValue;
     }
 
+    public String getVoucherData(String filePath, String sheetName, String rowName, String colName) throws IOException {
+        String cellValue = getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
+        return cellValue;
+    }
+
     public List<String> getVoucherDataList(String filePath, String sheetName, String rowName, String colName) {
         List<String> itemList = null;
         try {

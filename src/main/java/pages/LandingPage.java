@@ -21,6 +21,7 @@ public class LandingPage extends BaseTest {
     public String lblOBUTxt = "//android.widget.TextView[contains(@text,\"Pair your OBU with Breeze\")]";
     public String lblERPCheckerTxt = "//android.widget.TextView[contains(@text,\"Check ERP along your route\")]";
     public String lblLiveTrafficTxt = "//android.widget.TextView[@text=\"CTE\"]";
+    public String lblPromptBarDest = "//android.widget.TextView[contains(@text, \"near your destination\")]";
 
 
     public void verifyHeaderList(List<String> expectedHeaderOrder){
@@ -79,9 +80,30 @@ public class LandingPage extends BaseTest {
         classDecl.commonKeyword.clickElement(lblSearchBar);
     }
 
+    public void verifyPromptBarText(){
+        String promptBarTxt = classDecl.commonKeyword.getText(lblPromptBarDest);
+
+        String numberPart = promptBarTxt.replaceAll("[^0-9]", "");
+        int x = Integer.parseInt(numberPart);
+
+        if (x == 1) {
+            classDecl.commonKeyword.verifyText(lblPromptBarDest, "1 voucher near your destination");
+
+        } else if (x > 1) {
+            classDecl.commonKeyword.verifyText(lblPromptBarDest, x + " vouchers near your destination");
+
+        } else {
+            Assert.fail("Test Failed: The number of vouchers (x) is less than 1, which is unexpected. Value of x: " + x);
+        }
+    }
+
+    public void tapOnPromptBar(){
+        classDecl.commonKeyword.clickElement(lblPromptBarDest);
+    }
+
+    public void tapOnSearchBarName(String name){
+        classDecl.commonKeyword.clickElement(lblSearchBarName, name);
+    }
+
 }
-
-
-
-
 

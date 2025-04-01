@@ -23,6 +23,7 @@ public class ClassDeclaration {
     public VehicleSettingPage vehicleSettingPage = new VehicleSettingPage();
     public ExcelReader excelReader = new ExcelReader();
     public VoucherDiscoveryFeature voucherDiscoveryFeature = new VoucherDiscoveryFeature();
-    public SearchDestinationPage searchDestinationPage = new SearchDestinationPage();
+    public DestinationSearchPage searchDestinationPage = new DestinationSearchPage();
+    public VoucherModuleSearchPage voucherModuleSearchPage = new VoucherModuleSearchPage();
 
 }
