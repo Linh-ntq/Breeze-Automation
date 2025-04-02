@@ -12,11 +12,11 @@ public class VoucherModuleSearchPage extends BaseTest {
     public String lblVoucherNameUnderNearby = "//android.widget.TextView[@text=\"%s\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"%s\"]"; // voucher name - voucher detail
     public String lblSearchBarName = "//android.widget.EditText[@text=\"%s\"]";
 
-    public void verifyVoucherDesc(String voucherName, String voucherDesc){
+    public void verifyVoucherDesc(String voucherName, String voucherDesc) {
         classDecl.commonKeyword.waitForElementVisible(lblVoucherDesc, voucherName, voucherDesc);
     }
 
-    public void verifyVoucherExpiry(String voucherDesc, String startDate, String endDate){
+    public void verifyVoucherExpiry(String voucherDesc, String startDate, String endDate) {
         Date currentDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 
@@ -34,15 +34,15 @@ public class VoucherModuleSearchPage extends BaseTest {
         }
     }
 
-    public void verifyViewBtn(String voucherDesc){
+    public void verifyViewBtn(String voucherDesc) {
         classDecl.commonKeyword.waitForElementVisible(btnView, voucherDesc);
     }
 
-    public void verifyVoucherNotDisplayInNearbySection(String voucherName, String voucherDesc){
+    public void verifyVoucherNotDisplayInNearbySection(String voucherName, String voucherDesc) {
         classDecl.commonKeyword.elementNotVisible(lblVoucherNameUnderNearby, voucherName, voucherDesc);
     }
 
-    public void verifySearchBar(String voucherShortAdd){
+    public void verifySearchBar(String voucherShortAdd) {
         classDecl.commonKeyword.waitForElementVisible(lblSearchBarName, voucherShortAdd);
     }
 

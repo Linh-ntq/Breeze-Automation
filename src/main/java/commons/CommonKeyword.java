@@ -106,13 +106,11 @@ public class CommonKeyword extends BaseTest{
     public List<String> getListText(String xpathExpression, String...texts){
         String xpath = String.format(xpathExpression, (Object[]) texts);
         if (texts != null){
-            System.out.println("Test1");
             List<WebElement> elements = driver.findElements(By.xpath(xpath));
             List<String> listStrings = new ArrayList<>();
             for (WebElement el : elements) {
                 String text = el.getText();
                 listStrings.add(text);
-                System.out.println("text");
             }
             return listStrings;
         } else {
@@ -183,7 +181,7 @@ public class CommonKeyword extends BaseTest{
             try {
                 System.out.println("Close the in-app alert");
                 classDecl.commonKeyword.clickElement(btnCloseDialogue);
-                pause(5);
+                pause(3);
             } catch (Exception e) {
                 System.out.println("Error while closing the alert: " + e.getMessage());
                 break;
