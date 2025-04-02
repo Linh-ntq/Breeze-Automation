@@ -61,7 +61,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     .collect(Collectors.toList());
 
             System.out.println("Actual voucher list from UI: " + trimmedActualVoucher);
-            System.out.println("Expected voucher list from Excel: " + trimmedExpectedVoucher);
+            System.out.println("Expected voucher from Excel: " + trimmedExpectedVoucher);
 
             boolean assertionResult = new HashSet<>(trimmedActualVoucher).containsAll(trimmedExpectedVoucher);
 
@@ -85,7 +85,9 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.landingPage.tapOnPromptBar();
             classDecl.voucherModuleSearchPage.verifySearchBar(addressValue);
             classDecl.voucherDiscoveryFeature.verifyVoucherCardInModuleSearch(rowName, startDate, endDate);
+            classDecl.commonKeyword.closeInAppAlertsIfVisible();
             classDecl.commonKeyword.tapOnNativeBackBtn();
+            classDecl.commonKeyword.closeInAppAlertsIfVisible();
             classDecl.landingPage.tapOnSearchBarName(addressValue);
         }
     }
