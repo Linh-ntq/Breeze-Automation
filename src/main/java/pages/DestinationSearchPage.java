@@ -1,11 +1,8 @@
 package pages;
 
 import commons.BaseTest;
-import org.testng.Assert;
-
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DestinationSearchPage extends BaseTest {
     public String lblSearchInput = "//android.widget.EditText[@text=\"Search\"]";
