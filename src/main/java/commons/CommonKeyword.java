@@ -44,7 +44,7 @@ public class CommonKeyword extends BaseTest{
         driver.findElement(By.xpath(xpathExpression)).click();
     }
 
-    public void clickElement(String xpathExpression, String text) {
+    public void clickElement(String xpathExpression, String ... text) {
         String dynamicXpath = String.format(xpathExpression, text);
         waitForElementVisible(dynamicXpath);
         driver.findElement(By.xpath(dynamicXpath)).click();
@@ -191,6 +191,10 @@ public class CommonKeyword extends BaseTest{
 
     public void tapOnNativeBackBtn(){
         driver.pressKey(new KeyEvent(AndroidKey.BACK));
+    }
+
+    public void tapOnVirtualDoneBtn(){
+        driver.pressKey(new KeyEvent(AndroidKey.ENTER));
     }
 
     public void pause(int seconds) {

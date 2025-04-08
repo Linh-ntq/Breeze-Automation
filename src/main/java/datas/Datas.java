@@ -43,5 +43,9 @@ public class Datas {
     public String energy_EV = "EV";
     public String UINumber = commonKeyword.getRandom10Digits();
 
+    // Inbox msg
+    public String discoveryNTUCTitle = "Discover vouchers exclusive to NTUC Members on Breeze!";
+    public String discoveryNTUCDesc = "If you are an NTUC Member, unlock specially curated deals as you plan, drive and park with Breeze. Enter your details to access content for NTUC Members on Breeze!";
+
 }
 

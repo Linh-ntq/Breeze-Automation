@@ -18,13 +18,12 @@ public class VoucherDiscoveryFeature extends BaseTest {
         String voucherDesc = getValueByRowAndColumnName(classDecl.datas.pathVoucherData, "VoucherData", voucherName, "Voucher card details");
         if (voucherName.matches(".*-\\d.*")) {
             voucherOriginalName = voucherName.replaceAll("-\\d", "");
-            classDecl.voucherModuleSearchPage.verifyVoucherDesc(voucherOriginalName, voucherDesc);
-            classDecl.voucherModuleSearchPage.verifyVoucherNotDisplayInNearbySection(voucherOriginalName, voucherDesc);
+            classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherOriginalName, voucherDesc);
         } else {
-            classDecl.voucherModuleSearchPage.verifyVoucherDesc(voucherName, voucherDesc);
-            classDecl.voucherModuleSearchPage.verifyVoucherNotDisplayInNearbySection(voucherName, voucherDesc);
+            classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
         }
         classDecl.voucherModuleSearchPage.verifyVoucherExpiry(voucherDesc, startDate, endDate);
+        classDecl.voucherModuleSearchPage.verifyViewMapBtn(voucherDesc);
         classDecl.voucherModuleSearchPage.verifyViewBtn(voucherDesc);
     }
 
@@ -80,6 +79,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
 //            classDecl.commonKeyword.clickElement(btnClearSearch);
 
+            classDecl.commonKeyword.closeInAppAlertsIfVisible();
             classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblShortAdd, addressValue);
             classDecl.landingPage.verifyPromptBarText();
             classDecl.landingPage.tapOnPromptBar();
