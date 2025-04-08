@@ -2,10 +2,7 @@ package commons;
 
 import datas.Datas;
 import datas.ExcelReader;
-import features.LandingFeature;
-import features.LoginFeature;
-import features.VehicleSettingFeature;
-import features.VoucherDiscoveryFeature;
+import features.*;
 import pages.*;
 
 public class ClassDeclaration {
@@ -25,5 +22,7 @@ public class ClassDeclaration {
     public VoucherDiscoveryFeature voucherDiscoveryFeature = new VoucherDiscoveryFeature();
     public DestinationSearchPage searchDestinationPage = new DestinationSearchPage();
     public VoucherModuleSearchPage voucherModuleSearchPage = new VoucherModuleSearchPage();
+    public InboxPage inboxPage = new InboxPage();
+    public InboxFeature inboxFeature = new InboxFeature();
 
 }
