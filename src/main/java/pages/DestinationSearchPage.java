@@ -1,11 +1,10 @@
 package pages;
 
 import commons.BaseTest;
-import org.testng.Assert;
+import datas.ExcelReader;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DestinationSearchPage extends BaseTest {
     public String lblSearchInput = "//android.widget.EditText[@text=\"Search\"]";
@@ -19,8 +18,8 @@ public class DestinationSearchPage extends BaseTest {
 
     public Map<String, String> getAddressFromGGAPI(String filePath, String sheetName, String rowName, String colName) throws IOException {
         Map<String, String> addressMap = new HashMap<>();
-        String cellValue = classDecl.excelReader.getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
-        if (Objects.equals(colName, "Merchant locations") || Objects.equals(colName, "Address")) {
+        String cellValue = ExcelReader.getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
+        if (Objects.equals(colName, "Merchant locations") || Objects.equals(colName, "Postal code") || Objects.equals(colName, "Address")) {
             if (Objects.equals(colName, "Merchant locations") || Objects.equals(colName, "Address")) {
                 String[] splitArray = cellValue.split("\n");
                 for (String item : splitArray) {

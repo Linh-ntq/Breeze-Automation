@@ -64,27 +64,46 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
             boolean assertionResult = new HashSet<>(trimmedActualVoucher).containsAll(trimmedExpectedVoucher);
 
-            // If the assertion fails, check for "more vouchers available" in the actual voucher list
             if (!assertionResult) {
-                // If "more vouchers available" is found in trimmedActualVoucher, let the test pass
                 if (trimmedActualVoucher.stream().anyMatch(item -> item.contains("more vouchers available"))) {
                     System.out.println("When searching by " + addressKey + " voucher list contains 'more vouchers available'");
-                    assertionResult = true;  // Force the test to pass
+                    assertionResult = true;  // If voucher list contains 'more vouchers available - Force the test to pass
                 }
             }
 
-            // Perform the assertion again, either with the original result or adjusted for the "more vouchers available" case
             Assert.assertTrue(assertionResult, "The searched keyword does not return the address with voucher");
             System.out.println("The searched keyword " + addressKey + " return address " + addressValue + " with voucher " + trimmedExpectedVoucher);
 
-//            classDecl.commonKeyword.clickElement(btnClearSearch);
+            // Get the screenshot in destination search page
+            if (colName.equals("Merchant locations") || colName.equals("Postal code")){
+                classDecl.extentReport.attachScreenshotToReport(rowName + " - Destination Search Page - " + addressKey);
+            } else {
+                classDecl.extentReport.attachScreenshotToReport(rowName + " - Destination Search Page - " + addressValue);
+            }
 
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
             classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblShortAdd, addressValue);
             classDecl.landingPage.verifyPromptBarText();
+
+            // Get the screenshot in destination landing page
+            if (colName.equals("Merchant locations") || colName.equals("Postal code")){
+                classDecl.extentReport.attachScreenshotToReport(rowName + " - Prompt Bar - " + addressKey);
+            } else {
+                classDecl.extentReport.attachScreenshotToReport(rowName + " - Prompt Bar - " + addressValue);
+            }
+
+
             classDecl.landingPage.tapOnPromptBar();
             classDecl.voucherModuleSearchPage.verifySearchBar(addressValue);
             classDecl.voucherDiscoveryFeature.verifyVoucherCardInModuleSearch(rowName, startDate, endDate);
+
+            // Get the screenshot in voucher search page (after tapping on prompt bar)
+            if (colName.equals("Merchant locations") || colName.equals("Postal code")){
+                classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher Search Page - " + addressKey);
+            } else {
+                classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher Search Page - " + addressValue);
+            }
+
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
             classDecl.commonKeyword.tapOnNativeBackBtn();
             classDecl.commonKeyword.closeInAppAlertsIfVisible();

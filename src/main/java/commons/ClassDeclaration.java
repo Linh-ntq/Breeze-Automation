@@ -24,5 +24,6 @@ public class ClassDeclaration {
     public VoucherModuleSearchPage voucherModuleSearchPage = new VoucherModuleSearchPage();
     public InboxPage inboxPage = new InboxPage();
     public InboxFeature inboxFeature = new InboxFeature();
+    public ExtentReport extentReport = new ExtentReport();
 
 }

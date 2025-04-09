@@ -6,8 +6,8 @@ import io.appium.java_client.service.local.AppiumServiceBuilder;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,12 +16,21 @@ import java.util.concurrent.TimeUnit;
 public class Setup extends BaseTest{
     private AppiumDriverLocalService service;
 
-    @BeforeMethod
-    public void openApp() {
+    @BeforeClass
+    public void initializeReportGeneration() {
         classDecl = new ClassDeclaration();
+        classDecl.extentReport.initiateExtentReport();
+    }
+
+    public void openBreezeApp(){
         startAppiumServer(classDecl.datas.pathAppiumJS);
         openAppWithDeviceInfo(classDecl.datas.deviceName, classDecl.datas.udid, classDecl.datas.platformName, classDecl.datas.platformVersion, classDecl.datas.automationName, classDecl.datas.appPackage, classDecl.datas.appActivity);
 
+    }
+
+    public void closeBreezeApp(){
+        driver.quit();
+        stopAppiumServer();
     }
 
     public void startAppiumServer(String pathJS) {
@@ -75,9 +84,8 @@ public class Setup extends BaseTest{
         return driver;
     }
 
-    @AfterMethod
-    public void teardown (){
-        driver.quit();
-        stopAppiumServer();
+    @AfterClass
+    public void finalizeReportGeneration (){
+        classDecl.extentReport.extentReports.flush();
     }
 }

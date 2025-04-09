@@ -29,6 +29,35 @@ public class CommonKeyword extends BaseTest{
         }
     }
 
+    public void scrollUntilElementVisible(String xpathExpression, String... text) {
+        if (text != null) {
+           try {
+               waitForElementVisible(xpathExpression, text);
+           } catch (Exception e) {
+               System.out.println("Element not found. Attempting to scroll...");
+               scroll("DOWN", 0.5);
+               try {
+                   waitForElementVisible(xpathExpression, text);
+               } catch (Exception retryException) {
+                   throw new Error ("Element still not found after scrolling.");
+               }
+           }
+
+        } else {
+            try {
+                waitForElementVisible(xpathExpression);
+            } catch (Exception e) {
+                System.out.println("Element not found. Attempting to scroll...");
+                scroll("DOWN", 0.5);
+                try {
+                    waitForElementVisible(xpathExpression);
+                } catch (Exception retryException) {
+                    throw new Error ("Element still not found after scrolling.");
+                }
+            }
+        }
+    }
+
     public void elementNotVisible(String xpathExpression, String... text) {
         if (text != null) {
             String xpath = String.format(xpathExpression, (String[]) text);
