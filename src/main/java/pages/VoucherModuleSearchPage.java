@@ -33,44 +33,21 @@ public class VoucherModuleSearchPage extends BaseTest {
     }
 
     public void verifyViewBtn(String voucherDesc) {
-        classDecl.commonKeyword.waitForElementVisible(btnView, voucherDesc);
+        classDecl.commonKeyword.scrollUntilElementVisible(btnView, voucherDesc);
     }
 
     public void verifyViewMapBtn(String voucherDesc) {
-        classDecl.commonKeyword.waitForElementVisible(btnViewMap, voucherDesc);
+        classDecl.commonKeyword.scrollUntilElementVisible(btnViewMap, voucherDesc);
     }
 
     public void verifyVoucherAtSearchedDestSection(String voucherName, String voucherDesc) {
-        try {
-            classDecl.commonKeyword.waitForElementVisible(lblVoucherDesc, voucherName, voucherDesc);
-        } catch (Exception e) {
-            System.out.println("The voucher not found. Attempting to scroll...");
-            classDecl.commonKeyword.scroll("DOWN", 0.8);
-            try {
-                classDecl.commonKeyword.waitForElementVisible(lblVoucherDesc, voucherName, voucherDesc);
-            } catch (Exception retryException) {
-                System.out.println("Voucher still not found after scrolling.");
-                throw new Error("Voucher with name '" + voucherName + "' and description '" + voucherDesc + "' was not found.");
-            }
-        }
+        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherName, voucherDesc);
         classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
         classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
     }
 
     public void verifyVoucherAtNearbySection(String voucherName, String voucherDesc) {
-        try {
-            classDecl.commonKeyword.waitForElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
-        } catch (Exception e) {
-            System.out.println("The voucher not found. Attempting to scroll...");
-            classDecl.commonKeyword.scroll("DOWN", 0.5);
-            try {
-                classDecl.commonKeyword.waitForElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
-            } catch (Exception retryException) {
-                System.out.println("Voucher still not found after scrolling.");
-                throw new Error("Voucher with name '" + voucherName + "' and description '" + voucherDesc + "' was not found.");
-            }
-        }
-
+        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
     }
 
     public void verifySearchBar(String voucherShortAdd) {
