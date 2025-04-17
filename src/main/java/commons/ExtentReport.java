@@ -9,6 +9,8 @@ import org.openqa.selenium.OutputType;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ExtentReport extends BaseTest{
     public ExtentReports extentReports;
@@ -26,7 +28,8 @@ public class ExtentReport extends BaseTest{
 
     public String captureScreenshot(String imageName) {
         File screenshotFile = driver.getScreenshotAs(OutputType.FILE);
-        String screenshotPath = "target/screenshots/" + imageName + "_" + System.currentTimeMillis() + ".png";
+        String dateFolder = new SimpleDateFormat("ddMMMyyyy").format(new Date());
+        String screenshotPath = "target/screenshots/" + dateFolder + "/" + imageName + "_" + System.currentTimeMillis() + ".png";
         File destinationFile = new File(screenshotPath);
 
         try {

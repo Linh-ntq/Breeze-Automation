@@ -28,7 +28,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
     }
 
     public void verifyVoucherDestinationSearch(String filePath, String sheetName, String rowName, String colName, String startDate, String endDate, List<String> expectedVoucher) throws IOException {
-        Map<String, String> address = classDecl.searchDestinationPage.getAddressFromGGAPI(filePath, sheetName, rowName, colName);
+        Map<String, String> address = classDecl.searchDestinationPage.getAddressFromExcelData(filePath, sheetName, rowName, colName);
         for (Map.Entry<String, String> entry : address.entrySet()) {
             String addressKey = entry.getKey();
             String addressValue = entry.getValue();

@@ -7,7 +7,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,15 +24,11 @@ public class Setup extends BaseTest{
         classDecl.extentReport.initiateExtentReport();
     }
 
+    @BeforeMethod
     public void openBreezeApp(){
         startAppiumServer(classDecl.datas.pathAppiumJS);
         openAppWithDeviceInfo(classDecl.datas.deviceName, classDecl.datas.udid, classDecl.datas.platformName, classDecl.datas.platformVersion, classDecl.datas.automationName, classDecl.datas.appPackage, classDecl.datas.appActivity);
 
-    }
-
-    public void closeBreezeApp(){
-        driver.quit();
-        stopAppiumServer();
     }
 
     public void startAppiumServer(String pathJS) {
@@ -82,6 +80,12 @@ public class Setup extends BaseTest{
             System.out.println("Exception Error Log" + e.getCause());
         }
         return driver;
+    }
+
+    @AfterMethod
+    public void closeBreezeApp(){
+        driver.quit();
+        stopAppiumServer();
     }
 
     @AfterClass
