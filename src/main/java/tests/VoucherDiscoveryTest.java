@@ -12,12 +12,11 @@ public class VoucherDiscoveryTest extends Setup {
         String pathToVoucherFile = classDecl.datas.pathVoucherData;
         String sheetName = "VoucherData";
         String rowName = "Timezone";
-        String colName = "Address";
+        String colName = "Merchant locations";
         List<String> voucherDescription = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "Voucher card details");
         String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
         String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
 
-        openBreezeApp();
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         classDecl.extentReport.startTest("Go to landing page by guest");
         classDecl.commonPage.tabOnMenu("Inbox");
@@ -36,7 +35,6 @@ public class VoucherDiscoveryTest extends Setup {
                 voucherStartDate,
                 voucherEndDate,
                 voucherDescription);
-        closeBreezeApp();
 
     }
 }
