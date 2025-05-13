@@ -37,12 +37,23 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 String fullAddress = addressKey.replaceAll(" SINGAPORE \\d+", "")
                         .replaceAll(" Singapore \\d+", "")
                         .replaceAll(" \\d{6}$", "");
-                if (fullAddress.equals("183 TOA PAYOH CENTRAL TOA PAYOH CENTRAL")){
-                    // Hard code to remove the second occurrence of "TOA PAYOH CENTRAL"
-                    fullAddress = fullAddress.replaceFirst(" TOA PAYOH CENTRAL", "");
-                    classDecl.searchDestinationPage.inputAddress(fullAddress);
-                }else {
-                    classDecl.searchDestinationPage.inputAddress(fullAddress);
+                switch (fullAddress) {
+                    case "183 TOA PAYOH CENTRAL TOA PAYOH CENTRAL":
+                        // Hard code to remove the second occurrence of "TOA PAYOH CENTRAL"
+                        fullAddress = fullAddress.replaceFirst(" TOA PAYOH CENTRAL", "");
+                        classDecl.searchDestinationPage.inputAddress(fullAddress);
+                        break;
+                    case "1 BUKIT BATOK CENTRAL LINK WEST MALL":
+                        fullAddress = "1 BUKIT BATOK CENTRAL LINK";
+                        classDecl.searchDestinationPage.inputAddress(fullAddress);
+                        break;
+                    case "78 AIRPORT BOULEVARD JEWEL CHANGI AIRPORT":
+                        fullAddress = "JEWEL CHANGI AIRPORT";
+                        classDecl.searchDestinationPage.inputAddress(fullAddress);
+                        break;
+                    default:
+                        classDecl.searchDestinationPage.inputAddress(fullAddress);
+                        break;
                 }
             } else {
                 classDecl.searchDestinationPage.inputAddress(addressKey);
@@ -110,5 +121,4 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.landingPage.tapOnSearchBarName(addressValue);
         }
     }
-
 }
