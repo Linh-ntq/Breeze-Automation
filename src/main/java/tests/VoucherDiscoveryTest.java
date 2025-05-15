@@ -11,7 +11,7 @@ public class VoucherDiscoveryTest extends Setup {
     public void verify_voucher_destination_search() throws IOException {
         String pathToVoucherFile = classDecl.datas.pathVoucherData;
         String sheetName = "VoucherData";
-        String rowName = "Timezone";
+        String rowName = "Global Art-1";
         String colName = "Merchant locations";
         List<String> voucherDescription = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "Voucher card details");
         String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
@@ -37,4 +37,29 @@ public class VoucherDiscoveryTest extends Setup {
                 voucherDescription);
 
     }
+
+    @Test(priority = 1)
+    public void verify_voucher_detail_in_voucher_module() throws Exception {
+        String pathToVoucherFile = classDecl.datas.pathVoucherData;
+        String sheetName = "VoucherData";
+        String rowName = "Timezone";
+        String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
+        String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
+        String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
+        List<String> aboutVoucherSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "About voucher");
+        List<String> howToUseSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "How to use voucher");
+        List<String> termConditionSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "T& C");
+
+        classDecl.loginFeature.goToLandingPageByGuest("Guest");
+        classDecl.commonPage.tabOnMenu("Inbox");
+        classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
+        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
+        classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
+        classDecl.voucherDiscoveryFeature.verifyVoucherCard(rowName, voucherStartDate, voucherEndDate, "Voucher list page");
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+        classDecl.myVoucherPage.clickViewBtn(voucherDescription);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDetail(rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSection, termConditionSection);
+
+    }
+
 }

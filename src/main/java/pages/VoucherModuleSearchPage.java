@@ -24,8 +24,10 @@ public class VoucherModuleSearchPage extends BaseTest {
 
             if (startD.before(currentDate)) {
                 classDecl.commonKeyword.waitForElementVisible(lblVoucherExpiry, voucherDesc, "Valid from " + startD + " to " + endD);
+                System.out.println("test1");
             } else {
                 classDecl.commonKeyword.waitForElementVisible(lblVoucherExpiry, voucherDesc, "Valid until " + endD);
+                System.out.println("test2");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,13 +43,27 @@ public class VoucherModuleSearchPage extends BaseTest {
     }
 
     public void verifyVoucherAtSearchedDestSection(String voucherName, String voucherDesc) {
-        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherName, voucherDesc);
-        classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
-        classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
+        String voucherOriginalName = "";
+        if (voucherName.matches(".*-\\d.*")) {
+            voucherOriginalName = voucherName.replaceAll("-\\d", "");
+            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherOriginalName, voucherDesc);
+            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherOriginalName, voucherDesc);
+            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherOriginalName, voucherDesc);
+        } else {
+            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherName, voucherDesc);
+            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
+        }
     }
 
     public void verifyVoucherAtNearbySection(String voucherName, String voucherDesc) {
-        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+        String voucherOriginalName;
+        if (voucherName.matches(".*-\\d.*")) {
+            voucherOriginalName = voucherName.replaceAll("-\\d", "");
+            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherOriginalName, voucherDesc);
+        } else {
+            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+        }
     }
 
     public void verifySearchBar(String voucherShortAdd) {
