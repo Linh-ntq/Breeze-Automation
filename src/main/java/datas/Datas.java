@@ -25,7 +25,7 @@ public class Datas {
 
     // Path
     public String pathAppiumJS = "C:\\Users\\linh.nguyen39\\AppData\\Roaming\\npm\\node_modules\\appium\\build\\lib\\main.js";
-    public String pathVoucherData = "C:/Users/linh.nguyen39/IdeaProjects/voucher_v25_FIR_27031620.xlsx";
+    public String pathVoucherData = "C:/Users/linh.nguyen39/IdeaProjects/Breeze - Voucher details form - Aranda - Discounted Executive Suites (250505) - Finalised.xlsx";
 
     // Landing tabs
     public String incomeOrangeForce = "Income Orange Force";

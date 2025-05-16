@@ -42,7 +42,7 @@ public class VoucherDiscoveryTest extends Setup {
     public void verify_voucher_detail_in_voucher_module() throws Exception {
         String pathToVoucherFile = classDecl.datas.pathVoucherData;
         String sheetName = "VoucherData";
-        String rowName = "Timezone";
+        String rowName = "Aranda Country Club";
         String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
         String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
         String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");

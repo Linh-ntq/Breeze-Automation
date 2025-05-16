@@ -31,7 +31,7 @@ public class CommonKeyword extends BaseTest{
 
     public void scrollUntilElementVisible(String xpathExpression, String... text) {
         boolean hasText = text != null && text.length > 0;
-        int maxScrolls = 10;
+        int maxScrolls = 8;
         for (int attempt = 0; attempt < maxScrolls; attempt++){
             try {
                 if (hasText){
