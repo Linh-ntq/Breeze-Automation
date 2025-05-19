@@ -30,32 +30,29 @@ public class CommonKeyword extends BaseTest{
     }
 
     public void scrollUntilElementVisible(String xpathExpression, String... text) {
-        if (text != null) {
-           try {
-               waitForElementVisible(xpathExpression, text);
-           } catch (Exception e) {
-               System.out.println("Element not found. Attempting to scroll...");
-               scroll("DOWN", 0.5);
-               try {
-                   waitForElementVisible(xpathExpression, text);
-               } catch (Exception retryException) {
-                   throw new Error ("Element still not found after scrolling.");
-               }
-           }
-
-        } else {
+        boolean hasText = text != null && text.length > 0;
+        int maxScrolls = 8;
+        for (int attempt = 0; attempt < maxScrolls; attempt++){
             try {
-                waitForElementVisible(xpathExpression);
-            } catch (Exception e) {
-                System.out.println("Element not found. Attempting to scroll...");
-                scroll("DOWN", 0.5);
-                try {
+                if (hasText){
+                    waitForElementVisible(xpathExpression, text);
+                } else {
                     waitForElementVisible(xpathExpression);
-                } catch (Exception retryException) {
-                    throw new Error ("Element still not found after scrolling.");
                 }
+                // Element found, exit method
+                return;
+            } catch (Exception e) {
+                System.out.println("Attempt " + (attempt + 1) + ": Element not found. Scrolling...");
+                scroll("DOWN", 0.2);
             }
         }
+
+        // If element not found, throw error
+        String message = "Element still not found after scrolling " + maxScrolls + " times. Element: " + xpathExpression;
+        if (hasText) {
+            message += ", text: " + String.join(", ", text);
+        }
+        throw new Error(message);
     }
 
     public void elementNotVisible(String xpathExpression, String... text) {

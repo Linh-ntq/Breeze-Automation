@@ -1,8 +1,13 @@
 package pages;
 
 import commons.BaseTest;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VoucherModuleSearchPage extends BaseTest {
     public String lblVoucherDesc = "//android.widget.TextView[@text=\"%s\"]/following-sibling::android.widget.TextView[@text=\"%s\"]"; // voucher name - voucher detail
@@ -15,20 +20,26 @@ public class VoucherModuleSearchPage extends BaseTest {
 
 
     public void verifyVoucherExpiry(String voucherDesc, String startDate, String endDate) {
+        Logger logger = Logger.getLogger(getClass().getName());
+
         Date currentDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
 
         try {
-            Date startD = sdf.parse(startDate);
-            Date endD = sdf.parse(endDate);
+            Date startD = inputFormat.parse(startDate);
+            Date endD = inputFormat.parse(endDate);
+
+            String formattedStart = outputFormat.format(startD);
+            String formattedEnd = outputFormat.format(endD);
 
             if (startD.before(currentDate)) {
-                classDecl.commonKeyword.waitForElementVisible(lblVoucherExpiry, voucherDesc, "Valid from " + startD + " to " + endD);
+                classDecl.commonKeyword.waitForElementVisible(lblVoucherExpiry, voucherDesc, "Valid from " + formattedStart + " to " + formattedEnd);
             } else {
-                classDecl.commonKeyword.waitForElementVisible(lblVoucherExpiry, voucherDesc, "Valid until " + endD);
+                classDecl.commonKeyword.waitForElementVisible(lblVoucherExpiry, voucherDesc, "Valid until " + formattedEnd);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ParseException e) {
+            logger.log(Level.SEVERE, "Error parsing voucher expiry dates", e);
         }
     }
 
@@ -41,13 +52,27 @@ public class VoucherModuleSearchPage extends BaseTest {
     }
 
     public void verifyVoucherAtSearchedDestSection(String voucherName, String voucherDesc) {
-        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherName, voucherDesc);
-        classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
-        classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
+        String voucherOriginalName = "";
+        if (voucherName.matches(".*-\\d.*")) {
+            voucherOriginalName = voucherName.replaceAll("-\\d", "");
+            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherOriginalName, voucherDesc);
+            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherOriginalName, voucherDesc);
+            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherOriginalName, voucherDesc);
+        } else {
+            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherName, voucherDesc);
+            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
+        }
     }
 
     public void verifyVoucherAtNearbySection(String voucherName, String voucherDesc) {
-        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+        String voucherOriginalName;
+        if (voucherName.matches(".*-\\d.*")) {
+            voucherOriginalName = voucherName.replaceAll("-\\d", "");
+            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherOriginalName, voucherDesc);
+        } else {
+            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+        }
     }
 
     public void verifySearchBar(String voucherShortAdd) {

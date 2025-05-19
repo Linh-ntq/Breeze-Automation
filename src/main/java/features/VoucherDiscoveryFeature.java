@@ -13,14 +13,13 @@ import static datas.ExcelReader.getValueByRowAndColumnName;
 
 public class VoucherDiscoveryFeature extends BaseTest {
 
-    public void verifyVoucherCardInModuleSearch(String voucherName, String startDate, String endDate) throws IOException {
-        String voucherOriginalName = "";
+    public void verifyVoucherCard(String voucherName, String startDate, String endDate, String voucherPosition) throws IOException {
         String voucherDesc = getValueByRowAndColumnName(classDecl.datas.pathVoucherData, "VoucherData", voucherName, "Voucher card details");
-        if (voucherName.matches(".*-\\d.*")) {
-            voucherOriginalName = voucherName.replaceAll("-\\d", "");
-            classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherOriginalName, voucherDesc);
-        } else {
+
+        if (voucherPosition.equals("Vouchers nearby section")){
             classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
+        } else {
+            classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
         }
         classDecl.voucherModuleSearchPage.verifyVoucherExpiry(voucherDesc, startDate, endDate);
         classDecl.voucherModuleSearchPage.verifyViewMapBtn(voucherDesc);
@@ -106,7 +105,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
             classDecl.landingPage.tapOnPromptBar();
             classDecl.voucherModuleSearchPage.verifySearchBar(addressValue);
-            classDecl.voucherDiscoveryFeature.verifyVoucherCardInModuleSearch(rowName, startDate, endDate);
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(rowName, startDate, endDate, "Vouchers nearby section");
 
             // Get the screenshot in voucher search page (after tapping on prompt bar)
             if (colName.equals("Merchant locations") || colName.equals("Postal code")){
@@ -120,5 +119,21 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
             classDecl.landingPage.tapOnSearchBarName(addressValue);
         }
+    }
+
+    public void goToVoucherModulePage(){
+        classDecl.commonPage.tabOnMenu("More");
+        classDecl.commonPage.tabOnMenu("My Vouchers");
+    }
+
+    public void verifyVoucherDetail(String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition){
+        classDecl.voucherDetailPage.verifyPageTitle();
+        classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
+        classDecl.voucherDetailPage.verifyVoucherExpiry(startDate, endDate);
+        classDecl.voucherDetailPage.verifyAboutVoucherSection(aboutVoucher);
+        classDecl.voucherDetailPage.verifyViewMapBtn();
+        classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
+        classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
+        classDecl.voucherDetailPage.verifyClaimBtn();
     }
 }

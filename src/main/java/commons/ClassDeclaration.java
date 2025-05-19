@@ -25,5 +25,7 @@ public class ClassDeclaration {
     public InboxPage inboxPage = new InboxPage();
     public InboxFeature inboxFeature = new InboxFeature();
     public ExtentReport extentReport = new ExtentReport();
+    public VoucherDetailPage voucherDetailPage = new VoucherDetailPage();
+    public MyVoucherPage myVoucherPage = new MyVoucherPage();
 
 }
