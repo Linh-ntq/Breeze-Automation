@@ -137,26 +137,26 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.voucherDetailPage.verifyClaimBtn();
     }
 
-    public String handleForNumberText(String buildingName) {
-        if (buildingName.toUpperCase().contains("ONE")) {
+    public String handleForNumberWord(String buildingName) {
+        if (buildingName.toUpperCase().endsWith("ONE")) {
             buildingName = buildingName.replaceAll("(?i)one", "1");
-        } else if (buildingName.toUpperCase().contains("TWO")) {
+        } else if (buildingName.toUpperCase().endsWith("TWO")) {
             buildingName = buildingName.replaceAll("(?i)two", "2");
-        } else if (buildingName.toUpperCase().contains("THREE")) {
+        } else if (buildingName.toUpperCase().endsWith("THREE")) {
             buildingName = buildingName.replaceAll("(?i)three", "3");
-        } else if (buildingName.toUpperCase().contains("FOUR")) {
+        } else if (buildingName.toUpperCase().endsWith("FOUR")) {
             buildingName = buildingName.replaceAll("(?i)four", "4");
-        } else if (buildingName.toUpperCase().contains("FIVE")) {
+        } else if (buildingName.toUpperCase().endsWith("FIVE")) {
             buildingName = buildingName.replaceAll("(?i)five", "5");
-        } else if (buildingName.toUpperCase().contains("SIX")) {
+        } else if (buildingName.toUpperCase().endsWith("SIX")) {
             buildingName = buildingName.replaceAll("(?i)six", "6");
-        } else if (buildingName.toUpperCase().contains("SEVEN")) {
+        } else if (buildingName.toUpperCase().endsWith("SEVEN")) {
             buildingName = buildingName.replaceAll("(?i)seven", "7");
-        } else if (buildingName.toUpperCase().contains("EIGHT")) {
+        } else if (buildingName.toUpperCase().endsWith("EIGHT")) {
             buildingName = buildingName.replaceAll("(?i)eight", "8");
-        } else if (buildingName.toUpperCase().contains("NINE")) {
+        } else if (buildingName.toUpperCase().endsWith("NINE")) {
             buildingName = buildingName.replaceAll("(?i)nine", "9");
-        } else if (buildingName.toUpperCase().contains("TEN")) {
+        } else if (buildingName.toUpperCase().endsWith("TEN")) {
             buildingName = buildingName.replaceAll("(?i)ten", "10");
         }
         return buildingName;
@@ -200,7 +200,9 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 buildingName = "NOVENA SQUARE SHOPPING MALL";
             } else if (buildingName.equals("313 @ SOMERSET")) {
                 buildingName = "313@SOMERSET";
-            }else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
+            } else if (buildingName.equals("LOT ONE, SHOPPERS' MALL")) {
+                buildingName = buildingName.replace(",", "");
+            } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
                 buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
                         .replaceAll(" Singapore \\d+", "")
                         .replaceAll(" \\d{6}$", "");
@@ -208,13 +210,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
             try {
                 // Handle for number (eg. TAMPINES ONE > TAMPINES 1)
-                if (!classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc)){
-                    buildingName = handleForNumberText(buildingName);
-
-                }
-
-                // Handle for building name contain "'"
-                if (buildingName.contains("'")){
+                if (!classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc)
+                && !classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName, buildingName))
+                {
+                    buildingName = handleForNumberWord(buildingName);
 
                 }
 

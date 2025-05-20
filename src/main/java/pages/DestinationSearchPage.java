@@ -10,7 +10,7 @@ public class DestinationSearchPage extends BaseTest {
     public String lblShortAdd = "//android.widget.TextView[@text=\"%s\"]";
     public String lblVoucherAddress = "//android.widget.TextView[@text=\"%s\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.widget.TextView[1]";
     public String xpath1 = "//android.widget.TextView[@text=\"%s\"]/parent::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.widget.TextView[@text=\"%s\"]"; //short address - voucher desc
-    public String xpath2 = "//android.widget.TextView[translate(@text, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='%s']/parent::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.widget.TextView[@text=\"%s\"]"; //short address - voucher desc
+    public String xpath2 = "//android.widget.TextView[translate(@text, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')=\"%s\"]/parent::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.widget.TextView[@text=\"%s\"]"; //short address - voucher desc
     public String lblVoucher = xpath1 + " | " + xpath2;
     public String xpath3 = "//android.widget.TextView[@text=\"%s\"]/parent::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.widget.TextView[contains(@text,\"more voucher available\")]"; //short address
     public String xpath4 = "//android.widget.TextView[@text=\"%s\"]/parent::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.widget.TextView[contains(@text,\"more vouchers available\")]"; //short address
