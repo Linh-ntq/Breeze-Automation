@@ -34,9 +34,9 @@ public class VoucherModuleSearchPage extends BaseTest {
             String formattedEnd = outputFormat.format(endD);
 
             if (startD.before(currentDate)) {
-                classDecl.commonKeyword.waitForElementVisible(lblVoucherExpiry, voucherDesc, "Valid from " + formattedStart + " to " + formattedEnd);
+                classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid until " + formattedEnd);
             } else {
-                classDecl.commonKeyword.waitForElementVisible(lblVoucherExpiry, voucherDesc, "Valid until " + formattedEnd);
+                classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid from " + formattedStart + " to " + formattedEnd);
             }
         } catch (ParseException e) {
             logger.log(Level.SEVERE, "Error parsing voucher expiry dates", e);

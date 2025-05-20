@@ -129,6 +129,18 @@ public class CommonKeyword extends BaseTest{
         driver.perform(ImmutableList.of(swipe));
     }
 
+    public String getText(String xpathExpression, String...texts){
+        String xpath = String.format(xpathExpression, (Object[]) texts);
+        if (texts != null){
+            waitForElementVisible(xpath);
+            return driver.findElement(By.xpath(xpath)).getText();
+
+        } else {
+            waitForElementVisible(xpathExpression);
+            return driver.findElement(By.xpath(xpathExpression)).getText();
+        }
+    }
+
     public List<String> getListText(String xpathExpression, String...texts){
         String xpath = String.format(xpathExpression, (Object[]) texts);
         if (texts != null){
@@ -182,11 +194,6 @@ public class CommonKeyword extends BaseTest{
         return String.valueOf(getRandom10DigitNumber);
     }
 
-    public String getText(String xpathExpression){
-        waitForElementVisible(xpathExpression);
-        return driver.findElement(By.xpath(xpathExpression)).getText();
-    }
-
     public void verifyText(String xpathExpression, String expectedText){
         String actualText = driver.findElement(By.xpath(xpathExpression)).getText();
         Assert.assertEquals(actualText, expectedText);
@@ -238,6 +245,40 @@ public class CommonKeyword extends BaseTest{
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean elementIsVisible(String xpathExpression, String ... texts){
+        String xpath = String.format(xpathExpression, (Object[]) texts);
+        WebElement element;
+        try {
+            if (texts != null){
+                element = driver.findElement(By.xpath(xpath));
+            } else {
+                element = driver.findElement(By.xpath(xpathExpression));
+            }
+            return element.isDisplayed(); // returns true if visible
+        } catch (NoSuchElementException e) {
+            return false; // element not found in DOM
+        } catch (Exception e) {
+            return false; // other errors like StaleElementReferenceException, etc.
+        }
+    }
+
+    public static String escapeXPathText(String text) {
+        if (text.contains("'")) {
+            String[] parts = text.split("'");
+            StringBuilder result = new StringBuilder("concat(");
+            for (int i = 0; i < parts.length; i++) {
+                result.append("'").append(parts[i]).append("'");
+                if (i != parts.length - 1) {
+                    result.append(", \"'\", ");
+                }
+            }
+            result.append(")");
+            return result.toString();
+        } else {
+            return "'" + text + "'";
         }
     }
 }
