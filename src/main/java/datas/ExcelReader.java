@@ -5,8 +5,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -125,5 +124,26 @@ public class ExcelReader {
             logger.log(Level.SEVERE, "Error reading Excel data", e);
         }
         return itemList;
+    }
+
+    public Map<String, String> getAddressFromExcelData(String filePath, String sheetName, String rowName, String colName) throws IOException {
+        Map<String, String> addressMap = new HashMap<>();
+        String cellValue = ExcelReader.getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
+        if (Objects.equals(colName, "Merchant locations") || Objects.equals(colName, "Postal code") || Objects.equals(colName, "Address")) {
+            if (Objects.equals(colName, "Merchant locations") || Objects.equals(colName, "Address")) {
+                String[] splitArray = cellValue.split("\n");
+                for (String item : splitArray) {
+                    String[] keyValue = item.split(":");
+                    // If both key and value exist (to avoid ArrayIndexOutOfBoundsException)
+                    if (keyValue.length == 2) {
+                        String key = keyValue[0].trim();
+                        String value = keyValue[1].trim();
+                        addressMap.put(key, value);
+                    }
+                }
+            }
+
+        }
+        return addressMap;
     }
 }

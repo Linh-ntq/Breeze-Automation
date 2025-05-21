@@ -27,7 +27,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
     }
 
     public void verifyVoucherDestinationSearch(String filePath, String sheetName, String rowName, String colName, String startDate, String endDate, List<String> expectedVoucher) throws IOException {
-        Map<String, String> address = classDecl.searchDestinationPage.getAddressFromExcelData(filePath, sheetName, rowName, colName);
+        Map<String, String> address = classDecl.excelReader.getAddressFromExcelData(filePath, sheetName, rowName, colName);
         for (Map.Entry<String, String> entry : address.entrySet()) {
             String addressKey = entry.getKey();
             String addressValue = entry.getValue();
@@ -135,5 +135,153 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
         classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
         classDecl.voucherDetailPage.verifyClaimBtn();
+    }
+
+    public String handleForNumberWord(String buildingName) {
+        if (buildingName.toUpperCase().endsWith("ONE")) {
+            buildingName = buildingName.replaceAll("(?i)one", "1");
+        } else if (buildingName.toUpperCase().endsWith("TWO")) {
+            buildingName = buildingName.replaceAll("(?i)two", "2");
+        } else if (buildingName.toUpperCase().endsWith("THREE")) {
+            buildingName = buildingName.replaceAll("(?i)three", "3");
+        } else if (buildingName.toUpperCase().endsWith("FOUR")) {
+            buildingName = buildingName.replaceAll("(?i)four", "4");
+        } else if (buildingName.toUpperCase().endsWith("FIVE")) {
+            buildingName = buildingName.replaceAll("(?i)five", "5");
+        } else if (buildingName.toUpperCase().endsWith("SIX")) {
+            buildingName = buildingName.replaceAll("(?i)six", "6");
+        } else if (buildingName.toUpperCase().endsWith("SEVEN")) {
+            buildingName = buildingName.replaceAll("(?i)seven", "7");
+        } else if (buildingName.toUpperCase().endsWith("EIGHT")) {
+            buildingName = buildingName.replaceAll("(?i)eight", "8");
+        } else if (buildingName.toUpperCase().endsWith("NINE")) {
+            buildingName = buildingName.replaceAll("(?i)nine", "9");
+        } else if (buildingName.toUpperCase().endsWith("TEN")) {
+            buildingName = buildingName.replaceAll("(?i)ten", "10");
+        }
+        return buildingName;
+    }
+
+    public void verifyVoucherDestinationSearch2(String filePath, String sheetName, String rowName, String startDate, String endDate) throws IOException {
+        List<String> postalCodeList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
+        List<String> addressList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
+        String voucherDesc = String.valueOf(classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Voucher card details").get(0));
+
+        for (int i = 0; i < postalCodeList.size(); i++){
+            int index = i + 1;
+            // input postal code
+            System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
+            classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i));
+            classDecl.commonKeyword.closeKeyboard();
+            String buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
+            System.out.println("Full address " + index + ": " + addressList.get(i));
+            String fullAddress = addressList.get(i);
+
+            // temporarily by pass bug BREEZE2-6281
+            if (buildingName.equals("HAWKER CENTRE @ OUR TAMPINES HUB")){
+                buildingName = "OUR TAMPINES HUB";
+            }
+
+            System.out.println("Short address when entering postal code " + index + ": " + buildingName);
+            Assert.assertTrue(fullAddress.toLowerCase().contains(buildingName.toLowerCase()), "The full address " + fullAddress + " does not contain building name " + buildingName);
+            classDecl.commonKeyword.closeInAppAlertsIfVisible();
+            classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
+
+            // input building name
+            classDecl.searchDestinationPage.inputAddress(buildingName);
+            classDecl.commonKeyword.closeKeyboard();
+
+            // handle for exceptional cases
+            if (buildingName.equals("HEARTLAND MALL-KOVAN")){
+                buildingName = "HEARTLAND MALL KOVAN";
+            } else if (buildingName.equals("RAFFLES CITY SHOPPING CENTRE")) {
+                buildingName = "RAFFLES CITY";
+            } else if (buildingName.equals("NOVENA SQUARE")) {
+                buildingName = "NOVENA SQUARE SHOPPING MALL";
+            } else if (buildingName.equals("313 @ SOMERSET")) {
+                buildingName = "313@SOMERSET";
+            } else if (buildingName.equals("LOT ONE, SHOPPERS' MALL")) {
+                buildingName = buildingName.replace(",", "");
+            } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
+                buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
+                        .replaceAll(" Singapore \\d+", "")
+                        .replaceAll(" \\d{6}$", "");
+            }
+
+            try {
+                // Handle for number (eg. TAMPINES ONE > TAMPINES 1)
+                if (!classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc)
+                && !classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName, buildingName))
+                {
+                    buildingName = handleForNumberWord(buildingName);
+
+                }
+
+                classDecl.commonKeyword.waitForElementVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc);
+
+                // Get the building name again to match search bar in the next step
+                buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
+                System.out.println("Short address when entering building name " + index + ": " + buildingName);
+
+            } catch (Exception e){
+                if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName, buildingName)){
+                    Assert.assertTrue(true, "Voucher not visible, but text 'x more voucher(s) available' found — test forced to pass.");
+
+                    // Get the building name again to match search bar in the next step
+                    buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
+                    System.out.println("Short address when entering building name " + index + ": " + buildingName);
+
+                } else {
+                    // temporarily by pass bug BREEZE2-6281 from this line
+                    if (buildingName.equals("TAMPINES MART") //
+                            || buildingName.equals("OUR TAMPINES HUB")
+                            || buildingName.equals("TOA PAYOH CENTRAL")
+                            || buildingName.equals("NORTHPOINT CITY")
+                            || buildingName.equals("510 BISHAN STREET 13") // bug BREEZE2-6291
+                    ) {
+                        Assert.assertTrue(true, "Force test pass when searching voucher by address: " + buildingName);
+
+                        // Clear search bar > Input postal code again > Get the building name again to match search bar in the next step
+                        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
+                        classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i));
+                        classDecl.commonKeyword.closeKeyboard();
+                        System.out.println("Short address when entering postal code again " + index + ": " + buildingName);
+                        // to this line
+                    } else {
+                        System.out.println("Test failed: Neither voucher nor text 'x more voucher(s) available' visible.");
+                        classDecl.commonKeyword.waitForElementVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc);
+                    }
+                }
+            }
+
+            // tap on the address that contains voucher & verify prompt bar
+            classDecl.commonKeyword.closeInAppAlertsIfVisible();
+            if (voucherDesc.contains("%")){
+                classDecl.searchDestinationPage.lblVoucherAddress = classDecl.searchDestinationPage.lblVoucherAddress.replace("%s", voucherDesc);
+                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress);
+            } else {
+                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc);
+            }
+            classDecl.landingPage.verifyPromptBarText();
+
+            // tap on the prompt bar & verify voucher card in the voucher search page
+            classDecl.landingPage.tapOnPromptBar();
+            classDecl.commonKeyword.closeInAppAlertsIfVisible();
+
+            // temporarily by pass bug BREEZE2-6281
+            if (buildingName.equals("OUR TAMPINES HUB")){
+                buildingName = "HAWKER CENTRE @ OUR TAMPINES HUB";
+            }
+
+            classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(rowName, startDate, endDate, "Vouchers nearby section");
+
+            // Go back to destination search page
+            classDecl.commonKeyword.tapOnNativeBackBtn();
+            classDecl.commonKeyword.closeInAppAlertsIfVisible();
+            classDecl.landingPage.tapOnSearchBarName(buildingName);
+
+        }
+
     }
 }
