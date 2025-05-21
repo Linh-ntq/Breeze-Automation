@@ -20,7 +20,7 @@ import org.testng.Assert;
 public class CommonKeyword extends BaseTest{
 
     public void waitForElementVisible(String xpathExpression, String... text) {
-        if (text != null) {
+        if (text != null && text.length > 0) {
             String xpath = String.format(xpathExpression, (String[]) text);
             waitDriverApp.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
 
@@ -56,7 +56,7 @@ public class CommonKeyword extends BaseTest{
     }
 
     public void elementNotVisible(String xpathExpression, String... text) {
-        if (text != null) {
+        if (text != null && text.length > 0) {
             String xpath = String.format(xpathExpression, (String[]) text);
             waitDriverApp.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpath)));
 
@@ -130,8 +130,8 @@ public class CommonKeyword extends BaseTest{
     }
 
     public String getText(String xpathExpression, String...texts){
-        String xpath = String.format(xpathExpression, (Object[]) texts);
-        if (texts != null){
+        if (texts != null && texts.length > 0){
+            String xpath = String.format(xpathExpression, (Object[]) texts);
             waitForElementVisible(xpath);
             return driver.findElement(By.xpath(xpath)).getText();
 
@@ -252,7 +252,7 @@ public class CommonKeyword extends BaseTest{
         String xpath = String.format(xpathExpression, (Object[]) texts);
         WebElement element;
         try {
-            if (texts != null){
+            if (texts != null && texts.length > 0){
                 element = driver.findElement(By.xpath(xpath));
             } else {
                 element = driver.findElement(By.xpath(xpathExpression));

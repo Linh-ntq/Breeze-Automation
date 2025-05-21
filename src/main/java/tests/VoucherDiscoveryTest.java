@@ -66,11 +66,12 @@ public class VoucherDiscoveryTest extends Setup {
     public void verify_voucher_destination_search2() throws IOException {
         String pathToVoucherFile = classDecl.datas.pathVoucherData;
         String sheetName = "VoucherData";
-        String rowName = "Singtel";
+        String rowName = "Orchid Country Club Hotel & Golf Resort";
         String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
         String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
 
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
+        classDecl.commonKeyword.pause(30);
         classDecl.commonPage.tabOnMenu("Inbox");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);

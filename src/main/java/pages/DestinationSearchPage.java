@@ -26,10 +26,17 @@ public class DestinationSearchPage extends BaseTest {
         String moreVoucherXpath = "//android.widget.TextView[contains(@text, 'more voucher']/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.widget.TextView[1]";
 
         try {
-            addressVoucher = classDecl.commonKeyword.getText(lblVoucherAddress, voucherDesc);
+            if (voucherDesc.contains("%")){
+                lblVoucherAddress = lblVoucherAddress.replace("%s", voucherDesc);
+                System.out.println("Element found: " + lblVoucherAddress);
+                addressVoucher = classDecl.commonKeyword.getText(lblVoucherAddress);
+            } else {
+                addressVoucher = classDecl.commonKeyword.getText(lblVoucherAddress, voucherDesc);
+            }
         } catch (Exception e) {
             if (classDecl.commonKeyword.elementIsVisible(moreVoucherXpath)){
                 addressVoucher = classDecl.commonKeyword.getText(lblVoucherAddress, moreVoucherXpath);
+
             }else {
                 Assert.fail("Element not found");
             }
