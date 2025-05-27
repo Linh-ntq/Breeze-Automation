@@ -22,8 +22,11 @@ public class DestinationSearchPage extends BaseTest {
 
     public String getVoucherAddressText(String filePath, String sheetName, String rowName) {
         String voucherDesc = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Voucher card details").get(0);
+        if (voucherDesc.contains("TM")){
+            voucherDesc = voucherDesc.replaceAll("TM",  "™");
+        }
         String addressVoucher = "";
-        String moreVoucherXpath = "//android.widget.TextView[contains(@text, 'more voucher']/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.widget.TextView[1]";
+        String moreVoucherXpath = "//android.widget.TextView[contains(@text, 'more voucher')]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.widget.TextView[1]";
 
         try {
             if (voucherDesc.contains("%")){

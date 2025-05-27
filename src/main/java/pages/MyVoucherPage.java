@@ -8,6 +8,9 @@ public class MyVoucherPage extends BaseTest {
     public String btnView = "//android.widget.TextView[@text=\"%s\"]/ancestor::android.view.ViewGroup/android.view.ViewGroup/android.widget.TextView[@text=\"View\"]"; // voucher detail
 
     public void clickViewBtn(String voucherDesc) {
+        if (voucherDesc.contains("TM")){
+            voucherDesc = voucherDesc.replaceAll("TM",  "™");
+        }
         if (voucherDesc.contains("%")){
             String newXpath = btnView.replace("%s", voucherDesc);
             waitDriverApp.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(newXpath)));
