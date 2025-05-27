@@ -126,15 +126,33 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.commonPage.tabOnMenu("My Vouchers");
     }
 
-    public void verifyVoucherDetail(String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition){
-        classDecl.voucherDetailPage.verifyPageTitle();
+    public void verifyVoucherDetail(String voucherStatus, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition){
+        if (voucherStatus.equals("Before claim")){
+            classDecl.voucherDetailPage.verifyPageTitle("Claim Voucher");
+        } else {
+            classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
+            // Scroll up to go to top of page
+            classDecl.commonKeyword.scroll("UP", 0.7);
+        }
         classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
         classDecl.voucherDetailPage.verifyVoucherExpiry(startDate, endDate);
         classDecl.voucherDetailPage.verifyAboutVoucherSection(aboutVoucher);
-        classDecl.voucherDetailPage.verifyViewMapBtn();
+        classDecl.voucherDetailPage.verifyWhereToUsSection();
         classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
         classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
-        classDecl.voucherDetailPage.verifyClaimBtn();
+        if (voucherStatus.equals("Before claim")){
+            classDecl.voucherDetailPage.verifyClaimBtn();
+        } else {
+            classDecl.voucherDetailPage.verifyUseBtn();
+        }
+    }
+
+    public void verifySuccessfullyClaimedPopup(String voucherTitle, String startD, String endD){
+        classDecl.voucherDetailPage.verifySuccessfullyClaimedTitle();
+        classDecl.voucherDetailPage.verifySuccessfullyClaimedDesc(voucherTitle);
+        classDecl.voucherDetailPage.verifySuccessfullyClaimedDate(startD, endD);
+        classDecl.voucherDetailPage.verifyViewVoucherDetailsBtn();
+        classDecl.voucherDetailPage.verifyBackToHomeBtn();
     }
 
     public String handleForNumberWord(String buildingName) {
@@ -166,6 +184,9 @@ public class VoucherDiscoveryFeature extends BaseTest {
         List<String> postalCodeList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
         List<String> addressList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
         String voucherDesc = String.valueOf(classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Voucher card details").get(0));
+        if (voucherDesc.contains("TM")){
+            voucherDesc = voucherDesc.replaceAll("TM",  "™");
+        }
 
         for (int i = 0; i < postalCodeList.size(); i++){
             int index = i + 1;
@@ -185,6 +206,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             System.out.println("Short address when entering postal code " + index + ": " + buildingName);
             Assert.assertTrue(fullAddress.toLowerCase().contains(buildingName.toLowerCase()), "The full address " + fullAddress + " does not contain building name " + buildingName);
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
+            classDecl.extentReport.attachScreenshotToReport(rowName + " - Destination Search Page - " + postalCodeList.get(i));
             classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
 
             // input building name
@@ -256,6 +278,8 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
             // tap on the address that contains voucher & verify prompt bar
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
+            classDecl.extentReport.attachScreenshotToReport(rowName + " - Destination Search Page - " + buildingName);
+
             if (voucherDesc.contains("%")){
                 classDecl.searchDestinationPage.lblVoucherAddress = classDecl.searchDestinationPage.lblVoucherAddress.replace("%s", voucherDesc);
                 classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress);
@@ -263,6 +287,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc);
             }
             classDecl.landingPage.verifyPromptBarText();
+            classDecl.extentReport.attachScreenshotToReport(rowName + " - Prompt bar - " + buildingName);
 
             // tap on the prompt bar & verify voucher card in the voucher search page
             classDecl.landingPage.tapOnPromptBar();
@@ -275,6 +300,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
             classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
             classDecl.voucherDiscoveryFeature.verifyVoucherCard(rowName, startDate, endDate, "Vouchers nearby section");
+            classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher Search Page - " + buildingName);
 
             // Go back to destination search page
             classDecl.commonKeyword.tapOnNativeBackBtn();

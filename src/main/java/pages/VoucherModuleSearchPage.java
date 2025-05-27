@@ -20,6 +20,10 @@ public class VoucherModuleSearchPage extends BaseTest {
 
 
     public void verifyVoucherExpiry(String voucherDesc, String startDate, String endDate) {
+        if (voucherDesc.contains("TM")){
+            voucherDesc = voucherDesc.replaceAll("TM",  "™");
+        }
+
         Logger logger = Logger.getLogger(getClass().getName());
 
         Date currentDate = new Date();
@@ -44,35 +48,33 @@ public class VoucherModuleSearchPage extends BaseTest {
     }
 
     public void verifyViewBtn(String voucherDesc) {
+        if (voucherDesc.contains("TM")){
+            voucherDesc = voucherDesc.replaceAll("TM",  "™");
+        }
         classDecl.commonKeyword.scrollUntilElementVisible(btnView, voucherDesc);
     }
 
     public void verifyViewMapBtn(String voucherDesc) {
+        if (voucherDesc.contains("TM")){
+            voucherDesc = voucherDesc.replaceAll("TM",  "™");
+        }
         classDecl.commonKeyword.scrollUntilElementVisible(btnViewMap, voucherDesc);
     }
 
     public void verifyVoucherAtSearchedDestSection(String voucherName, String voucherDesc) {
-        String voucherOriginalName = "";
-        if (voucherName.matches(".*-\\d.*")) {
-            voucherOriginalName = voucherName.replaceAll("-\\d", "");
-            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherOriginalName, voucherDesc);
-            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherOriginalName, voucherDesc);
-            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherOriginalName, voucherDesc);
-        } else {
-            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherName, voucherDesc);
-            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
-            classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
+        if (voucherDesc.contains("TM")){
+            voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
+        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherName, voucherDesc);
+        classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+        classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
     }
 
     public void verifyVoucherAtNearbySection(String voucherName, String voucherDesc) {
-        String voucherOriginalName;
-        if (voucherName.matches(".*-\\d.*")) {
-            voucherOriginalName = voucherName.replaceAll("-\\d", "");
-            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherOriginalName, voucherDesc);
-        } else {
-            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+        if (voucherDesc.contains("TM")){
+            voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
+        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
     }
 
     public void verifySearchBar(String voucherShortAdd) {
