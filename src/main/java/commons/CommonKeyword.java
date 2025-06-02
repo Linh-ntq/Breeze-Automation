@@ -15,6 +15,7 @@ import java.util.Random;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 public class CommonKeyword extends BaseTest{
@@ -210,10 +211,10 @@ public class CommonKeyword extends BaseTest{
     public void closeInAppAlertsIfVisible() {
         String btnCloseDialogue = "//android.widget.ImageView[@resource-id='com.ncs.breeze.demo:id/imgCloseDialog']";
 
-        while (isAlertDisplayed(btnCloseDialogue)) {
+        while (elementIsVisible(btnCloseDialogue)) {
             try {
-                System.out.println("Close the in-app alert");
                 classDecl.commonKeyword.clickElement(btnCloseDialogue);
+                System.out.println("Close the in-app alert");
                 pause(3);
             } catch (Exception e) {
                 System.out.println("Error while closing the alert: " + e.getMessage());
@@ -248,37 +249,23 @@ public class CommonKeyword extends BaseTest{
         }
     }
 
-    public boolean elementIsVisible(String xpathExpression, String ... texts){
+    public boolean elementIsVisible(String xpathExpression, String... texts) {
         String xpath = String.format(xpathExpression, (Object[]) texts);
-        WebElement element;
         try {
-            if (texts != null && texts.length > 0){
-                element = driver.findElement(By.xpath(xpath));
-            } else {
-                element = driver.findElement(By.xpath(xpathExpression));
-            }
-            return element.isDisplayed(); // returns true if visible
-        } catch (NoSuchElementException e) {
-            return false; // element not found in DOM
-        } catch (Exception e) {
-            return false; // other errors like StaleElementReferenceException, etc.
-        }
-    }
+            // Temporarily disable implicit wait
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
 
-    public static String escapeXPathText(String text) {
-        if (text.contains("'")) {
-            String[] parts = text.split("'");
-            StringBuilder result = new StringBuilder("concat(");
-            for (int i = 0; i < parts.length; i++) {
-                result.append("'").append(parts[i]).append("'");
-                if (i != parts.length - 1) {
-                    result.append(", \"'\", ");
-                }
-            }
-            result.append(")");
-            return result.toString();
-        } else {
-            return "'" + text + "'";
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        } catch (Exception e) {
+            System.out.println("Error in elementIsVisible: " + e.getMessage());
+            return false;
+        } finally {
+            // Restore implicit wait
+            driver.manage().timeouts().implicitlyWait(timeoutExWait);
         }
     }
 }

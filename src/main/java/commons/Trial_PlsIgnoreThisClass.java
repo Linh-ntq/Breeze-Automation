@@ -5,7 +5,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import io.appium.java_client.AppiumDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class Trial_PlsIgnoreThisClass {
     static AppiumDriver driver;
@@ -32,7 +32,7 @@ public class Trial_PlsIgnoreThisClass {
         try {
             URL url = new URL("http://127.0.0.1:4723/");
             driver = new AppiumDriver(url, desiredCapabilities);
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
         } catch (MalformedURLException e) {
             System.out.println("Hiiii" + e.getCause());
         }
