@@ -231,6 +231,10 @@ public class CommonKeyword extends BaseTest{
         driver.pressKey(new KeyEvent(AndroidKey.ENTER));
     }
 
+    public void tapOnNativeRecentTabsBtn(){
+        driver.pressKey(new KeyEvent(AndroidKey.APP_SWITCH));
+    }
+
     public void pause(int seconds) {
         int timeInSeconds = seconds * 1000;
         try {

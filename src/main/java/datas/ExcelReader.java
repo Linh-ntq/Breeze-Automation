@@ -4,9 +4,9 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -14,9 +14,20 @@ public class ExcelReader {
     private static final Logger logger = Logger.getLogger(ExcelReader.class.getName());
 
     // This method retrieves the value based on row name (e.g., "A") and column name (e.g., "B")
-    public static String getValueByRowAndColumnName(String filePath, String sheetName, String rowName, String colName) throws IOException {
-        FileInputStream fis = new FileInputStream(filePath);
-        Workbook workbook = new XSSFWorkbook(fis);  // Load the Excel file
+    public static String getValueByRowAndColumnName(String filePath, String sheetName, String rowName, String colName) {
+        FileInputStream fis;
+        Workbook workbook;
+        try {
+            fis = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            workbook = new XSSFWorkbook(fis);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Sheet sheet = workbook.getSheet(sheetName);  // Get the sheet by name
         if (sheet == null) {
             throw new IllegalArgumentException("Sheet not found: " + sheetName);
@@ -89,44 +100,43 @@ public class ExcelReader {
         Cell targetCell = targetRow.getCell(colIndex);
         String cellValue = targetCell != null ? targetCell.toString() : "";
 
-        workbook.close();
-        fis.close();
+        try {
+            workbook.close();
+            fis.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return cellValue;
     }
 
-    public String getVoucherData(String filePath, String sheetName, String rowName, String colName) throws IOException {
+    public String getVoucherData(String filePath, String sheetName, String rowName, String colName){
         String cellValue = getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
         return cellValue;
     }
 
     public List<String> getVoucherDataList(String filePath, String sheetName, String rowName, String colName) {
         List<String> itemList = null;
-        try {
-            String cellValue = getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
-            String[] splitArray = cellValue.split("\n");
-            if (colName.equals("Voucher card details")){
-                //handle for duplicated voucher title (eg. Global Art-1 => Global Art)
-                if (rowName.matches(".*-\\d.*")) {
-                    rowName = rowName.replaceAll("-\\d", "");
-                }
-                String finalRowName = rowName;
-                itemList = Arrays.stream(splitArray)
-                        .map(item -> finalRowName + " - " + item)
-                        .collect(Collectors.toList());
-            }else {
-                itemList = Arrays.asList(splitArray);
+        String cellValue = getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
+        String[] splitArray = cellValue.split("\n");
+        if (colName.equals("Voucher card details")){
+            //handle for duplicated voucher title (eg. Global Art-1 => Global Art)
+            if (rowName.matches(".*-\\d.*")) {
+                rowName = rowName.replaceAll("-\\d", "");
             }
-            System.out.println("Expected vouchers: " + itemList);
-
-        } catch (IOException e) {
-            // Log the exception with a severity level of SEVERE
-            logger.log(Level.SEVERE, "Error reading Excel data", e);
+            String finalRowName = rowName;
+            itemList = Arrays.stream(splitArray)
+                    .map(item -> finalRowName + " - " + item)
+                    .collect(Collectors.toList());
+        }else {
+            itemList = Arrays.asList(splitArray);
         }
+        System.out.println("Expected vouchers: " + itemList);
+
         return itemList;
     }
 
-    public Map<String, String> getAddressFromExcelData(String filePath, String sheetName, String rowName, String colName) throws IOException {
+    public Map<String, String> getAddressFromExcelData(String filePath, String sheetName, String rowName, String colName) {
         Map<String, String> addressMap = new HashMap<>();
         String cellValue = ExcelReader.getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
         if (Objects.equals(colName, "Merchant locations") || Objects.equals(colName, "Postal code") || Objects.equals(colName, "Address")) {

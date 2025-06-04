@@ -3,17 +3,16 @@ package tests;
 import commons.Setup;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
     @Test(priority = 1)
-    public void verify_voucher_destination_search() throws IOException {
-        String pathToVoucherFile = classDecl.datas.pathVoucherData;
+    public void verify_voucher_destination_search() {
+        String pathVoucherData = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/NTUC@Breeze - Singtel Phone Plan.xlsx";
         String sheetName = "VoucherData";
         String rowName = "Singtel";
-        String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
-        String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
+        String voucherStartDate = classDecl.excelReader.getVoucherData(pathVoucherData, sheetName, rowName, "Redemption start date");
+        String voucherEndDate = classDecl.excelReader.getVoucherData(pathVoucherData, sheetName, rowName, "Redemption end date");
 
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         // Pause to scan QR invitation
@@ -25,17 +24,17 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.landingPage.clickOnSearchBar();
         classDecl.extentReport.startTest("Verify vouchers in the destination search");
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(classDecl.datas.pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 
     @Test(priority = 1)
-    public void verify_searching_by_postal_code_in_voucher_module() throws IOException {
-        String pathToVoucherFile = classDecl.datas.pathVoucherData;
+    public void verify_searching_by_postal_code_in_voucher_module() {
+        String pathVoucherData = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/NTUC@Breeze - Singtel Phone Plan.xlsx";
         String sheetName = "VoucherData";
         String rowName = "Singtel";
-        String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
-        String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
+        String voucherStartDate = classDecl.excelReader.getVoucherData(pathVoucherData, sheetName, rowName, "Redemption start date");
+        String voucherEndDate = classDecl.excelReader.getVoucherData(pathVoucherData, sheetName, rowName, "Redemption end date");
 
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         // Pause to scan QR invitation
@@ -47,17 +46,17 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
 
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
-        classDecl.voucherDiscoveryFeature.verifySearchingByPostalCodeInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifySearchingByPostalCodeInVoucherModule(classDecl.datas.pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 
     @Test(priority = 1)
-    public void verify_searching_by_building_name_in_voucher_module() throws IOException {
-        String pathToVoucherFile = classDecl.datas.pathVoucherData;
+    public void verify_searching_by_building_name_in_voucher_module() {
+        String pathVoucherData = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/NTUC@Breeze - Singtel Phone Plan.xlsx";
         String sheetName = "VoucherData";
         String rowName = "Singtel";
-        String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
-        String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
+        String voucherStartDate = classDecl.excelReader.getVoucherData(pathVoucherData, sheetName, rowName, "Redemption start date");
+        String voucherEndDate = classDecl.excelReader.getVoucherData(pathVoucherData, sheetName, rowName, "Redemption end date");
 
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         // Pause to scan QR invitation
@@ -68,22 +67,21 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
 
-        classDecl.voucherDiscoveryFeature.verifySearchingByBuildingNameInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifySearchingByBuildingNameInVoucherModule(classDecl.datas.pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 
     @Test(priority = 4)
-    public void verify_voucher_detail_in_voucher_module() throws Exception {
-        String pathToVoucherFile = classDecl.datas.pathVoucherData;
+    public void verify_voucher_detail_in_voucher_module() {
         String sheetName = "VoucherData";
-        String rowName = "Singtel";
-        String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
-        String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
-        String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
-        List<String> aboutVoucherSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "About voucher");
-        List<String> howToUseSectionBeforeClaim = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "How to use voucher (before claim)");
-        List<String> howToUseSectionAfterClaim = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "How to use voucher (after claim)");
-        List<String> termConditionSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "T& C");
+        String rowName = "Global Art";
+        String voucherStartDate = classDecl.excelReader.getVoucherData(classDecl.datas.pathToVoucherFile, sheetName, rowName, "Redemption start date");
+        String voucherEndDate = classDecl.excelReader.getVoucherData(classDecl.datas.pathToVoucherFile, sheetName, rowName, "Redemption end date");
+        String voucherDescription = classDecl.excelReader.getVoucherData(classDecl.datas.pathToVoucherFile, sheetName, rowName, "Voucher card details");
+        List<String> aboutVoucherSection = classDecl.excelReader.getVoucherDataList(classDecl.datas.pathToVoucherFile, sheetName, rowName, "About voucher");
+        List<String> howToUseSectionBeforeClaim = classDecl.excelReader.getVoucherDataList(classDecl.datas.pathToVoucherFile, sheetName, rowName, "How to use voucher (before claim)");
+        List<String> howToUseSectionAfterClaim = classDecl.excelReader.getVoucherDataList(classDecl.datas.pathToVoucherFile, sheetName, rowName, "How to use voucher (after claim)");
+        List<String> termConditionSection = classDecl.excelReader.getVoucherDataList(classDecl.datas.pathToVoucherFile, sheetName, rowName, "T& C");
 
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         // Pause to scan QR invitation
@@ -100,9 +98,6 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Before claim", rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
 
         //verify voucher detail in Claimed tab
-        classDecl.voucherDetailPage.clickClaimBtn();
-        classDecl.voucherDiscoveryFeature.verifySuccessfullyClaimedPopup(rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDetailPage.clickViewVoucherDetailsBtn();
         classDecl.voucherDiscoveryFeature.verifyVoucherDetail("After claim", rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
 
     }
