@@ -38,6 +38,13 @@ public class Setup extends BaseTest{
                 .build();
         service.start();
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (service != null && service.isRunning()) {
+                service.stop();
+                System.out.println("Appium server stopped from shutdown hook.");
+            }
+        }));
+
         if (service.isRunning()) {
             System.out.println("Appium server started successfully.");
         } else {
