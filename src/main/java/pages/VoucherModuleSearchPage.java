@@ -17,7 +17,8 @@ public class VoucherModuleSearchPage extends BaseTest {
     public String lblVoucherNameAtNearby1 = "//android.widget.TextView[@text=\"Vouchers nearby\"]/following-sibling::android.widget.ScrollView//android.widget.TextView[@text=\"%s\"]/following-sibling::android.widget.TextView[@text=\"%s\"]"; // voucher name - voucher detail (tap on prompt bar)
     public String lblVoucherNameAtNearby2 = "//android.widget.TextView[@text=\"Vouchers nearby\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"%s\"]/following-sibling::android.widget.TextView[@text=\"%s\"]"; // voucher name - voucher detail (voucher module search)
     public String lblSearchBarName = "//android.widget.EditText[@text=\"%s\"]";
-
+    public String lblSearchBar = "//android.widget.EditText[@text=\"Search\"]";
+    public String btnClearSearch = "//android.widget.EditText/following-sibling::android.view.ViewGroup/android.widget.ImageView";
 
     public void verifyVoucherExpiry(String voucherDesc, String startDate, String endDate) {
         if (voucherDesc.contains("TM")){
@@ -62,6 +63,10 @@ public class VoucherModuleSearchPage extends BaseTest {
     }
 
     public void verifyVoucherAtSearchedDestSection(String voucherName, String voucherDesc) {
+        if (voucherName.contains("'")){
+            voucherName = voucherName.replaceAll("'", "’");
+        }
+
         if (voucherDesc.contains("TM")){
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
@@ -71,6 +76,10 @@ public class VoucherModuleSearchPage extends BaseTest {
     }
 
     public void verifyVoucherAtNearbySection(String voucherName, String voucherDesc) {
+        if (voucherName.contains("'")){
+            voucherName = voucherName.replaceAll("'", "’");
+        }
+
         if (voucherDesc.contains("TM")){
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
@@ -79,6 +88,10 @@ public class VoucherModuleSearchPage extends BaseTest {
 
     public void verifySearchBar(String voucherShortAdd) {
         classDecl.commonKeyword.waitForElementVisible(lblSearchBarName, voucherShortAdd);
+    }
+
+    public void inputAddress(String address) {
+        classDecl.commonKeyword.sendKey(lblSearchBar, address);
     }
 
 }

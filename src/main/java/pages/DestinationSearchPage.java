@@ -15,8 +15,9 @@ public class DestinationSearchPage extends BaseTest {
     public String xpath3 = "//android.widget.TextView[@text=\"%s\"]/parent::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.widget.TextView[contains(@text,\"more voucher available\")]"; //short address
     public String xpath4 = "//android.widget.TextView[@text=\"%s\"]/parent::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.widget.TextView[contains(@text,\"more vouchers available\")]"; //short address
     public String lblhiddenVoucher = xpath3 + " | " + xpath4;
+    public String btnBack = "//android.widget.EditText[@text=\"Search\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.widget.ImageView";
+
     public void inputAddress(String address) {
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.commonKeyword.sendKey(lblSearchInput, address);
     }
 
@@ -25,6 +26,10 @@ public class DestinationSearchPage extends BaseTest {
         if (voucherDesc.contains("TM")){
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
+        if (voucherDesc.contains("'")){
+            voucherDesc = voucherDesc.replaceAll("'", "’");
+        }
+
         String addressVoucher = "";
         String moreVoucherXpath = "//android.widget.TextView[contains(@text, 'more voucher')]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.widget.TextView[1]";
 
