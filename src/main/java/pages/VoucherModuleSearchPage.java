@@ -63,6 +63,10 @@ public class VoucherModuleSearchPage extends BaseTest {
     }
 
     public void verifyVoucherAtSearchedDestSection(String voucherName, String voucherDesc) {
+        if (voucherName.contains("'")){
+            voucherName = voucherName.replaceAll("'", "’");
+        }
+
         if (voucherDesc.contains("TM")){
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
@@ -72,6 +76,10 @@ public class VoucherModuleSearchPage extends BaseTest {
     }
 
     public void verifyVoucherAtNearbySection(String voucherName, String voucherDesc) {
+        if (voucherName.contains("'")){
+            voucherName = voucherName.replaceAll("'", "’");
+        }
+
         if (voucherDesc.contains("TM")){
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }

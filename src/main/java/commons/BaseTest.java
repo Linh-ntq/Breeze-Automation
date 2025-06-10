@@ -9,7 +9,7 @@ public class BaseTest {
     public long scrollTimeOut = 20000;
     public static WebDriverWait waitDriverApp;
     public static AndroidDriver driver;
-    public static ClassDeclaration classDecl;
+    public static ClassDeclaration classDecl = new ClassDeclaration();
 
     public BaseTest(){
 

@@ -26,6 +26,10 @@ public class DestinationSearchPage extends BaseTest {
         if (voucherDesc.contains("TM")){
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
+        if (voucherDesc.contains("'")){
+            voucherDesc = voucherDesc.replaceAll("'", "’");
+        }
+
         String addressVoucher = "";
         String moreVoucherXpath = "//android.widget.TextView[contains(@text, 'more voucher')]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.widget.TextView[1]";
 

@@ -35,6 +35,10 @@ public class VoucherDetailPage extends BaseTest {
     }
 
     public void verifyVoucherDesc(String voucherName, String voucherDesc){
+        if (voucherName.contains("'")){
+            voucherName = voucherName.replaceAll("'", "’");
+        }
+
         if (voucherDesc.contains("TM")){
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
             }

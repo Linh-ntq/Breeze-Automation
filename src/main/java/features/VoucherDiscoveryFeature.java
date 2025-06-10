@@ -10,8 +10,8 @@ import static datas.ExcelReader.getValueByRowAndColumnName;
 
 public class VoucherDiscoveryFeature extends BaseTest {
 
-    public void verifyVoucherCard(String voucherName, String startDate, String endDate, String voucherPosition) {
-        String voucherDesc = getValueByRowAndColumnName(classDecl.datas.pathToVoucherFile, "VoucherData", voucherName, "Voucher card details");
+    public void verifyVoucherCard(String filePath, String voucherName, String startDate, String endDate, String voucherPosition) {
+        String voucherDesc = getValueByRowAndColumnName(filePath, "VoucherData", voucherName, "Voucher card details");
 
         if (voucherPosition.equals("Vouchers nearby section")) {
             classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
@@ -28,10 +28,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.commonPage.tabOnMenu("My Vouchers");
     }
 
-    public void verifyVoucherDetail(String voucherStatus, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
-        String hideVehicleDetails = classDecl.excelReader.getVoucherData(classDecl.datas.pathToVoucherFile, "VoucherData", voucherName, "hideVehicleDetailsInput");
-        String isClaimRepeatable = classDecl.excelReader.getVoucherData(classDecl.datas.pathToVoucherFile, "VoucherData", voucherName, "isClaimRepeatable");
-        String isExternalClaimable = classDecl.excelReader.getVoucherData(classDecl.datas.pathToVoucherFile, "VoucherData", voucherName, "isExternalClaimable");
+    public void verifyVoucherDetail(String voucherStatus, String filePath, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
+        String hideVehicleDetails = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "hideVehicleDetailsInput");
+        String isClaimRepeatable = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "isClaimRepeatable");
+        String isExternalClaimable = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "isExternalClaimable");
 
         System.out.println("hideVehicleDetails: " + hideVehicleDetails
                 + " isClaimRepeatable: " + isClaimRepeatable
@@ -79,18 +79,18 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
                         classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                         if (isExternalClaimable.equals("TRUE")) {
-                            System.out.println("Log05");
+                            System.out.println("Log05: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, button Use voucher now and Claim on FairPrice Group");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
                             classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
 
                         } else {
-                            System.out.println("Log06");
+                            System.out.println("Log06: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = FALSE, button Claim on FairPrice Group");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
                             classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
                         }
 
                     } else {
-                        System.out.println("Log07");
+                        System.out.println("Log07: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, repeated claim voucher popup");
                         verifyRepeatedClaimPopup();
                     }
                 } else {
@@ -116,17 +116,17 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
                         classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                         if (isExternalClaimable.equals("TRUE")) {
-                            System.out.println("Log10");
+                            System.out.println("Log10: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, button Use voucher now and Claim");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
                             classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
 
                         } else {
-                            System.out.println("Log11");
+                            System.out.println("Log11: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = FALSE, button Use voucher now");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
                             classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
                         }
                     } else { // if voucher can be claimed only one time per eid, and it was claimed by another before
-                        System.out.println("Log12");
+                        System.out.println("Log12: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, repeated claim voucher popup");
                         verifyRepeatedClaimPopup();
                     }
                 }
@@ -187,6 +187,9 @@ public class VoucherDiscoveryFeature extends BaseTest {
     }
 
     public void verifySuccessfullyClaimedPopup(String voucherTitle, String startD, String endD) {
+        if (voucherTitle.contains("'")){
+            voucherTitle = voucherTitle.replaceAll("'", "’");
+        }
         classDecl.voucherDetailPage.verifySuccessfullyClaimedTitle();
         classDecl.voucherDetailPage.verifySuccessfullyClaimedDesc(voucherTitle);
         classDecl.voucherDetailPage.verifySuccessfullyClaimedDate(startD, endD);
@@ -225,6 +228,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
         String voucherDesc = String.valueOf(classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Voucher card details").get(0));
         if (voucherDesc.contains("TM")) {
             voucherDesc = voucherDesc.replaceAll("TM", "™");
+        }
+
+        if (voucherDesc.contains("'")){
+            voucherDesc = voucherDesc.replaceAll("'", "’");
         }
 
         for (int i = 0; i < postalCodeList.size(); i++) {
@@ -340,7 +347,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             }
 
             classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
-            classDecl.voucherDiscoveryFeature.verifyVoucherCard(rowName, startDate, endDate, "Vouchers nearby section");
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(filePath, rowName, startDate, endDate, "Vouchers nearby section");
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher Search Page - " + buildingName);
 
             if (postalCodeList.size() != index) {
@@ -402,7 +409,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
             classDecl.voucherModuleSearchPage.inputAddress(postalCodeList.get(i));
             classDecl.commonKeyword.closeKeyboard();
-            verifyVoucherCard(rowName, startDate, endDate, "Matched address vouchers section");
+            verifyVoucherCard(filePath, rowName, startDate, endDate, "Matched address vouchers section");
 
             // clear text
             classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
@@ -420,7 +427,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             System.out.println("Building name " + index + ": " + buildingNameList.get(i));
             classDecl.voucherModuleSearchPage.inputAddress(buildingNameList.get(i));
             classDecl.commonKeyword.closeKeyboard();
-            verifyVoucherCard(rowName, startDate, endDate, "Matched address vouchers section");
+            verifyVoucherCard(filePath, rowName, startDate, endDate, "Matched address vouchers section");
 
             // clear text
             classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
