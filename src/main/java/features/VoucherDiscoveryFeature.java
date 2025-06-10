@@ -410,6 +410,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.voucherModuleSearchPage.inputAddress(postalCodeList.get(i));
             classDecl.commonKeyword.closeKeyboard();
             verifyVoucherCard(filePath, rowName, startDate, endDate, "Matched address vouchers section");
+            classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher module search - " + postalCodeList.get(i));
 
             // clear text
             classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
@@ -428,6 +429,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.voucherModuleSearchPage.inputAddress(buildingNameList.get(i));
             classDecl.commonKeyword.closeKeyboard();
             verifyVoucherCard(filePath, rowName, startDate, endDate, "Matched address vouchers section");
+            classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher module search - " + buildingNameList.get(i));
 
             // clear text
             classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
