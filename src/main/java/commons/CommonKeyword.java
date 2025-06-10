@@ -57,16 +57,24 @@ public class CommonKeyword extends BaseTest{
     }
 
     public void elementNotVisible(String xpathExpression, String... text) {
-        if (text != null && text.length > 0) {
-            String xpath = String.format(xpathExpression, (String[]) text);
-            waitDriverApp.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpath)));
+        // Temporarily disable implicit wait
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-        } else {
-            waitDriverApp.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpathExpression)));
+        try {
+            if (text != null && text.length > 0) {
+                String xpath = String.format(xpathExpression, (String[]) text);
+                wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpath)));
+            } else {
+                wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpathExpression)));
+            }
+        } finally {
+            // Restore the global implicit wait after the check
+            driver.manage().timeouts().implicitlyWait(timeoutExWait);
         }
     }
 
-    public void clickElement(String xpathExpression) {
+        public void clickElement(String xpathExpression) {
         waitForElementVisible(xpathExpression);
         driver.findElement(By.xpath(xpathExpression)).click();
     }
