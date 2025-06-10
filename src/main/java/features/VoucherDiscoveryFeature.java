@@ -90,10 +90,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         }
 
                     } else {
-                        System.out.println("Log07: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, repeated claim voucher popup");
+                        System.out.println("Log07: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = " + isExternalClaimable + ", repeated claim voucher popup");
                         verifyRepeatedClaimPopup();
                     }
-                } else {
+                } else {  // If claim button = Claim  > Tap on the button return claim popup
                     System.out.println("Log08");
                     classDecl.voucherDetailPage.clickClaimBtn(isExternalClaimable);
                     // if voucher can be claimed repeatedly or voucher can be claimed only one time per eid but this is the first time voucher claimed
@@ -126,7 +126,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                             classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
                         }
                     } else { // if voucher can be claimed only one time per eid, and it was claimed by another before
-                        System.out.println("Log12: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, repeated claim voucher popup");
+                        System.out.println("Log12: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = " + isExternalClaimable + ", repeated claim voucher popup");
                         verifyRepeatedClaimPopup();
                     }
                 }
@@ -187,7 +187,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
     }
 
     public void verifySuccessfullyClaimedPopup(String voucherTitle, String startD, String endD) {
-        if (voucherTitle.contains("'")){
+        if (voucherTitle.contains("'")) {
             voucherTitle = voucherTitle.replaceAll("'", "’");
         }
         classDecl.voucherDetailPage.verifySuccessfullyClaimedTitle();
@@ -230,7 +230,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             voucherDesc = voucherDesc.replaceAll("TM", "™");
         }
 
-        if (voucherDesc.contains("'")){
+        if (voucherDesc.contains("'")) {
             voucherDesc = voucherDesc.replaceAll("'", "’");
         }
 
@@ -435,5 +435,15 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
 
         }
+    }
+
+    public void selectVoucherCategory(String voucherCategory) {
+        voucherCategory = voucherCategory.toLowerCase();
+        if (voucherCategory.contains("_")) {
+            voucherCategory = voucherCategory.replace("_", " & ");
+        }
+        classDecl.myVoucherPage.clickVoucherPill("Filter");
+        classDecl.myVoucherPage.selectCategory(voucherCategory);
+        classDecl.myVoucherPage.clickApplyBtn();
     }
 }

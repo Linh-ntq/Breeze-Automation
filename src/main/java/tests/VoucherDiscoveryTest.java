@@ -12,6 +12,7 @@ public class VoucherDiscoveryTest extends Setup {
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
+    String voucherCategory = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher category");
     List<String> aboutVoucherSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "About voucher");
     List<String> howToUseSectionBeforeClaim = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "How to use voucher (before claim)");
     List<String> howToUseSectionAfterClaim = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "How to use voucher (after claim)");
@@ -72,10 +73,11 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.commonKeyword.pause(35);
         classDecl.commonPage.tabOnMenu("Inbox");
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
-        classDecl.inboxFeature.enterNTUCDetails("98455235", "158H"); //22081983
+        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
-        classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, rowName, voucherStartDate, voucherEndDate, "Voucher list page");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
+        classDecl.voucherDiscoveryFeature.selectVoucherCategory(voucherCategory);
+        classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, rowName, voucherStartDate, voucherEndDate, "Voucher list page");
         classDecl.myVoucherPage.clickViewBtn(voucherDescription);
 
         //verify voucher detail in Unclaimed tab
