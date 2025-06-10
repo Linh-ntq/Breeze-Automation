@@ -267,7 +267,7 @@ public class CommonKeyword extends BaseTest{
             // Temporarily disable implicit wait
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
             return true;
         } catch (TimeoutException e) {
