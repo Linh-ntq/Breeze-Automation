@@ -45,6 +45,7 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
 
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
+        classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");
         classDecl.voucherDiscoveryFeature.verifySearchingByPostalCodeInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
@@ -59,7 +60,7 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
         classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
-
+        classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with building name");
         classDecl.voucherDiscoveryFeature.verifySearchingByBuildingNameInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
