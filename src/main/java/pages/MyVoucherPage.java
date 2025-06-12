@@ -10,6 +10,7 @@ public class MyVoucherPage extends BaseTest {
     public String btnFilterPill = "//android.widget.TextView[@text=\"%s\"]";
     public String lblCategory = "//android.widget.TextView[translate(@text, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = \"%s\"]";
     public String btnApply = "//android.widget.TextView[@text=\"Apply\"]";
+    public String lblTabName = "//android.widget.TextView[contains(@text, \"%s\")]";
 
     public void clickViewBtn(String voucherDesc) {
         if (voucherDesc.contains("TM")){
@@ -42,5 +43,9 @@ public class MyVoucherPage extends BaseTest {
 
     public void clickApplyBtn(){
         classDecl.commonKeyword.clickElement(btnApply);
+    }
+
+    public void clickOnTab(String tabName){
+        classDecl.commonKeyword.clickElement(lblTabName, tabName);
     }
 }
