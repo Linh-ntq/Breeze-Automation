@@ -243,6 +243,11 @@ public class CommonKeyword extends BaseTest{
         driver.pressKey(new KeyEvent(AndroidKey.APP_SWITCH));
     }
 
+    public void tapOnInAppBackBtn(String pageTitle){
+        String xpath = "//android.widget.TextView[@text=\"" + pageTitle + "\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup[1]//android.widget.ImageView";
+        clickElement(xpath);
+    }
+
     public void pause(int seconds) {
         int timeInSeconds = seconds * 1000;
         try {

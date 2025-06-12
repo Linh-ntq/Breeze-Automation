@@ -15,6 +15,13 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
         if (voucherPosition.equals("Vouchers nearby section")) {
             classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
+        } else if (voucherPosition.equals("Claimed tab")) {
+            String xpath = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup[1]//android.widget.ImageView";
+            if (classDecl.commonKeyword.elementIsVisible(xpath)) { // If user is in Voucher Details page, tap back button
+                classDecl.commonKeyword.tapOnInAppBackBtn("Voucher Details");
+            }
+            classDecl.myVoucherPage.clickOnTab("Claimed");
+            classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
         } else {
             classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
         }

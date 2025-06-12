@@ -7,8 +7,8 @@ import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
     String sheetName = "VoucherData";
-    String rowName = "McDonald's";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - Voucher details form - McDonald's - Free Sundae #2 (250521) - Final.xlsx";
+    String rowName = "Singtel";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/NTUC@Breeze - Singtel Phone Plan.xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
@@ -67,7 +67,7 @@ public class VoucherDiscoveryTest extends Setup {
     }
 
     @Test(priority = 4)
-    public void verify_voucher_detail_in_voucher_module() {
+    public void verify_voucher_card_and_detail_in_voucher_module() {
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         // Pause to scan QR invitation
         classDecl.commonKeyword.pause(35);
@@ -76,16 +76,31 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
-        classDecl.voucherDiscoveryFeature.selectVoucherCategory(voucherCategory);
-        classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, rowName, voucherStartDate, voucherEndDate, "Voucher list page");
-        classDecl.myVoucherPage.clickViewBtn(voucherDescription);
 
-        //verify voucher detail in Unclaimed tab
-        classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Before claim", pathToVoucherFile, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
+        // use try - finally to make sure attachScreenRecordingToReport() run even when test failed
+        try {
+            // Verify voucher card in Unclaimed tab
+            classDecl.extentReport.startTest("Verify voucher card - Before claim");
+            classDecl.extentReport.startRecordingScreen();
+            classDecl.voucherDiscoveryFeature.selectVoucherCategory(voucherCategory);
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, rowName, voucherStartDate, voucherEndDate, "Unclaimed tab");
 
-        //verify voucher detail in Claimed tab
-        classDecl.voucherDiscoveryFeature.verifyVoucherDetail("After claim", pathToVoucherFile, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
+            // Verify voucher detail in Unclaimed tab
+            classDecl.extentReport.startTest("Verify voucher detail - Before claim");
+            classDecl.myVoucherPage.clickViewBtn(voucherDescription);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Before claim", pathToVoucherFile, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
 
+            // Verify voucher detail in Claimed tab
+            classDecl.extentReport.startTest("Verify voucher detail - After claim");
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("After claim", pathToVoucherFile, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
+
+            // Verify voucher card in Claimed tab
+            classDecl.extentReport.startTest("Verify voucher card - After claim");
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, rowName, voucherStartDate, voucherEndDate, "Claimed tab");
+        } finally {
+            classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Voucher detail");
+
+        }
     }
 
 }
