@@ -252,9 +252,9 @@ public class VoucherDiscoveryFeature extends BaseTest {
             System.out.println("Full address " + index + ": " + addressList.get(i));
             String fullAddress = addressList.get(i);
 
-            // temporarily by pass bug BREEZE2-6281
-            if (buildingName.equals("HAWKER CENTRE @ OUR TAMPINES HUB")) {
-                buildingName = "OUR TAMPINES HUB";
+            // temporarily by pass bug BREEZE2-**** by replacing building name
+            if (buildingName.equals("Input the incorrect building name here - B1")) {
+                buildingName = "Input the correct building name here - B2";
             }
 
             System.out.println("Short address when entering postal code " + index + ": " + buildingName);
@@ -263,16 +263,19 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Destination Search Page - " + postalCodeList.get(i));
             classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
 
+            // handle for exceptional cases before entering building name
+            if (buildingName.equals("RAFFLES CITY SHOPPING CENTRE")) {
+                buildingName = "RAFFLES CITY";
+            }
+
             // input building name
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
             classDecl.searchDestinationPage.inputAddress(buildingName);
             classDecl.commonKeyword.closeKeyboard();
 
-            // handle for exceptional cases
+            // handle for exceptional cases after entering building name
             if (buildingName.equals("HEARTLAND MALL-KOVAN")) {
                 buildingName = "HEARTLAND MALL KOVAN";
-            } else if (buildingName.equals("RAFFLES CITY SHOPPING CENTRE")) {
-                buildingName = "RAFFLES CITY";
             } else if (buildingName.equals("NOVENA SQUARE")) {
                 buildingName = "NOVENA SQUARE SHOPPING MALL";
             } else if (buildingName.equals("313 @ SOMERSET")) {
@@ -308,13 +311,8 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     System.out.println("Short address when entering building name " + index + ": " + buildingName);
 
                 } else {
-                    // temporarily by pass bug BREEZE2-6281 from this line
-                    if (buildingName.equals("TAMPINES MART") //
-                            || buildingName.equals("OUR TAMPINES HUB")
-                            || buildingName.equals("TOA PAYOH CENTRAL")
-                            || buildingName.equals("NORTHPOINT CITY")
-                            || buildingName.equals("510 BISHAN STREET 13") // bug BREEZE2-6291
-                    ) {
+                    // temporarily by pass bug BREEZE2-**** from this line
+                    if (buildingName.equals("Input building name that does not return vouchers by searching here to force pass temporarily")) {
                         Assert.assertTrue(true, "Force test pass when searching voucher by address: " + buildingName);
 
                         // Clear search bar > Input postal code again > Get the building name again to match search bar in the next step
@@ -348,9 +346,9 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.landingPage.tapOnPromptBar();
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
 
-            // temporarily by pass bug BREEZE2-6281
-            if (buildingName.equals("OUR TAMPINES HUB")) {
-                buildingName = "HAWKER CENTRE @ OUR TAMPINES HUB";
+            // temporarily by pass bug BREEZE2-**** by replacing building name - Switch back
+            if (buildingName.equals("B2")) {
+                buildingName = "B1";
             }
 
             classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
