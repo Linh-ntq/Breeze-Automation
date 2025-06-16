@@ -36,9 +36,9 @@ public class CommonKeyword extends BaseTest{
         for (int attempt = 0; attempt < maxScrolls; attempt++){
             try {
                 if (hasText){
-                    waitForElementVisible(xpathExpression, text);
+                    classDecl.voucherDetailPage.waitForElementVisible(xpathExpression, text);
                 } else {
-                    waitForElementVisible(xpathExpression);
+                    classDecl.voucherDetailPage.waitForElementVisible(xpathExpression);
                 }
                 // Element found, exit method
                 return;
@@ -50,6 +50,60 @@ public class CommonKeyword extends BaseTest{
 
         // If element not found, throw error
         String message = "Element still not found after scrolling " + maxScrolls + " times. Element: " + xpathExpression;
+        if (hasText) {
+            message += ", text: " + String.join(", ", text);
+        }
+        throw new Error(message);
+    }
+
+    public void scrollUntilEitherElementVisible(String xpathA, String xpathB, String... text) {
+        boolean hasText = text != null && text.length > 0;
+        int maxScrolls = 8;
+
+        for (int attempt = 0; attempt < maxScrolls; attempt++) {
+            try {
+                boolean isElementAVisible = false;
+                boolean isElementBVisible = false;
+
+                if (hasText) {
+                    try {
+                        classDecl.voucherDetailPage.waitForElementVisible(xpathA, text);
+                        isElementAVisible = true;
+                    } catch (Exception ignored) {}
+
+                    try {
+                        classDecl.voucherDetailPage.waitForElementVisible(xpathB, text);
+                        isElementBVisible = true;
+                    } catch (Exception ignored) {}
+
+                } else {
+                    try {
+                        classDecl.voucherDetailPage.waitForElementVisible(xpathA);
+                        isElementAVisible = true;
+                    } catch (Exception ignored) {}
+
+                    try {
+                        classDecl.voucherDetailPage.waitForElementVisible(xpathB);
+                        isElementBVisible = true;
+                    } catch (Exception ignored) {}
+                }
+
+                if (isElementAVisible || isElementBVisible) {
+                    // At least one element is found, exit method
+                    return;
+                }
+
+                System.out.println("Attempt " + (attempt + 1) + ": Neither element found. Scrolling...");
+                scroll("DOWN", 0.2);
+
+            } catch (Exception e) {
+                // Catch unexpected issues, continue attempting
+                System.out.println("Unexpected error on attempt " + (attempt + 1) + ": " + e.getMessage());
+            }
+        }
+
+        // If neither element is found after max attempts
+        String message = "Neither element was found after scrolling " + maxScrolls + " times. Elements: " + xpathA + " OR " + xpathB;
         if (hasText) {
             message += ", text: " + String.join(", ", text);
         }
@@ -267,13 +321,17 @@ public class CommonKeyword extends BaseTest{
     }
 
     public boolean elementIsVisible(String xpathExpression, String... texts) {
-        String xpath = String.format(xpathExpression, (Object[]) texts);
-        try {
-            // Temporarily disable implicit wait
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
+        // Temporarily disable implicit wait
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+        try {
+            if (texts != null && texts.length > 0){
+                String xpath = String.format(xpathExpression, (Object[]) texts);
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+            } else {
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpathExpression)));
+            }
             return true;
         } catch (TimeoutException e) {
             return false;

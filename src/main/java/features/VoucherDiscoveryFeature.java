@@ -257,6 +257,11 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 buildingName = "Input the correct building name here - B2";
             }
 
+            // handle for exceptional cases before entering postal code
+            if (buildingName.equals("DJIT SUN MALL")) {
+                buildingName = "DJITSUN MALL";
+            }
+
             System.out.println("Short address when entering postal code " + index + ": " + buildingName);
             Assert.assertTrue(fullAddress.toLowerCase().contains(buildingName.toLowerCase()), "The full address " + fullAddress + " does not contain building name " + buildingName);
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
@@ -266,6 +271,8 @@ public class VoucherDiscoveryFeature extends BaseTest {
             // handle for exceptional cases before entering building name
             if (buildingName.equals("RAFFLES CITY SHOPPING CENTRE")) {
                 buildingName = "RAFFLES CITY";
+            } else if (buildingName.equals("SAFRA CLUBHOUSE (PUNGGOL)")) {
+                buildingName = "SAFRA PUNGGOL";
             }
 
             // input building name
@@ -282,6 +289,16 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 buildingName = "313@SOMERSET";
             } else if (buildingName.equals("LOT ONE, SHOPPERS' MALL")) {
                 buildingName = buildingName.replace(",", "");
+            } else if (buildingName.equals("SINGAPORE POST CENTRE")) {
+                buildingName = "SingPost Centre";
+            } else if (buildingName.equals("ANCHORPOINT SHOPPING CENTRE")) {
+                buildingName = "Anchorpoint";
+            } else if (buildingName.equals("BUANGKOK SQUARE")) {
+                buildingName = "BUANGKOK SQUARE MALL";
+            } else if (buildingName.equals("SAFRA CLUBHOUSE (TOA PAYOH)")) {
+                buildingName = "SAFRA TOA PAYOH";
+            } else if (buildingName.equals("PASIR RIS SPORTS CENTRE")) {
+                buildingName = "ActiveSG Pasir Ris Sport Centre";
             } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
                 buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
                         .replaceAll(" Singapore \\d+", "")
@@ -291,7 +308,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             try {
                 // Handle for number (eg. TAMPINES ONE > TAMPINES 1)
                 if (!classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc)
-                        && !classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName, buildingName)) {
+                        && !classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase())) {
                     buildingName = handleForNumberWord(buildingName);
 
                 }
@@ -303,7 +320,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 System.out.println("Short address when entering building name " + index + ": " + buildingName);
 
             } catch (Exception e) {
-                if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName, buildingName)) {
+                if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase())) {
                     Assert.assertTrue(true, "Voucher not visible, but text 'x more voucher(s) available' found — test forced to pass.");
 
                     // Get the building name again to match search bar in the next step
@@ -336,9 +353,12 @@ public class VoucherDiscoveryFeature extends BaseTest {
             if (voucherDesc.contains("%")) {
                 classDecl.searchDestinationPage.lblVoucherAddress = classDecl.searchDestinationPage.lblVoucherAddress.replace("%s", voucherDesc);
                 classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress);
-            } else {
+            } else if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc)){
                 classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc);
+            } else {
+                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase());
             }
+
             classDecl.landingPage.verifyPromptBarText();
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Prompt bar - " + buildingName);
 

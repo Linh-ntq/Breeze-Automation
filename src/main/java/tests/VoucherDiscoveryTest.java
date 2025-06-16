@@ -7,8 +7,8 @@ import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
     String sheetName = "VoucherData";
-    String rowName = "Singtel";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/NTUC@Breeze - Singtel Phone Plan.xlsx";
+    String rowName = "McDonald's";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - Voucher details form - McDonald's - Free Sundae #2 (250521) - Final.xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
