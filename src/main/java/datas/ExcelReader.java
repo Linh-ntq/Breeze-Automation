@@ -135,25 +135,4 @@ public class ExcelReader {
 
         return itemList;
     }
-
-    public Map<String, String> getAddressFromExcelData(String filePath, String sheetName, String rowName, String colName) {
-        Map<String, String> addressMap = new HashMap<>();
-        String cellValue = ExcelReader.getValueByRowAndColumnName(filePath, sheetName, rowName, colName);
-        if (Objects.equals(colName, "Merchant locations") || Objects.equals(colName, "Postal code") || Objects.equals(colName, "Address")) {
-            if (Objects.equals(colName, "Merchant locations") || Objects.equals(colName, "Address")) {
-                String[] splitArray = cellValue.split("\n");
-                for (String item : splitArray) {
-                    String[] keyValue = item.split(":");
-                    // If both key and value exist (to avoid ArrayIndexOutOfBoundsException)
-                    if (keyValue.length == 2) {
-                        String key = keyValue[0].trim();
-                        String value = keyValue[1].trim();
-                        addressMap.put(key, value);
-                    }
-                }
-            }
-
-        }
-        return addressMap;
-    }
 }
