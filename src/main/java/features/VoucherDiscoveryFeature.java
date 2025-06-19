@@ -10,8 +10,8 @@ import static datas.ExcelReader.getValueByRowAndColumnName;
 
 public class VoucherDiscoveryFeature extends BaseTest {
 
-    public void verifyVoucherCard(String filePath, String voucherName, String startDate, String endDate, String voucherPosition) {
-        String voucherDesc = getValueByRowAndColumnName(filePath, "VoucherData", voucherName, "Voucher card details");
+    public void verifyVoucherCard(String filePath, String sheetName, String voucherName, String startDate, String endDate, String voucherPosition) {
+        String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, voucherName, "Voucher card details");
 
         if (voucherPosition.equals("Vouchers nearby section")) {
             classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
@@ -35,10 +35,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.commonPage.tabOnMenu("My Vouchers");
     }
 
-    public void verifyVoucherDetail(String voucherStatus, String filePath, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
-        String hideVehicleDetails = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "hideVehicleDetailsInput");
-        String isClaimRepeatable = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "isClaimRepeatable");
-        String isExternalClaimable = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "isExternalClaimable");
+    public void verifyVoucherDetail(String voucherStatus, String filePath, String sheetName, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
+        String hideVehicleDetails = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "hideVehicleDetailsInput");
+        String isClaimRepeatable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isClaimRepeatable");
+        String isExternalClaimable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isExternalClaimable");
 
         System.out.println("hideVehicleDetails: " + hideVehicleDetails
                 + " isClaimRepeatable: " + isClaimRepeatable
@@ -372,7 +372,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             }
 
             classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
-            classDecl.voucherDiscoveryFeature.verifyVoucherCard(filePath, rowName, startDate, endDate, "Vouchers nearby section");
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Vouchers nearby section");
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher Search Page - " + buildingName);
 
             if (postalCodeList.size() != index) {
@@ -434,7 +434,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
             classDecl.voucherModuleSearchPage.inputAddress(postalCodeList.get(i));
             classDecl.commonKeyword.closeKeyboard();
-            verifyVoucherCard(filePath, rowName, startDate, endDate, "Matched address vouchers section");
+            verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher module search - " + postalCodeList.get(i));
 
             // clear text
@@ -453,7 +453,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             System.out.println("Building name " + index + ": " + buildingNameList.get(i));
             classDecl.voucherModuleSearchPage.inputAddress(buildingNameList.get(i));
             classDecl.commonKeyword.closeKeyboard();
-            verifyVoucherCard(filePath, rowName, startDate, endDate, "Matched address vouchers section");
+            verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher module search - " + buildingNameList.get(i));
 
             // clear text
