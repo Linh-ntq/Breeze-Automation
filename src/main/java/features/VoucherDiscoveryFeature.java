@@ -10,24 +10,27 @@ import static datas.ExcelReader.getValueByRowAndColumnName;
 
 public class VoucherDiscoveryFeature extends BaseTest {
 
-    public void verifyVoucherCard(String filePath, String voucherName, String startDate, String endDate, String voucherPosition) {
-        String voucherDesc = getValueByRowAndColumnName(filePath, "VoucherData", voucherName, "Voucher card details");
-
-        if (voucherPosition.equals("Vouchers nearby section")) {
-            classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
-        } else if (voucherPosition.equals("Claimed tab")) {
-            String xpath = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup[1]//android.widget.ImageView";
-            if (classDecl.commonKeyword.elementIsVisible(xpath)) { // If user is in Voucher Details page, tap back button
-                classDecl.commonKeyword.tapOnInAppBackBtn("Voucher Details");
+    public void verifyVoucherCard(String filePath, String sheetName, String voucherName, String startDate, String endDate, String voucherPosition) {
+        String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, voucherName, "Voucher card details");
+        if (!classDecl.commonKeyword.elementIsVisible(classDecl.voucherDetailPage.lblClaimPopup, "Repeated voucher claim")){
+            if (voucherPosition.equals("Vouchers nearby section")) {
+                classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
+            } else if (voucherPosition.equals("Claimed tab")) {
+                String xpath = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup//android.widget.ImageView";
+                if (classDecl.commonKeyword.elementIsVisible(xpath)) { // If user is in Voucher Details page, tap back button
+                    classDecl.commonKeyword.tapOnInAppBackBtn("Voucher Details");
+                }
+                classDecl.myVoucherPage.clickOnTab("Claimed");
+                classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
+            } else {
+                classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
             }
-            classDecl.myVoucherPage.clickOnTab("Claimed");
-            classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
+            classDecl.voucherModuleSearchPage.verifyVoucherExpiry(voucherDesc, startDate, endDate);
+            classDecl.voucherModuleSearchPage.verifyViewMapBtn(voucherDesc);
+            classDecl.voucherModuleSearchPage.verifyViewBtn(voucherDesc);
         } else {
-            classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
+            System.out.println("Can't verify voucher card because the voucher has already claimed. Repeated voucher claim popup is displayed");
         }
-        classDecl.voucherModuleSearchPage.verifyVoucherExpiry(voucherDesc, startDate, endDate);
-        classDecl.voucherModuleSearchPage.verifyViewMapBtn(voucherDesc);
-        classDecl.voucherModuleSearchPage.verifyViewBtn(voucherDesc);
     }
 
     public void goToVoucherModulePage() {
@@ -35,10 +38,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.commonPage.tabOnMenu("My Vouchers");
     }
 
-    public void verifyVoucherDetail(String voucherStatus, String filePath, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
-        String hideVehicleDetails = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "hideVehicleDetailsInput");
-        String isClaimRepeatable = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "isClaimRepeatable");
-        String isExternalClaimable = classDecl.excelReader.getVoucherData(filePath, "VoucherData", voucherName, "isExternalClaimable");
+    public void verifyVoucherDetail(String voucherStatus, String filePath, String sheetName, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
+        String hideVehicleDetails = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "hideVehicleDetailsInput");
+        String isClaimRepeatable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isClaimRepeatable");
+        String isExternalClaimable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isExternalClaimable");
 
         System.out.println("hideVehicleDetails: " + hideVehicleDetails
                 + " isClaimRepeatable: " + isClaimRepeatable
@@ -372,7 +375,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             }
 
             classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
-            classDecl.voucherDiscoveryFeature.verifyVoucherCard(filePath, rowName, startDate, endDate, "Vouchers nearby section");
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Vouchers nearby section");
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher Search Page - " + buildingName);
 
             if (postalCodeList.size() != index) {
@@ -434,7 +437,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
             classDecl.voucherModuleSearchPage.inputAddress(postalCodeList.get(i));
             classDecl.commonKeyword.closeKeyboard();
-            verifyVoucherCard(filePath, rowName, startDate, endDate, "Matched address vouchers section");
+            verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher module search - " + postalCodeList.get(i));
 
             // clear text
@@ -453,7 +456,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             System.out.println("Building name " + index + ": " + buildingNameList.get(i));
             classDecl.voucherModuleSearchPage.inputAddress(buildingNameList.get(i));
             classDecl.commonKeyword.closeKeyboard();
-            verifyVoucherCard(filePath, rowName, startDate, endDate, "Matched address vouchers section");
+            verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
             classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher module search - " + buildingNameList.get(i));
 
             // clear text

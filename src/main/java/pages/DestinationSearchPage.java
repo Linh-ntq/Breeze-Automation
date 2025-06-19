@@ -1,7 +1,6 @@
 package pages;
 
 import commons.BaseTest;
-import org.testng.Assert;
 
 public class DestinationSearchPage extends BaseTest {
     public String lblSearchInput = "//android.widget.EditText[@text=\"Search\"]";

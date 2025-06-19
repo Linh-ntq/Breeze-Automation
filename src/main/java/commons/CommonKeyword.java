@@ -298,7 +298,7 @@ public class CommonKeyword extends BaseTest{
     }
 
     public void tapOnInAppBackBtn(String pageTitle){
-        String xpath = "//android.widget.TextView[@text=\"" + pageTitle + "\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup[1]//android.widget.ImageView";
+        String xpath = "//android.widget.TextView[@text=\"" + pageTitle + "\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup//android.widget.ImageView";
         clickElement(xpath);
     }
 
