@@ -12,22 +12,25 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
     public void verifyVoucherCard(String filePath, String sheetName, String voucherName, String startDate, String endDate, String voucherPosition) {
         String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, voucherName, "Voucher card details");
-
-        if (voucherPosition.equals("Vouchers nearby section")) {
-            classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
-        } else if (voucherPosition.equals("Claimed tab")) {
-            String xpath = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup[1]//android.widget.ImageView";
-            if (classDecl.commonKeyword.elementIsVisible(xpath)) { // If user is in Voucher Details page, tap back button
-                classDecl.commonKeyword.tapOnInAppBackBtn("Voucher Details");
+        if (!classDecl.commonKeyword.elementIsVisible(classDecl.voucherDetailPage.lblClaimPopup, "Repeated voucher claim")){
+            if (voucherPosition.equals("Vouchers nearby section")) {
+                classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
+            } else if (voucherPosition.equals("Claimed tab")) {
+                String xpath = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup//android.widget.ImageView";
+                if (classDecl.commonKeyword.elementIsVisible(xpath)) { // If user is in Voucher Details page, tap back button
+                    classDecl.commonKeyword.tapOnInAppBackBtn("Voucher Details");
+                }
+                classDecl.myVoucherPage.clickOnTab("Claimed");
+                classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
+            } else {
+                classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
             }
-            classDecl.myVoucherPage.clickOnTab("Claimed");
-            classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
+            classDecl.voucherModuleSearchPage.verifyVoucherExpiry(voucherDesc, startDate, endDate);
+            classDecl.voucherModuleSearchPage.verifyViewMapBtn(voucherDesc);
+            classDecl.voucherModuleSearchPage.verifyViewBtn(voucherDesc);
         } else {
-            classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
+            System.out.println("Can't verify voucher card because the voucher has already claimed. Repeated voucher claim popup is displayed");
         }
-        classDecl.voucherModuleSearchPage.verifyVoucherExpiry(voucherDesc, startDate, endDate);
-        classDecl.voucherModuleSearchPage.verifyViewMapBtn(voucherDesc);
-        classDecl.voucherModuleSearchPage.verifyViewBtn(voucherDesc);
     }
 
     public void goToVoucherModulePage() {

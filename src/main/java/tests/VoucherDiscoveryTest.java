@@ -7,8 +7,8 @@ import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
     String sheetName = "Sheet1";
-    String rowName = "Orchid Country Club Hotel & Golf Resort";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - Voucher details form - OCC - Deluxe rooms discount (250523) - Finalised.xlsx";
+    String rowName = "Global Art";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/voucher_v25_FIR_27031620_v2.xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
@@ -19,54 +19,6 @@ public class VoucherDiscoveryTest extends Setup {
     List<String> termConditionSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "T& C");
 
     @Test(priority = 1)
-    public void verify_voucher_destination_search() {
-        classDecl.loginFeature.goToLandingPageByGuest("Guest");
-        // Pause to scan QR invitation
-        classDecl.commonKeyword.pause(35);
-        classDecl.commonPage.tabOnMenu("Inbox");
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-        classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
-        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-        classDecl.landingPage.clickOnSearchBar();
-        classDecl.extentReport.startTest("Verify vouchers in the destination search");
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-
-    }
-
-    @Test(priority = 1)
-    public void verify_searching_by_postal_code_in_voucher_module() {
-        classDecl.loginFeature.goToLandingPageByGuest("Guest");
-        // Pause to scan QR invitation
-        classDecl.commonKeyword.pause(35);
-        classDecl.commonPage.tabOnMenu("Inbox");
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-        classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
-        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-
-        classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
-        classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");
-        classDecl.voucherDiscoveryFeature.verifySearchingByPostalCodeInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-
-    }
-
-    @Test(priority = 1)
-    public void verify_searching_by_building_name_in_voucher_module() {
-        classDecl.loginFeature.goToLandingPageByGuest("Guest");
-        // Pause to scan QR invitation
-        classDecl.commonKeyword.pause(35);
-        classDecl.commonPage.tabOnMenu("Inbox");
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-        classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
-        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-        classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with building name");
-        classDecl.voucherDiscoveryFeature.verifySearchingByBuildingNameInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-
-    }
-
-    @Test(priority = 4)
     public void verify_voucher_card_and_detail_in_voucher_module() {
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         // Pause to scan QR invitation
@@ -101,6 +53,54 @@ public class VoucherDiscoveryTest extends Setup {
             classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Voucher detail");
 
         }
+    }
+
+    @Test(priority = 2)
+    public void verify_voucher_destination_search() {
+        classDecl.loginFeature.goToLandingPageByGuest("Guest");
+        // Pause to scan QR invitation
+        classDecl.commonKeyword.pause(35);
+        classDecl.commonPage.tabOnMenu("Inbox");
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+        classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
+        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+        classDecl.landingPage.clickOnSearchBar();
+        classDecl.extentReport.startTest("Verify vouchers in the destination search");
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+
+    }
+
+    @Test(priority = 3)
+    public void verify_searching_by_postal_code_in_voucher_module() {
+        classDecl.loginFeature.goToLandingPageByGuest("Guest");
+        // Pause to scan QR invitation
+        classDecl.commonKeyword.pause(35);
+        classDecl.commonPage.tabOnMenu("Inbox");
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+        classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
+        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+
+        classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
+        classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");
+        classDecl.voucherDiscoveryFeature.verifySearchingByPostalCodeInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+
+    }
+
+    @Test(priority = 4)
+    public void verify_searching_by_building_name_in_voucher_module() {
+        classDecl.loginFeature.goToLandingPageByGuest("Guest");
+        // Pause to scan QR invitation
+        classDecl.commonKeyword.pause(35);
+        classDecl.commonPage.tabOnMenu("Inbox");
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+        classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
+        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+        classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with building name");
+        classDecl.voucherDiscoveryFeature.verifySearchingByBuildingNameInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+
     }
 
 }
