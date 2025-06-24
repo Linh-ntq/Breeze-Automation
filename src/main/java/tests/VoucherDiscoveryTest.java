@@ -13,13 +13,48 @@ public class VoucherDiscoveryTest extends Setup {
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
     String voucherCategory = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher category");
+    String merchantName = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "MerchantId");
     List<String> aboutVoucherSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "About voucher");
     List<String> howToUseSectionBeforeClaim = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "How to use voucher (before claim)");
     List<String> howToUseSectionAfterClaim = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "How to use voucher (after claim)");
     List<String> termConditionSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "T& C");
 
+    @Test(priority = 0)
+    public void verify_Singtel_voucher_card_and_detail_in_voucher_module() {
+        classDecl.loginFeature.goToLandingPageByGuest("Guest");
+        // Pause to activate Singtel Rewards program
+        classDecl.commonKeyword.pause(60);
+        classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+
+        // use try - finally to make sure attachScreenRecordingToReport() run even when test failed
+        try {
+            // Verify voucher card in Unclaimed tab
+            classDecl.extentReport.startTest("Verify voucher card - Before claim");
+            classDecl.extentReport.startRecordingScreen();
+            classDecl.voucherDiscoveryFeature.selectVoucherCategory(voucherCategory);
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "Unclaimed tab");
+
+            // Verify voucher detail in Unclaimed tab
+            classDecl.extentReport.startTest("Verify voucher detail - Before claim");
+            classDecl.myVoucherPage.clickViewBtn(voucherDescription);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Before claim", pathToVoucherFile, sheetName, merchantName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
+
+            // Verify voucher detail in Claimed tab
+            classDecl.extentReport.startTest("Verify voucher detail - After claim");
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("After claim", pathToVoucherFile, sheetName, merchantName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
+
+            // Verify voucher card in Claimed tab
+            classDecl.extentReport.startTest("Verify voucher card - After claim");
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "Claimed tab");
+        } finally {
+            classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Voucher detail");
+
+        }
+    }
+
     @Test(priority = 1)
-    public void verify_voucher_card_and_detail_in_voucher_module() {
+    public void verify_NTUC_voucher_card_and_detail_in_voucher_module() {
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         // Pause to scan QR invitation
         classDecl.commonKeyword.pause(35);
@@ -40,11 +75,11 @@ public class VoucherDiscoveryTest extends Setup {
             // Verify voucher detail in Unclaimed tab
             classDecl.extentReport.startTest("Verify voucher detail - Before claim");
             classDecl.myVoucherPage.clickViewBtn(voucherDescription);
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Before claim", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Before claim", pathToVoucherFile, sheetName, merchantName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
 
             // Verify voucher detail in Claimed tab
             classDecl.extentReport.startTest("Verify voucher detail - After claim");
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("After claim", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("After claim", pathToVoucherFile, sheetName, merchantName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
 
             // Verify voucher card in Claimed tab
             classDecl.extentReport.startTest("Verify voucher card - After claim");
