@@ -177,12 +177,16 @@ public class VoucherDetailPage extends BaseTest {
         scrollUntilElementVisible(lblWhereToUse);
     }
 
-    public void verifyClaimBtn(String isExternalClaimable, String status) {
+    public void verifyClaimBtn(String merchantName, String isExternalClaimable, String status) {
         String ClaimBtnText;
-        if (isExternalClaimable.equals("TRUE")) {
-            ClaimBtnText = "Claim on FairPrice Group app";
+        if (merchantName.equals("ntuc")){
+            if (isExternalClaimable.equals("TRUE")) {
+                ClaimBtnText = "Claim on FairPrice Group app";
+            } else {
+                ClaimBtnText = "Claim";
+            }
         } else {
-            ClaimBtnText = "Claim";
+            ClaimBtnText = "Claim on My Singtel App";
         }
 
         if (status.equals("display")) {

@@ -38,7 +38,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.commonPage.tabOnMenu("My Vouchers");
     }
 
-    public void verifyVoucherDetail(String voucherStatus, String filePath, String sheetName, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
+    public void verifyVoucherDetail(String voucherStatus, String filePath, String sheetName, String merchantName, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
         String hideVehicleDetails = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "hideVehicleDetailsInput");
         String isClaimRepeatable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isClaimRepeatable");
         String isExternalClaimable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isExternalClaimable");
@@ -60,7 +60,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
                 classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                 classDecl.voucherDetailPage.verifyVehicleDetailSection("not display");
-                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
+                classDecl.voucherDetailPage.verifyClaimBtn(merchantName, isExternalClaimable, "display");
             } else { // after claim - claimed tab
                 System.out.println("Log02");
                 // If claim button = Claim on FairPrice Group app > Tap on native back button to return Breeze app
@@ -91,12 +91,12 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         if (isExternalClaimable.equals("TRUE")) {
                             System.out.println("Log05: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, button Use voucher now and Claim on FairPrice Group");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
-                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
+                            classDecl.voucherDetailPage.verifyClaimBtn(merchantName, isExternalClaimable, "display");
 
                         } else {
                             System.out.println("Log06: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = FALSE, button Claim on FairPrice Group");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
-                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
+                            classDecl.voucherDetailPage.verifyClaimBtn(merchantName, isExternalClaimable, "not display");
                         }
 
                     } else {
@@ -128,12 +128,12 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         if (isExternalClaimable.equals("TRUE")) {
                             System.out.println("Log10: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, button Use voucher now and Claim");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
-                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
+                            classDecl.voucherDetailPage.verifyClaimBtn(merchantName, isExternalClaimable, "display");
 
                         } else {
                             System.out.println("Log11: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = FALSE, button Use voucher now");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
-                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
+                            classDecl.voucherDetailPage.verifyClaimBtn(merchantName, isExternalClaimable, "not display");
                         }
                     } else { // if voucher can be claimed only one time per eid, and it was claimed by another before
                         System.out.println("Log12: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = " + isExternalClaimable + ", repeated claim voucher popup");
@@ -153,7 +153,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
                 classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                 classDecl.voucherDetailPage.verifyVehicleDetailSection("display");
-                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
+                classDecl.voucherDetailPage.verifyClaimBtn(merchantName, isExternalClaimable, "display");
 
             } else { // after claim - claimed tab
                 System.out.println("Log14");
@@ -179,7 +179,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
                     classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                     classDecl.voucherDetailPage.verifyVehicleDetailSection("not display");
-                    classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
+                    classDecl.voucherDetailPage.verifyClaimBtn(merchantName, isExternalClaimable, "not display");
                     classDecl.voucherDetailPage.verifyUseBtn("not display");
                 } else { // if voucher can be claimed only one time per eid, and it was claimed by another before
                     System.out.println("Log16");
