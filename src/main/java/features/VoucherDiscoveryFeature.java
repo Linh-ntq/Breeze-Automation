@@ -16,7 +16,9 @@ public class VoucherDiscoveryFeature extends BaseTest {
             if (voucherPosition.equals("Vouchers nearby section")) {
                 classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
             } else if (voucherPosition.equals("Claimed tab")) {
-                String xpath = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup//android.widget.ImageView";
+                String xpath1 = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
+                String xpath2 = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup//android.widget.ImageView";
+                String xpath = xpath1 + " | " + xpath2;
                 if (classDecl.commonKeyword.elementIsVisible(xpath)) { // If user is in Voucher Details page, tap back button
                     classDecl.commonKeyword.tapOnInAppBackBtn("Voucher Details");
                 }
@@ -79,7 +81,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
                         // Scroll up to go to top of page
                         classDecl.commonKeyword.pause(3);
-                        classDecl.commonKeyword.scroll("UP", 0.7);
+                        classDecl.commonKeyword.scroll("UP", 1);
                         classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
                         classDecl.commonKeyword.elementNotVisible(classDecl.voucherDetailPage.lblCarpark);
                         classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
@@ -260,7 +262,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 buildingName = "Input the correct building name here - B2";
             }
 
-            // handle for exceptional cases before entering postal code
+            // handle for exceptional cases before comparing the returned building name from postal code searching
             if (buildingName.equals("DJIT SUN MALL")) {
                 buildingName = "DJITSUN MALL";
             }

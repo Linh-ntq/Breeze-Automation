@@ -114,7 +114,12 @@ public class VoucherDetailPage extends BaseTest {
             if (startD.before(currentDate)) {
                 waitForElementVisible(lblVoucherExpiry, "Valid until " + formattedEnd);
             } else {
-                waitForElementVisible(lblVoucherExpiry, "Valid from " + formattedStart + " to " + formattedEnd);
+                String xpath = "//android.view.ViewGroup/android.widget.TextView[contains(@text, 'Valid for use from')]";
+                if (classDecl.commonKeyword.elementIsVisible(xpath)){
+                    waitForElementVisible(lblVoucherExpiry, "Valid for use from " + formattedStart + " to " + formattedEnd);
+                } else {
+                    waitForElementVisible(lblVoucherExpiry, "Valid from " + formattedStart + " to " + formattedEnd);
+                }
             }
         } catch (ParseException e) {
             logger.log(Level.SEVERE, "Error parsing voucher expiry dates", e);
