@@ -76,8 +76,8 @@ public class VoucherModuleSearchPage extends BaseTest {
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
         classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherDesc, voucherName, voucherDesc);
-        classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
-        classDecl.commonKeyword.elementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
+        classDecl.commonKeyword.verifyElementNotVisible(lblVoucherNameAtNearby1, voucherName, voucherDesc);
+        classDecl.commonKeyword.verifyElementNotVisible(lblVoucherNameAtNearby2, voucherName, voucherDesc);
     }
 
     public void verifyVoucherAtNearbySection(String voucherName, String voucherDesc) {

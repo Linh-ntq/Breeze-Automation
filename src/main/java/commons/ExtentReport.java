@@ -39,7 +39,6 @@ public class ExtentReport extends BaseTest{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return screenshotPath;
     }
 

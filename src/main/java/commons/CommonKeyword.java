@@ -110,7 +110,7 @@ public class CommonKeyword extends BaseTest{
         throw new Error(message);
     }
 
-    public void elementNotVisible(String xpathExpression, String... text) {
+    public void verifyElementNotVisible(String xpathExpression, String... text) {
         // Temporarily disable implicit wait
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -128,7 +128,7 @@ public class CommonKeyword extends BaseTest{
         }
     }
 
-        public void clickElement(String xpathExpression) {
+    public void clickElement(String xpathExpression) {
         waitForElementVisible(xpathExpression);
         driver.findElement(By.xpath(xpathExpression)).click();
     }

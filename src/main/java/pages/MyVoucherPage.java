@@ -3,6 +3,11 @@ package pages;
 import commons.BaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MyVoucherPage extends BaseTest {
     public String btnView = "//android.widget.TextView[@text=\"%s\"]/ancestor::android.view.ViewGroup/android.view.ViewGroup/android.widget.TextView[@text=\"View\"]"; // voucher detail
@@ -47,5 +52,21 @@ public class MyVoucherPage extends BaseTest {
 
     public void clickOnTab(String tabName){
         classDecl.commonKeyword.clickElement(lblTabName, tabName);
+    }
+
+    public void verifyUtilizationDate() {
+        Logger logger = Logger.getLogger(getClass().getName());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        try {
+            String formattedDate = outputFormat.format(new Date());
+            classDecl.commonKeyword.waitForElementVisible(classDecl.voucherDetailPage.lblVoucherExpiry, "Used on " + formattedDate);
+
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error parsing voucher expiry dates", e);
+        }
+    }
+
+    public void verifyUsedTag() {
+        classDecl.commonKeyword.waitForElementVisible(classDecl.voucherDetailPage.lblVoucherExpiry, "Used");
     }
 }

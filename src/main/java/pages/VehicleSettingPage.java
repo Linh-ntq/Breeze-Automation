@@ -82,10 +82,10 @@ public class VehicleSettingPage extends BaseTest {
         classDecl.commonKeyword.waitForElementVisible(btnArrow);
 
         if (status.equals("collapse")) {
-            classDecl.commonKeyword.elementNotVisible(lblPointOneTitle);
-            classDecl.commonKeyword.elementNotVisible(lblPointTwoTitle);
-            classDecl.commonKeyword.elementNotVisible(lblPointThreeTitle);
-            classDecl.commonKeyword.elementNotVisible(lblPointFourTitle);
+            classDecl.commonKeyword.verifyElementNotVisible(lblPointOneTitle);
+            classDecl.commonKeyword.verifyElementNotVisible(lblPointTwoTitle);
+            classDecl.commonKeyword.verifyElementNotVisible(lblPointThreeTitle);
+            classDecl.commonKeyword.verifyElementNotVisible(lblPointFourTitle);
         } else {
             classDecl.commonKeyword.scrollToElementByXPath(lblPointFourTitle);
             classDecl.commonKeyword.waitForElementVisible(lblPointOneTitle);
@@ -116,9 +116,9 @@ public class VehicleSettingPage extends BaseTest {
 
     public void verifyVehicleDetailDialog(String status) {
         if (status.equals("not visible")) {
-            classDecl.commonKeyword.elementNotVisible(lblConfirmMsg);
-            classDecl.commonKeyword.elementNotVisible(btnCancel);
-            classDecl.commonKeyword.elementNotVisible(btnConfirm);
+            classDecl.commonKeyword.verifyElementNotVisible(lblConfirmMsg);
+            classDecl.commonKeyword.verifyElementNotVisible(btnCancel);
+            classDecl.commonKeyword.verifyElementNotVisible(btnConfirm);
         } else {
             classDecl.commonKeyword.waitForElementVisible(lblConfirmMsg);
             classDecl.commonKeyword.waitForElementVisible(btnCancel);

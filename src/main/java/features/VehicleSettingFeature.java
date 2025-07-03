@@ -44,7 +44,7 @@ public class VehicleSettingFeature extends BaseTest {
     }
 
     public void verifySkipButtonIsNotVisible(){
-        classDecl.commonKeyword.elementNotVisible(classDecl.vehicleSettingPage.btnSkipForNow);
+        classDecl.commonKeyword.verifyElementNotVisible(classDecl.vehicleSettingPage.btnSkipForNow);
     }
 
     public void inputVehicleInfo(String vehicleType, String vehicleNo, String vehicleBrand, String installOBU, String uiNumber, String energyType){

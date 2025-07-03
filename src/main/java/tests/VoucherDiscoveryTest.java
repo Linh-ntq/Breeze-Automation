@@ -40,15 +40,27 @@ public class VoucherDiscoveryTest extends Setup {
             // Verify voucher detail in Unclaimed tab
             classDecl.extentReport.startTest("Verify voucher detail - Before claim");
             classDecl.myVoucherPage.clickViewBtn(voucherDescription);
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Before claim", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Unclaimed", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
 
             // Verify voucher detail in Claimed tab
             classDecl.extentReport.startTest("Verify voucher detail - After claim");
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("After claim", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Claimed", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
 
             // Verify voucher card in Claimed tab
             classDecl.extentReport.startTest("Verify voucher card - After claim");
             classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "Claimed tab");
+
+            classDecl.myVoucherPage.clickViewBtn(voucherDescription);
+            classDecl.voucherDiscoveryFeature.confirmUseVoucher(rowName, voucherDescription);
+
+            // Verify voucher card in History tab
+            classDecl.extentReport.startTest("Verify voucher card - After utilization");
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "History tab");
+
+            // Verify voucher detail in History tab
+            classDecl.extentReport.startTest("Verify voucher detail - After utilization");
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("History", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
+
         } finally {
             classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Voucher detail");
 

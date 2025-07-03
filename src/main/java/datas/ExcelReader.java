@@ -2,16 +2,13 @@ package datas;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class ExcelReader {
-    private static final Logger logger = Logger.getLogger(ExcelReader.class.getName());
 
     // This method retrieves the value based on row name (e.g., "A") and column name (e.g., "B")
     public static String getValueByRowAndColumnName(String filePath, String sheetName, String rowName, String colName) {

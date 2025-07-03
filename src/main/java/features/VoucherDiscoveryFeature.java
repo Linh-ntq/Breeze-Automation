@@ -12,13 +12,24 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
     public void verifyVoucherCard(String filePath, String sheetName, String voucherName, String startDate, String endDate, String voucherPosition) {
         String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, voucherName, "Voucher card details");
-        if (!classDecl.commonKeyword.elementIsVisible(classDecl.voucherDetailPage.lblClaimPopup, "Repeated voucher claim")){
+        String xpath1 = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
+        String xpath2 = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup//android.widget.ImageView";
+        String xpath = xpath1 + " | " + xpath2;
+
+        if (voucherPosition.equals("History tab")) {
+            if (classDecl.commonKeyword.elementIsVisible(xpath)) { // If user is in Voucher Details page, tap back button
+                classDecl.commonKeyword.tapOnInAppBackBtn("Voucher Details");
+            }
+            classDecl.myVoucherPage.clickOnTab("History");
+            classDecl.voucherModuleSearchPage.verifyVoucherAtSearchedDestSection(voucherName, voucherDesc);
+            classDecl.myVoucherPage.verifyUtilizationDate();
+            classDecl.myVoucherPage.verifyUsedTag();
+            classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherModuleSearchPage.btnViewMap, voucherDesc);
+            classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherModuleSearchPage.btnView, voucherDesc);
+        } else {
             if (voucherPosition.equals("Vouchers nearby section")) {
                 classDecl.voucherModuleSearchPage.verifyVoucherAtNearbySection(voucherName, voucherDesc);
             } else if (voucherPosition.equals("Claimed tab")) {
-                String xpath1 = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
-                String xpath2 = "//android.widget.TextView[@text=\"Voucher Details\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup//android.widget.ImageView";
-                String xpath = xpath1 + " | " + xpath2;
                 if (classDecl.commonKeyword.elementIsVisible(xpath)) { // If user is in Voucher Details page, tap back button
                     classDecl.commonKeyword.tapOnInAppBackBtn("Voucher Details");
                 }
@@ -30,8 +41,6 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.voucherModuleSearchPage.verifyVoucherExpiry(voucherDesc, startDate, endDate);
             classDecl.voucherModuleSearchPage.verifyViewMapBtn(voucherDesc);
             classDecl.voucherModuleSearchPage.verifyViewBtn(voucherDesc);
-        } else {
-            System.out.println("Can't verify voucher card because the voucher has already claimed. Repeated voucher claim popup is displayed");
         }
     }
 
@@ -40,7 +49,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.commonPage.tabOnMenu("My Vouchers");
     }
 
-    public void verifyVoucherDetail(String voucherStatus, String filePath, String sheetName, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
+    public void verifyVoucherDetail(String voucherTab, String filePath, String sheetName, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition) {
         String hideVehicleDetails = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "hideVehicleDetailsInput");
         String isClaimRepeatable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isClaimRepeatable");
         String isExternalClaimable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isExternalClaimable");
@@ -51,10 +60,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
         String btnClaimFairPrice = "//android.widget.TextView[@text='Claim on FairPrice Group app']";
 
         if (hideVehicleDetails.equals("TRUE")) { // vehicle detail is hidden - merchant non cp voucher
-            if (voucherStatus.equals("Before claim")) { // before claim - unclaimed tab
+            if (voucherTab.equals("Unclaimed")) { // before claim - unclaimed tab
                 System.out.println("Log01");
                 classDecl.voucherDetailPage.verifyPageTitle("Claim Voucher");
-                classDecl.commonKeyword.elementNotVisible(classDecl.voucherDetailPage.lblCarpark);
+                classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherDetailPage.lblCarpark);
                 classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
                 classDecl.voucherDetailPage.verifyVoucherExpiry(startDate, endDate);
                 classDecl.voucherDetailPage.verifyAboutVoucherSection(aboutVoucher);
@@ -63,7 +72,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                 classDecl.voucherDetailPage.verifyVehicleDetailSection("not display");
                 classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
-            } else { // after claim - claimed tab
+            } else if (voucherTab.equals("Claimed")) { // after claim - claimed tab
                 System.out.println("Log02");
                 // If claim button = Claim on FairPrice Group app > Tap on native back button to return Breeze app
                 if (classDecl.commonKeyword.elementIsVisible(btnClaimFairPrice)) {
@@ -81,9 +90,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
                         // Scroll up to go to top of page
                         classDecl.commonKeyword.pause(3);
-                        classDecl.commonKeyword.scroll("UP", 1);
+                        classDecl.commonKeyword.scroll("UP", 0.5);
+                        classDecl.commonKeyword.scroll("UP", 0.5);
                         classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
-                        classDecl.commonKeyword.elementNotVisible(classDecl.voucherDetailPage.lblCarpark);
+                        classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherDetailPage.lblCarpark);
                         classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
                         classDecl.voucherDetailPage.verifyVoucherExpiry(startDate, endDate);
                         classDecl.voucherDetailPage.verifyAboutVoucherSection(aboutVoucher);
@@ -104,6 +114,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     } else {
                         System.out.println("Log07: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = " + isExternalClaimable + ", repeated claim voucher popup");
                         verifyRepeatedClaimPopup();
+                        classDecl.extentReport.attachScreenshotToReport(voucherName + " - Repeated claim voucher");
                     }
                 } else {  // If claim button = Claim  > Tap on the button return claim popup
                     System.out.println("Log08");
@@ -118,9 +129,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
                         // Scroll up to go to top of page
                         classDecl.commonKeyword.pause(3);
-                        classDecl.commonKeyword.scroll("UP", 0.7);
+                        classDecl.commonKeyword.scroll("UP", 0.5);
+                        classDecl.commonKeyword.scroll("UP", 0.5);
                         classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
-                        classDecl.commonKeyword.elementNotVisible(classDecl.voucherDetailPage.lblCarpark);
+                        classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherDetailPage.lblCarpark);
                         classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
                         classDecl.voucherDetailPage.verifyVoucherExpiry(startDate, endDate);
                         classDecl.voucherDetailPage.verifyAboutVoucherSection(aboutVoucher);
@@ -140,12 +152,30 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     } else { // if voucher can be claimed only one time per eid, and it was claimed by another before
                         System.out.println("Log12: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = " + isExternalClaimable + ", repeated claim voucher popup");
                         verifyRepeatedClaimPopup();
+                        classDecl.extentReport.attachScreenshotToReport(voucherName + " - Repeated claim voucher");
                     }
                 }
+            } else { // after claim - history tab ((voucherTab.equals("History"))
+                System.out.println("Log13");
+                // Click on voucher description in voucher card
+                classDecl.commonKeyword.clickElement(classDecl.voucherDetailPage.lblVoucherDesc, voucherDesc);
+
+                classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
+                classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherDetailPage.lblCarpark);
+                classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
+                classDecl.voucherDetailPage.verifyVoucherExpiry(startDate, endDate);
+                classDecl.voucherDetailPage.verifyAboutVoucherSection(aboutVoucher);
+                classDecl.voucherDetailPage.verifyWhereToUsSection();
+                classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
+                classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
+                classDecl.voucherDetailPage.verifyVehicleDetailSection("not display");
+                classDecl.voucherDetailPage.verifyUseBtn("not display");
+                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
+
             }
         } else { // hideVehicleDetails.equals("FALSE") - vehicle detail is show - cp voucher
-            if (voucherStatus.equals("Before claim")) { // before claim - unclaimed tab
-                System.out.println("Log13");
+            if (voucherTab.equals("Unclaimed")) { // before claim - unclaimed tab
+                System.out.println("Log14");
                 classDecl.voucherDetailPage.verifyPageTitle("Claim Voucher");
                 classDecl.voucherDetailPage.verifyRegisterVehicleText();
                 classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
@@ -158,22 +188,23 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
 
             } else { // after claim - claimed tab
-                System.out.println("Log14");
+                System.out.println("Log15");
                 classDecl.voucherDetailPage.enterVehicleDetail(classDecl.datas.nonIncomeInsuredNo);
                 classDecl.voucherDetailPage.clickClaimBtn(isExternalClaimable);
                 // if voucher can be claimed repeatedly or voucher can be claimed only one time per eid but this is the first time voucher claimed
                 if (isClaimRepeatable.equals("TRUE")
                         || (isClaimRepeatable.equals("FALSE")
                         && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherDetailPage.lblClaimPopup, "Repeated voucher claim"))) {
-                    System.out.println("Log15");
+                    System.out.println("Log16");
                     verifySuccessfullyClaimedPopup(voucherName, startDate, endDate);
                     classDecl.voucherDetailPage.clickViewVoucherDetailsBtn();
 
                     // Scroll up to go to top of page
                     classDecl.commonKeyword.pause(3);
-                    classDecl.commonKeyword.scroll("UP", 0.7);
+                    classDecl.commonKeyword.scroll("UP", 0.5);
+                    classDecl.commonKeyword.scroll("UP", 0.5);
                     classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
-                    classDecl.commonKeyword.elementNotVisible(classDecl.voucherDetailPage.lblCarpark);
+                    classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherDetailPage.lblCarpark);
                     classDecl.voucherDetailPage.verifyVoucherDesc(voucherName, voucherDesc);
                     classDecl.voucherDetailPage.verifyVoucherExpiry(startDate, endDate);
                     classDecl.voucherDetailPage.verifyAboutVoucherSection(aboutVoucher);
@@ -184,8 +215,9 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
                     classDecl.voucherDetailPage.verifyUseBtn("not display");
                 } else { // if voucher can be claimed only one time per eid, and it was claimed by another before
-                    System.out.println("Log16");
+                    System.out.println("Log17");
                     verifyRepeatedClaimPopup();
+                    classDecl.extentReport.attachScreenshotToReport(voucherName + " - Repeated claim voucher");
                 }
 
             }
@@ -196,6 +228,8 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.voucherDetailPage.verifyRepeatedClaimTitle();
         classDecl.voucherDetailPage.verifyRepeatedClaimDesc();
         classDecl.voucherDetailPage.verifyRepeatedClaimButton();
+        // Forcefully fail the test
+        Assert.fail("Forcing test to fail: The voucher has already been claimed using the same NTUC details previously");
     }
 
     public void verifySuccessfullyClaimedPopup(String voucherTitle, String startD, String endD) {
@@ -238,6 +272,8 @@ public class VoucherDiscoveryFeature extends BaseTest {
         List<String> postalCodeList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
         List<String> addressList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
         String voucherDesc = String.valueOf(classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Voucher card details").get(0));
+        List<String> failedPostalCodeLst = new ArrayList<>();
+        List<String> failedBuildingNameLst = new ArrayList<>();
         if (voucherDesc.contains("TM")) {
             voucherDesc = voucherDesc.replaceAll("TM", "™");
         }
@@ -253,144 +289,157 @@ public class VoucherDiscoveryFeature extends BaseTest {
             classDecl.commonKeyword.closeInAppAlertsIfVisible();
             classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i));
             classDecl.commonKeyword.closeKeyboard();
-            String buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
-            System.out.println("Full address " + index + ": " + addressList.get(i));
-            String fullAddress = addressList.get(i);
+            if ((!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "not display"))
+                    && (!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "display"))) {
 
-            // temporarily by pass bug BREEZE2-**** by replacing building name
-            if (buildingName.equals("Input the incorrect building name here - B1")) {
-                buildingName = "Input the correct building name here - B2";
-            }
+                failedPostalCodeLst.add(postalCodeList.get(i));
+                classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Destination Search - " + postalCodeList.get(i));
+                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
 
-            // handle for exceptional cases before comparing the returned building name from postal code searching
-            if (buildingName.equals("DJIT SUN MALL")) {
-                buildingName = "DJITSUN MALL";
-            }
+            } else {
 
-            System.out.println("Short address when entering postal code " + index + ": " + buildingName);
-            Assert.assertTrue(fullAddress.toLowerCase().contains(buildingName.toLowerCase()), "The full address " + fullAddress + " does not contain building name " + buildingName);
-            classDecl.commonKeyword.closeInAppAlertsIfVisible();
-            classDecl.extentReport.attachScreenshotToReport(rowName + " - Destination Search Page - " + postalCodeList.get(i));
-            classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
+                String buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
+                System.out.println("Full address " + index + ": " + addressList.get(i));
+                String fullAddress = addressList.get(i);
 
-            // handle for exceptional cases before entering building name
-            if (buildingName.equals("RAFFLES CITY SHOPPING CENTRE")) {
-                buildingName = "RAFFLES CITY";
-            } else if (buildingName.equals("SAFRA CLUBHOUSE (PUNGGOL)")) {
-                buildingName = "SAFRA PUNGGOL";
-            }
-
-            // input building name
-            classDecl.commonKeyword.closeInAppAlertsIfVisible();
-            classDecl.searchDestinationPage.inputAddress(buildingName);
-            classDecl.commonKeyword.closeKeyboard();
-
-            // handle for exceptional cases after entering building name
-            if (buildingName.equals("HEARTLAND MALL-KOVAN")) {
-                buildingName = "HEARTLAND MALL KOVAN";
-            } else if (buildingName.equals("NOVENA SQUARE")) {
-                buildingName = "NOVENA SQUARE SHOPPING MALL";
-            } else if (buildingName.equals("313 @ SOMERSET")) {
-                buildingName = "313@SOMERSET";
-            } else if (buildingName.equals("LOT ONE, SHOPPERS' MALL")) {
-                buildingName = buildingName.replace(",", "");
-            } else if (buildingName.equals("SINGAPORE POST CENTRE")) {
-                buildingName = "SingPost Centre";
-            } else if (buildingName.equals("ANCHORPOINT SHOPPING CENTRE")) {
-                buildingName = "Anchorpoint";
-            } else if (buildingName.equals("BUANGKOK SQUARE")) {
-                buildingName = "BUANGKOK SQUARE MALL";
-            } else if (buildingName.equals("SAFRA CLUBHOUSE (TOA PAYOH)")) {
-                buildingName = "SAFRA TOA PAYOH";
-            } else if (buildingName.equals("PASIR RIS SPORTS CENTRE")) {
-                buildingName = "ActiveSG Pasir Ris Sport Centre";
-            } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
-                buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
-                        .replaceAll(" Singapore \\d+", "")
-                        .replaceAll(" \\d{6}$", "");
-            }
-
-            try {
-                // Handle for number (eg. TAMPINES ONE > TAMPINES 1)
-                if (!classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc)
-                        && !classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase())) {
-                    buildingName = handleForNumberWord(buildingName);
-
+                // handle for exceptional cases before comparing the returned building name from postal code searching
+                if (buildingName.equals("DJIT SUN MALL")) {
+                    buildingName = "DJITSUN MALL";
                 }
 
-                classDecl.commonKeyword.waitForElementVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc);
+                System.out.println("Short address when entering postal code " + index + ": " + buildingName);
+                if (fullAddress.toLowerCase().contains(buildingName.toLowerCase())) {
+                    Assert.assertTrue(true);
+                    classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                    classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Destination Search - " + postalCodeList.get(i));
+                } else {
+                    System.out.println("The full address " + fullAddress + " does not contain building name " + buildingName);
+                    failedPostalCodeLst.add(postalCodeList.get(i));
+                    classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Destination Search - " + postalCodeList.get(i));
+                }
 
-                // Get the building name again to match search bar in the next step
-                buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
-                System.out.println("Short address when entering building name " + index + ": " + buildingName);
+                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
 
-            } catch (Exception e) {
-                if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase())) {
-                    Assert.assertTrue(true, "Voucher not visible, but text 'x more voucher(s) available' found — test forced to pass.");
+                // handle for exceptional cases before entering building name
+                if (buildingName.equals("RAFFLES CITY SHOPPING CENTRE")) {
+                    buildingName = "RAFFLES CITY";
+                } else if (buildingName.equals("SAFRA CLUBHOUSE (PUNGGOL)")) {
+                    buildingName = "SAFRA PUNGGOL";
+                } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
+                    buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
+                            .replaceAll(" Singapore \\d+", "")
+                            .replaceAll(" \\d{6}$", "");
+                }
+
+                // input building name
+                classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                classDecl.searchDestinationPage.inputAddress(buildingName);
+                classDecl.commonKeyword.closeKeyboard();
+
+                // handle for exceptional cases after entering building name
+                if (buildingName.equals("HEARTLAND MALL-KOVAN")) {
+                    buildingName = "HEARTLAND MALL KOVAN";
+                } else if (buildingName.equals("NOVENA SQUARE")) {
+                    buildingName = "NOVENA SQUARE SHOPPING MALL";
+                } else if (buildingName.equals("313 @ SOMERSET")) {
+                    buildingName = "313@SOMERSET";
+                } else if (buildingName.equals("LOT ONE, SHOPPERS' MALL")) {
+                    buildingName = buildingName.replace(",", "");
+                } else if (buildingName.equals("SINGAPORE POST CENTRE")) {
+                    buildingName = "SingPost Centre";
+                } else if (buildingName.equals("ANCHORPOINT SHOPPING CENTRE")) {
+                    buildingName = "Anchorpoint";
+                } else if (buildingName.equals("BUANGKOK SQUARE")) {
+                    buildingName = "BUANGKOK SQUARE MALL";
+                } else if (buildingName.equals("SAFRA CLUBHOUSE (TOA PAYOH)")) {
+                    buildingName = "SAFRA TOA PAYOH";
+                } else if (buildingName.equals("PASIR RIS SPORTS CENTRE")) {
+                    buildingName = "ActiveSG Pasir Ris Sport Centre";
+                } else if (buildingName.equals("SHELL HOUGANG")) {
+                    buildingName = "SHELL (HOUGANG)";
+                } else if (buildingName.equals("SHELL HAVELOCK")) {
+                    buildingName = "Shell (Havelock )";
+                } else if (buildingName.equals("SHELL TAMPINES AVENUE 2")) {
+                    buildingName = "Shell";
+                } else if (buildingName.equals("26 CHOA CHU KANG DRIVE")) {
+                    buildingName = "McDonald's Choa Chu Kang Park (Drive-Thru)";
+                } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
+                    buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
+                            .replaceAll(" Singapore \\d+", "")
+                            .replaceAll(" \\d{6}$", "");
+                }
+
+                if ((!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "not display"))
+                        && (!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "display"))) {
+
+                    failedBuildingNameLst.add(buildingName);
+                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Destination Search - " + buildingName);
+                    classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
+
+                } else {
+                    // Handle for number (eg. TAMPINES ONE > TAMPINES 1)
+                    if (!classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc)
+                            && !classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase())) {
+                        buildingName = handleForNumberWord(buildingName);
+
+                    }
+
+                    if (buildingName.equalsIgnoreCase(classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName))) {
+                        Assert.assertTrue(true);
+                        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Destination Search - " + buildingName);
+                    } else {
+                        System.out.println("The building name searched by " + buildingName + " does not match the building name searched by " + postalCodeList.get(i));
+                        failedBuildingNameLst.add(buildingName);
+                        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Destination Search - " + buildingName);
+                    }
 
                     // Get the building name again to match search bar in the next step
                     buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
                     System.out.println("Short address when entering building name " + index + ": " + buildingName);
 
-                } else {
-                    // temporarily by pass bug BREEZE2-**** from this line
-                    if (buildingName.equals("Input building name that does not return vouchers by searching here to force pass temporarily")) {
-                        Assert.assertTrue(true, "Force test pass when searching voucher by address: " + buildingName);
-
-                        // Clear search bar > Input postal code again > Get the building name again to match search bar in the next step
-                        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
-                        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                        classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i));
-                        classDecl.commonKeyword.closeKeyboard();
-                        System.out.println("Short address when entering postal code again " + index + ": " + buildingName);
-                        // to this line
+                    if (voucherDesc.contains("%")) {
+                        classDecl.searchDestinationPage.lblVoucherAddress = classDecl.searchDestinationPage.lblVoucherAddress.replace("%s", voucherDesc);
+                        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress);
+                    } else if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc)) {
+                        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc);
                     } else {
-                        System.out.println("Test failed: Neither voucher nor text 'x more voucher(s) available' visible.");
-                        classDecl.commonKeyword.waitForElementVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc);
+                        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase());
+                    }
+
+                    if (!classDecl.commonKeyword.getText(classDecl.landingPage.lblPromptBarDest).isEmpty()) {
+                        classDecl.landingPage.verifyPromptBarText();
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Prompt bar - " + buildingName);
+
+                        // tap on the prompt bar & verify voucher card in the voucher search page
+                        classDecl.landingPage.tapOnPromptBar();
+                        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+
+                        classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
+                        classDecl.voucherDiscoveryFeature.verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Vouchers nearby section");
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher Search - " + buildingName);
+
+                        if (postalCodeList.size() != index) {
+                            // Go back to destination search page
+                            classDecl.commonKeyword.tapOnNativeBackBtn();
+                            classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                            classDecl.landingPage.tapOnSearchBarName(buildingName);
+
+                        } else {
+                            System.out.println("index i " + index + " is equal to address size " + postalCodeList.size() + ". No more items to search");
+                        }
+                    } else {
+                        Assert.assertTrue(true);
+                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Prompt bar - " + buildingName);
                     }
                 }
             }
-
-            // tap on the address that contains voucher & verify prompt bar
-            classDecl.commonKeyword.closeInAppAlertsIfVisible();
-            classDecl.extentReport.attachScreenshotToReport(rowName + " - Destination Search Page - " + buildingName);
-
-            if (voucherDesc.contains("%")) {
-                classDecl.searchDestinationPage.lblVoucherAddress = classDecl.searchDestinationPage.lblVoucherAddress.replace("%s", voucherDesc);
-                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress);
-            } else if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc)){
-                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc);
-            } else {
-                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase());
-            }
-
-            classDecl.landingPage.verifyPromptBarText();
-            classDecl.extentReport.attachScreenshotToReport(rowName + " - Prompt bar - " + buildingName);
-
-            // tap on the prompt bar & verify voucher card in the voucher search page
-            classDecl.landingPage.tapOnPromptBar();
-            classDecl.commonKeyword.closeInAppAlertsIfVisible();
-
-            // temporarily by pass bug BREEZE2-**** by replacing building name - Switch back
-            if (buildingName.equals("B2")) {
-                buildingName = "B1";
-            }
-
-            classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
-            classDecl.voucherDiscoveryFeature.verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Vouchers nearby section");
-            classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher Search Page - " + buildingName);
-
-            if (postalCodeList.size() != index) {
-                // Go back to destination search page
-                classDecl.commonKeyword.tapOnNativeBackBtn();
-                classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                classDecl.landingPage.tapOnSearchBarName(buildingName);
-
-            } else {
-                System.out.println("index i " + index + " is equal to address size " + postalCodeList.size() + ". No more items to search");
-            }
-
         }
+
+        System.out.println("List of failed postal code: " + failedPostalCodeLst);
+        System.out.println("List of failed building name: " + failedBuildingNameLst);
 
     }
 
@@ -476,4 +525,30 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.myVoucherPage.selectCategory(voucherCategory);
         classDecl.myVoucherPage.clickApplyBtn();
     }
+
+    public void verifyConfirmUsePopup() {
+        classDecl.voucherDetailPage.verifyConfirmUsePopupTitle();
+        classDecl.voucherDetailPage.verifyConfirmUsePopupDesc();
+        classDecl.voucherDetailPage.verifyConfirmUsePopupBtn();
+        classDecl.voucherDetailPage.verifyCloseConfirmUseBtn();
+    }
+
+    public void verifyUsedVoucherPopup(String voucherName, String voucherDesc) {
+        classDecl.voucherDetailPage.verifyUsedOnTitle();
+        classDecl.voucherDetailPage.verifyUsedDateTime();
+        classDecl.voucherDetailPage.verifyUsedVoucherDesc(voucherName + " - " + voucherDesc);
+        classDecl.voucherDetailPage.verifyUsedGuideDesc();
+        classDecl.voucherDetailPage.verifyBackToVouchersBtn();
+        classDecl.voucherDetailPage.clickBackToVouchersBtn();
+
+    }
+
+    public void confirmUseVoucher(String voucherName, String voucherDesc) {
+        classDecl.voucherDetailPage.clickUseVoucherNowBtn();
+        classDecl.voucherDiscoveryFeature.verifyConfirmUsePopup();
+        classDecl.voucherDetailPage.clickConfirmUseVoucher();
+        classDecl.voucherDiscoveryFeature.verifyUsedVoucherPopup(voucherName, voucherDesc);
+
+    }
+
 }

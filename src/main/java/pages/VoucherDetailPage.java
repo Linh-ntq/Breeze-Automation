@@ -7,6 +7,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +36,7 @@ public class VoucherDetailPage extends BaseTest {
     public String lblVehicleNoEmpty = "//android.widget.EditText[@text=\"Vehicle licence plate no.\"]";
     public String lblOBUNo = "//android.widget.TextView[@text=\"IU/ OBU no.\"]";
     public String lblOBUNoEmpty = "//android.widget.EditText[@text=\"IU/ OBU no.\"]";
+    public String btnCloseConfirmUse = "//android.widget.TextView[@text=\"Are you at the merchant’s Payment or Collection booth now?\"]/following-sibling::android.view.ViewGroup/android.widget.ImageView";
 
     // Create a new wait element method to reduce wait time
     public void waitForElementVisible(String xpathExpression, String... text) {
@@ -100,13 +104,14 @@ public class VoucherDetailPage extends BaseTest {
     public void verifyVoucherExpiry(String startDate, String endDate) {
         Logger logger = Logger.getLogger(getClass().getName());
 
-        Date currentDate = new Date();
-        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("d-MMM-yyyy", Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
 
         try {
             Date startD = inputFormat.parse(startDate);
             Date endD = inputFormat.parse(endDate);
+            Date currentDate = outputFormat.parse(outputFormat.format(new Date()));
 
             String formattedStart = outputFormat.format(startD);
             String formattedEnd = outputFormat.format(endD);
@@ -176,6 +181,8 @@ public class VoucherDetailPage extends BaseTest {
                 scrollUntilElementVisible(lblTermnCondition, item.trim(), item.trim());
             }
         }
+        // Scroll down to see full content of T & C
+        classDecl.commonKeyword.scroll("DOWN", 1);
     }
 
     public void verifyWhereToUsSection() {
@@ -194,7 +201,7 @@ public class VoucherDetailPage extends BaseTest {
             classDecl.commonKeyword.waitForElementVisible(btnClaim, ClaimBtnText);
 
         } else {
-            classDecl.commonKeyword.elementNotVisible(btnClaim, ClaimBtnText);
+            classDecl.commonKeyword.verifyElementNotVisible(btnClaim, ClaimBtnText);
         }
     }
 
@@ -202,7 +209,7 @@ public class VoucherDetailPage extends BaseTest {
         if (status.equals("display")) {
             classDecl.commonKeyword.waitForElementVisible(btnUseVoucher);
         } else {
-            classDecl.commonKeyword.elementNotVisible(btnUseVoucher);
+            classDecl.commonKeyword.verifyElementNotVisible(btnUseVoucher);
         }
     }
 
@@ -282,11 +289,11 @@ public class VoucherDetailPage extends BaseTest {
             classDecl.commonKeyword.clickElement(classDecl.vehicleSettingPage.btnArrow);
             classDecl.vehicleSettingPage.verifyGuidanceField("expand");
         } else {
-            classDecl.commonKeyword.elementNotVisible(lblVehicleNo);
-            classDecl.commonKeyword.elementNotVisible(lblVehicleNoEmpty);
-            classDecl.commonKeyword.elementNotVisible(lblOBUNo);
-            classDecl.commonKeyword.elementNotVisible(lblOBUNoEmpty);
-            classDecl.commonKeyword.elementNotVisible(classDecl.vehicleSettingPage.lblGuideTitle);
+            classDecl.commonKeyword.verifyElementNotVisible(lblVehicleNo);
+            classDecl.commonKeyword.verifyElementNotVisible(lblVehicleNoEmpty);
+            classDecl.commonKeyword.verifyElementNotVisible(lblOBUNo);
+            classDecl.commonKeyword.verifyElementNotVisible(lblOBUNoEmpty);
+            classDecl.commonKeyword.verifyElementNotVisible(classDecl.vehicleSettingPage.lblGuideTitle);
         }
 
     }
@@ -300,6 +307,57 @@ public class VoucherDetailPage extends BaseTest {
         classDecl.commonKeyword.closeKeyboard();
         classDecl.commonKeyword.sendKey(lblOBUNoEmpty, classDecl.datas.UINumber);
         classDecl.commonKeyword.closeKeyboard();
+    }
+
+    public void clickUseVoucherNowBtn(){
+        classDecl.commonKeyword.clickElement(btnUseVoucher);
+    }
+
+    public void verifyConfirmUsePopupTitle(){
+        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, "Are you at the merchant’s Payment or Collection booth now?");
+    }
+
+    public void verifyConfirmUsePopupDesc(){
+        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, "Show this screen to the staff when you tap the button below. Note that voucher usage cannot be undone. ");
+    }
+
+    public void verifyConfirmUsePopupBtn(){
+        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, "Yes, use voucher");
+    }
+
+    public void verifyCloseConfirmUseBtn(){
+        classDecl.commonKeyword.waitForElementVisible(btnCloseConfirmUse);
+    }
+
+    public void clickConfirmUseVoucher(){
+        classDecl.commonKeyword.clickElement(lblClaimPopup, "Yes, use voucher");
+    }
+
+    public void verifyUsedOnTitle(){
+        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, "Used on");
+    }
+
+    public void verifyUsedDateTime(){
+        ZonedDateTime nowInSingapore = ZonedDateTime.now(ZoneId.of("Asia/Singapore"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
+        String formattedDateTime = nowInSingapore.format(formatter);
+        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, formattedDateTime);
+    }
+
+    public void verifyUsedVoucherDesc(String voucherDesc){
+        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, voucherDesc);
+    }
+
+    public void verifyUsedGuideDesc(){
+        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, "Please show this to the merchant. You can view this voucher anytime under Voucher > History.");
+    }
+
+    public void verifyBackToVouchersBtn(){
+        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, "Back to vouchers");
+    }
+
+    public void clickBackToVouchersBtn(){
+        classDecl.commonKeyword.clickElement(lblClaimPopup, "Back to vouchers");
     }
 
 }
