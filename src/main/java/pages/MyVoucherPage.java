@@ -33,7 +33,7 @@ public class MyVoucherPage extends BaseTest {
     }
 
     public void clickSearchBtn(){
-        classDecl.commonKeyword.pause(2); // pause to wait until the search button ready to click
+        classDecl.commonKeyword.pause(5); // pause to wait until the search button ready to click
         classDecl.commonKeyword.clickElement(btnSearch);
     }
 

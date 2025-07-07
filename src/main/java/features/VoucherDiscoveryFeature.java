@@ -563,6 +563,73 @@ public class VoucherDiscoveryFeature extends BaseTest {
         }
     }
 
+    public void verifySearchingByBuildingNameInVoucherModule_WithoutValidation(String filePath, String sheetName, String rowName, String startDate, String endDate) {
+        List<String> buildingNameList = getBuildingNameListFromDestinationSearch(filePath, sheetName, rowName);
+        String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, rowName, "Voucher card details");
+        List<String> failedBuildingNameLst = new ArrayList<>();
+
+        classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
+        classDecl.myVoucherPage.clickSearchBtn();
+
+        for (int i = 0; i < buildingNameList.size(); i++) {
+            int index = i + 1;
+            // input postal code
+            System.out.println("Postal code " + index + ": " + buildingNameList.get(i));
+            classDecl.voucherModuleSearchPage.inputAddress(buildingNameList.get(i));
+            classDecl.commonKeyword.closeKeyboard();
+            if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblNoVoucherFound)) { // If no vouchers found
+                failedBuildingNameLst.add(buildingNameList.get(i));
+                classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + buildingNameList.get(i));
+            } else {
+                int maxScrolls = 5;
+                for (int j = 0; j < maxScrolls; j++) {
+                    if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)
+                            && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)) { // If the voucher is visible, and nearby section is not visible
+                        verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher module - " + buildingNameList.get(i));
+                        break;
+
+                    } else if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)
+                            && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)) { // If the voucher is not visible, and nearby section is visible
+                        failedBuildingNameLst.add(buildingNameList.get(i));
+                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + buildingNameList.get(i));
+                        break;
+
+                    } else if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc) // If both voucher and nearby is visible at the same time
+                            && classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)) {
+                        int voucherLocation = classDecl.commonKeyword.getElementLocation(classDecl.voucherModuleSearchPage.lblVoucherDesc, new Object[]{rowName, voucherDesc});
+                        int nearbyLocation = classDecl.commonKeyword.getElementLocation(classDecl.voucherModuleSearchPage.lblVouchersNearby, null);
+                        if (nearbyLocation > voucherLocation) { // If the voucher is displayed before nearby section
+                            verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
+                            classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher module - " + buildingNameList.get(i));
+                            break;
+
+                        } else { // If the voucher is displayed after nearby section
+                            failedBuildingNameLst.add(buildingNameList.get(i));
+                            classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + buildingNameList.get(i));
+                            break;
+
+                        }
+                    }
+
+                    classDecl.commonKeyword.scroll("DOWN", 0.3);
+
+                }
+
+                if (!classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)
+                        && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)) { // If neither the voucher or nearby section found
+                    failedBuildingNameLst.add(buildingNameList.get(i));
+                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + buildingNameList.get(i));
+                }
+            }
+
+            // clear text
+            classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
+
+        }
+        System.out.println("List of failed building name: " + failedBuildingNameLst);
+    }
+
     public void verifySearchingByBuildingNameInVoucherModule_WithValidation(String filePath, String sheetName, String rowName, String startDate, String endDate) {
         List<String> buildingNameList = getBuildingNameListFromDestinationSearch(filePath, sheetName, rowName);
 
