@@ -346,4 +346,23 @@ public class CommonKeyword extends BaseTest{
             driver.manage().timeouts().implicitlyWait(timeoutExWait);
         }
     }
+
+    public Integer getElementLocation(String xpathExpression, Object[] texts) {
+        int location = 0;
+        try {
+            String formattedXpathA = xpathExpression;
+
+            if (texts != null && texts.length > 0) {
+                formattedXpathA = String.format(xpathExpression, texts);
+            }
+
+            WebElement elementA = driver.findElement(By.xpath(formattedXpathA));
+
+            location = elementA.getLocation().getY();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return location;
+    }
+
 }

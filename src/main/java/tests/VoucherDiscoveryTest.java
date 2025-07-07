@@ -7,8 +7,8 @@ import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
     String sheetName = "Sheet1";
-    String rowName = "McDonald’s";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - NTUC voucher - McDonald's - Free Sundae #3 (Final 250621).xlsx";
+    String rowName = "Global Art";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/voucher_v25_FIR_27031620_v2.xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
@@ -96,7 +96,7 @@ public class VoucherDiscoveryTest extends Setup {
 
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
         classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");
-        classDecl.voucherDiscoveryFeature.verifySearchingByPostalCodeInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifySearchingByPostalCodeInVoucherModule_WithoutValidation(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 
@@ -111,7 +111,7 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with building name");
-        classDecl.voucherDiscoveryFeature.verifySearchingByBuildingNameInVoucherModule(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifySearchingByBuildingNameInVoucherModule_WithValidation(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 

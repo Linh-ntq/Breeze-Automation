@@ -19,6 +19,8 @@ public class VoucherModuleSearchPage extends BaseTest {
     public String lblSearchBarName = "//android.widget.EditText[@text=\"%s\"]";
     public String lblSearchBar = "//android.widget.EditText[@text=\"Search\"]";
     public String btnClearSearch = "//android.widget.EditText/following-sibling::android.view.ViewGroup/android.widget.ImageView";
+    public String lblNoVoucherFound = "//android.widget.TextView[@text=\"No vouchers found.\"]";
+    public String lblVouchersNearby = "//android.widget.TextView[@text=\"Vouchers nearby\"]";
 
     public void verifyVoucherExpiry(String voucherDesc, String startDate, String endDate) {
         if (voucherDesc.contains("TM")){

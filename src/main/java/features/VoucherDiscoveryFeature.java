@@ -477,7 +477,74 @@ public class VoucherDiscoveryFeature extends BaseTest {
         return buildingNameList;
     }
 
-    public void verifySearchingByPostalCodeInVoucherModule(String filePath, String sheetName, String rowName, String startDate, String endDate) {
+    public void verifySearchingByPostalCodeInVoucherModule_WithoutValidation (String filePath, String sheetName, String rowName, String startDate, String endDate) {
+        List<String> postalCodeList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
+        String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, rowName, "Voucher card details");
+
+        List<String> failedPostalCodeLst = new ArrayList<>();
+
+        classDecl.myVoucherPage.clickSearchBtn();
+
+        for (int i = 0; i < postalCodeList.size(); i++) {
+            int index = i + 1;
+            // input postal code
+            System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
+            classDecl.voucherModuleSearchPage.inputAddress(postalCodeList.get(i));
+            classDecl.commonKeyword.closeKeyboard();
+            if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblNoVoucherFound)) { // If no vouchers found
+                failedPostalCodeLst.add(postalCodeList.get(i));
+                classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + postalCodeList.get(i));
+            } else {
+                int maxScrolls = 5;
+                for (int j = 0; j < maxScrolls; j++) {
+                    if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)
+                    && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)) { // If the voucher is visible, and nearby section is not visible
+                        verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher module - " + postalCodeList.get(i));
+                        break;
+
+                    } else if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)
+                    && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)) { // If the voucher is not visible, and nearby section is visible
+                        failedPostalCodeLst.add(postalCodeList.get(i));
+                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + postalCodeList.get(i));
+                        break;
+
+                    } else if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc) // If both voucher and nearby is visible at the same time
+                        && classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)) {
+                        int voucherLocation = classDecl.commonKeyword.getElementLocation(classDecl.voucherModuleSearchPage.lblVoucherDesc, new Object[]{rowName, voucherDesc});
+                        int nearbyLocation = classDecl.commonKeyword.getElementLocation(classDecl.voucherModuleSearchPage.lblVouchersNearby, null);
+                        if (nearbyLocation > voucherLocation) { // If the voucher is displayed before nearby section
+                            verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
+                            classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher module - " + postalCodeList.get(i));
+                            break;
+
+                        } else { // If the voucher is displayed after nearby section
+                            failedPostalCodeLst.add(postalCodeList.get(i));
+                            classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + postalCodeList.get(i));
+                            break;
+
+                        }
+                    }
+
+                    classDecl.commonKeyword.scroll("DOWN", 0.3);
+
+                }
+
+                if (!classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)
+                && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)) { // If neither the voucher or nearby section found
+                    failedPostalCodeLst.add(postalCodeList.get(i));
+                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + postalCodeList.get(i));
+                }
+            }
+
+            // clear text
+            classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
+        }
+
+        System.out.println("List of failed postal code: " + failedPostalCodeLst);
+    }
+
+    public void verifySearchingByPostalCodeInVoucherModule_WithValidation(String filePath, String sheetName, String rowName, String startDate, String endDate) {
         List<String> postalCodeList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
 
         classDecl.myVoucherPage.clickSearchBtn();
@@ -496,7 +563,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
         }
     }
 
-    public void verifySearchingByBuildingNameInVoucherModule(String filePath, String sheetName, String rowName, String startDate, String endDate) {
+    public void verifySearchingByBuildingNameInVoucherModule_WithValidation(String filePath, String sheetName, String rowName, String startDate, String endDate) {
         List<String> buildingNameList = getBuildingNameListFromDestinationSearch(filePath, sheetName, rowName);
 
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
