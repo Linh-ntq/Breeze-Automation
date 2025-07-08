@@ -7,8 +7,8 @@ import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
     String sheetName = "Sheet1";
-    String rowName = "Dunkin’";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - NTUC voucher - Dunkin' - 1 free regular donut with any ala carte Dunkin’ house drink purchase (Final 250624).xlsx";
+    String rowName = "Global Art";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/test.xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
@@ -93,10 +93,9 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
         classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
-
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
         classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");
-        classDecl.voucherDiscoveryFeature.verifySearchingByPostalCodeInVoucherModule_WithoutValidation(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Postal code", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 
@@ -111,7 +110,7 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with building name");
-        classDecl.voucherDiscoveryFeature.verifySearchingByBuildingNameInVoucherModule_WithoutValidation(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 
