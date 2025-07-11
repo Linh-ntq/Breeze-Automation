@@ -2,13 +2,12 @@ package tests;
 
 import commons.Setup;
 import org.testng.annotations.Test;
-
 import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
     String sheetName = "Sheet1";
-    String rowName = "Global Art";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/test.xlsx";
+    String rowName = "McDonald’s";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - NTUC voucher - McDonald's - Free Sundae #3 (Final 250621).xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
@@ -79,12 +78,16 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.landingPage.clickOnSearchBar();
         classDecl.extentReport.startTest("Verify vouchers in the destination search");
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Postal code", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Full address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("One map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("GG map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 
     @Test(priority = 3)
-    public void verify_searching_by_postal_code_in_voucher_module() {
+    public void verify_voucher_module_search() {
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
         // Pause to scan QR invitation
         classDecl.commonKeyword.pause(35);
@@ -96,21 +99,10 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
         classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");
         classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Postal code", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-
-    }
-
-    @Test(priority = 4)
-    public void verify_searching_by_building_name_in_voucher_module() {
-        classDecl.loginFeature.goToLandingPageByGuest("Guest");
-        // Pause to scan QR invitation
-        classDecl.commonKeyword.pause(35);
-        classDecl.commonPage.tabOnMenu("Inbox");
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-        classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
-        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
-        classDecl.commonKeyword.closeInAppAlertsIfVisible();
-        classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with building name");
         classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Full address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("One map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("GG map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 

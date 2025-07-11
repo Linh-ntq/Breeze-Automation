@@ -23,6 +23,8 @@ public class DestinationSearchPage extends BaseTest {
     public String xpath5 = "//android.widget.TextView[contains(@text,\"more voucher available\")]";
     public String xpath6 = "//android.widget.TextView[contains(@text,\"more vouchers available\")]";
     public String lblSingleHiddenVoucher = xpath5 + " | " + xpath6;
+    public String btnClearHistory = "//android.widget.TextView[@text=\"Clear\"]";
+    public String btnConfirmClear = "//android.widget.TextView[@text=\"Clear all\"]";
 
 
     public void inputAddress(String address) {
@@ -91,5 +93,10 @@ public class DestinationSearchPage extends BaseTest {
             System.out.println("Error in elementIsVisible: " + e.getMessage());
             return false;
         }
+    }
+
+    public void clearHistory (){
+        classDecl.commonKeyword.clickElement(btnClearHistory);
+        classDecl.commonKeyword.clickElement(btnConfirmClear);
     }
 }

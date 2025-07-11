@@ -22,6 +22,8 @@ public class LandingPage extends BaseTest {
     public String lblERPCheckerTxt = "//android.widget.TextView[contains(@text,\"Check ERP along your route\")]";
     public String lblLiveTrafficTxt = "//android.widget.TextView[@text=\"CTE\"]";
     public String lblPromptBarDest = "//android.widget.TextView[contains(@text, \"near your destination\")]";
+    public String lblHomeTab = "//android.widget.TextView[@text=\"Home\"]";
+    public String btnSearch = "(//android.view.ViewGroup[2]/android.widget.ImageView)[2]";
 
 
     public void verifyHeaderList(List<String> expectedHeaderOrder){

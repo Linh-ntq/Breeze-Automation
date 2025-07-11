@@ -2,9 +2,8 @@ package features;
 
 import commons.BaseTest;
 import org.testng.Assert;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
+import java.util.regex.Pattern;
 import static datas.ExcelReader.getValueByRowAndColumnName;
 
 public class VoucherDiscoveryFeature extends BaseTest {
@@ -267,12 +266,62 @@ public class VoucherDiscoveryFeature extends BaseTest {
         return buildingName;
     }
 
-    public void verifyVoucherDestinationSearch(String filePath, String sheetName, String rowName, String startDate, String endDate) {
-        List<String> postalCodeList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
-        List<String> addressList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
+    public String handleExceptionalCaseBeforeEnteringBuldingName (String buildingName) {
+        if (buildingName.equals("RAFFLES CITY SHOPPING CENTRE")) {
+            buildingName = "RAFFLES CITY";
+        } else if (buildingName.equals("SAFRA CLUBHOUSE (PUNGGOL)")) {
+            buildingName = "SAFRA PUNGGOL";
+        } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
+            buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
+                    .replaceAll(" Singapore \\d+", "")
+                    .replaceAll(" \\d{6}$", "");
+        }
+        return buildingName;
+    }
+
+    public String handleExceptionalCaseAfterEnteringBuldingName (String buildingName) {
+        if (buildingName.equals("HEARTLAND MALL-KOVAN")) {
+            buildingName = "HEARTLAND MALL KOVAN";
+        } else if (buildingName.equals("NOVENA SQUARE")) {
+            buildingName = "NOVENA SQUARE SHOPPING MALL";
+        } else if (buildingName.equals("313 @ SOMERSET")) {
+            buildingName = "313@SOMERSET";
+        } else if (buildingName.equals("LOT ONE, SHOPPERS' MALL")) {
+            buildingName = buildingName.replace(",", "");
+        } else if (buildingName.equals("SINGAPORE POST CENTRE")) {
+            buildingName = "SingPost Centre";
+        } else if (buildingName.equals("ANCHORPOINT SHOPPING CENTRE")) {
+            buildingName = "Anchorpoint";
+        } else if (buildingName.equals("BUANGKOK SQUARE")) {
+            buildingName = "BUANGKOK SQUARE MALL";
+        } else if (buildingName.equals("SAFRA CLUBHOUSE (TOA PAYOH)")) {
+            buildingName = "SAFRA TOA PAYOH";
+        } else if (buildingName.equals("PASIR RIS SPORTS CENTRE")) {
+            buildingName = "ActiveSG Pasir Ris Sport Centre";
+        } else if (buildingName.equals("SHELL HOUGANG")) {
+            buildingName = "SHELL (HOUGANG)";
+        } else if (buildingName.equals("SHELL HAVELOCK")) {
+            buildingName = "Shell (Havelock )";
+        } else if (buildingName.equals("SHELL TAMPINES AVENUE 2")) {
+            buildingName = "Shell";
+        } else if (buildingName.equals("26 CHOA CHU KANG DRIVE")) {
+            buildingName = "McDonald's Choa Chu Kang Park (Drive-Thru)";
+        } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
+            buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
+                    .replaceAll(" Singapore \\d+", "")
+                    .replaceAll(" \\d{6}$", "");
+        }
+        return buildingName;
+    }
+
+    public void verifyVoucherDestinationSearch (String input, String filePath, String sheetName, String rowName, String startDate, String endDate) {
         String voucherDesc = String.valueOf(classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Voucher card details").get(0));
-        List<String> failedPostalCodeLst = new ArrayList<>();
-        List<String> failedBuildingNameLst = new ArrayList<>();
+        List<String> failedLst = new ArrayList<>();
+        List<String> inputLst = new ArrayList<>();
+        List<String> baseLst = new ArrayList<>();
+        Map<String, String> list;
+        String item = "";
+
         if (voucherDesc.contains("TM")) {
             voucherDesc = voucherDesc.replaceAll("TM", "™");
         }
@@ -281,128 +330,74 @@ public class VoucherDiscoveryFeature extends BaseTest {
             voucherDesc = voucherDesc.replaceAll("'", "’");
         }
 
-        for (int i = 0; i < postalCodeList.size(); i++) {
-            int index = i + 1;
-            // input postal code
-            System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
-            classDecl.commonKeyword.closeInAppAlertsIfVisible();
-            classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i));
-            classDecl.commonKeyword.closeKeyboard();
-            if ((!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "not display"))
-                    && (!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "display"))) {
+        switch (input) {
+            case "Postal code":
+                item = "Postal code";
+                inputLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
+                baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
+                break;
+            case "Building name":
+                item = "Building";
+                list = getAddressFromDestinationSearch(filePath, sheetName, rowName);
+                inputLst = new ArrayList<>(list.keySet());
+                baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
+                break;
+            case "Full address":
+                item = "Full add";
+                list = getAddressFromDestinationSearch(filePath, sheetName, rowName);
+                inputLst = new ArrayList<>(list.values());
+                baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
+                break;
+            case "One map address":
+                item = "One map";
+                inputLst = getOneMapAddress(filePath, sheetName, rowName);
+                baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "One Map Address");
+                break;
+            case "GG map address":
+                item = "GG map";
+                inputLst = getGGMapAddress(filePath, sheetName, rowName);
+                baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Google Map Addresses");
+                break;
+        }
 
-                failedPostalCodeLst.add(postalCodeList.get(i));
-                classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Destination Search - " + postalCodeList.get(i));
-                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
-
-            } else {
-
-                String buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
-                System.out.println("Full address " + index + ": " + addressList.get(i));
-                String fullAddress = addressList.get(i);
-
-                // handle for exceptional cases before comparing the returned building name from postal code searching
-                if (buildingName.equals("DJIT SUN MALL")) {
-                    buildingName = "DJITSUN MALL";
-                }
-
-                System.out.println("Short address when entering postal code " + index + ": " + buildingName);
-                if (fullAddress.toLowerCase().contains(buildingName.toLowerCase())) {
-                    Assert.assertTrue(true);
-                    classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                    classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Destination Search - " + postalCodeList.get(i));
-                } else {
-                    System.out.println("The full address " + fullAddress + " does not contain building name " + buildingName);
-                    failedPostalCodeLst.add(postalCodeList.get(i));
-                    classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Destination Search - " + postalCodeList.get(i));
-                }
-
-                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
-
-                // handle for exceptional cases before entering building name
-                if (buildingName.equals("RAFFLES CITY SHOPPING CENTRE")) {
-                    buildingName = "RAFFLES CITY";
-                } else if (buildingName.equals("SAFRA CLUBHOUSE (PUNGGOL)")) {
-                    buildingName = "SAFRA PUNGGOL";
-                } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
-                    buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
-                            .replaceAll(" Singapore \\d+", "")
-                            .replaceAll(" \\d{6}$", "");
-                }
-
-                // input building name
+        if (input.equals("Postal code")) {
+            for (int i = 0; i < inputLst.size(); i++) {
+                int index = i + 1;
+                // input postal code
+                System.out.println("Postal code " + index + ": " + inputLst.get(i));
                 classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                classDecl.searchDestinationPage.inputAddress(buildingName);
+                classDecl.searchDestinationPage.inputAddress(inputLst.get(i));
                 classDecl.commonKeyword.closeKeyboard();
-
-                // handle for exceptional cases after entering building name
-                if (buildingName.equals("HEARTLAND MALL-KOVAN")) {
-                    buildingName = "HEARTLAND MALL KOVAN";
-                } else if (buildingName.equals("NOVENA SQUARE")) {
-                    buildingName = "NOVENA SQUARE SHOPPING MALL";
-                } else if (buildingName.equals("313 @ SOMERSET")) {
-                    buildingName = "313@SOMERSET";
-                } else if (buildingName.equals("LOT ONE, SHOPPERS' MALL")) {
-                    buildingName = buildingName.replace(",", "");
-                } else if (buildingName.equals("SINGAPORE POST CENTRE")) {
-                    buildingName = "SingPost Centre";
-                } else if (buildingName.equals("ANCHORPOINT SHOPPING CENTRE")) {
-                    buildingName = "Anchorpoint";
-                } else if (buildingName.equals("BUANGKOK SQUARE")) {
-                    buildingName = "BUANGKOK SQUARE MALL";
-                } else if (buildingName.equals("SAFRA CLUBHOUSE (TOA PAYOH)")) {
-                    buildingName = "SAFRA TOA PAYOH";
-                } else if (buildingName.equals("PASIR RIS SPORTS CENTRE")) {
-                    buildingName = "ActiveSG Pasir Ris Sport Centre";
-                } else if (buildingName.equals("SHELL HOUGANG")) {
-                    buildingName = "SHELL (HOUGANG)";
-                } else if (buildingName.equals("SHELL HAVELOCK")) {
-                    buildingName = "Shell (Havelock )";
-                } else if (buildingName.equals("SHELL TAMPINES AVENUE 2")) {
-                    buildingName = "Shell";
-                } else if (buildingName.equals("26 CHOA CHU KANG DRIVE")) {
-                    buildingName = "McDonald's Choa Chu Kang Park (Drive-Thru)";
-                } else if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
-                    buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
-                            .replaceAll(" Singapore \\d+", "")
-                            .replaceAll(" \\d{6}$", "");
-                }
-
                 if ((!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "not display"))
                         && (!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "display"))) {
 
-                    failedBuildingNameLst.add(buildingName);
-                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Destination Search - " + buildingName);
+                    failedLst.add(inputLst.get(i));
+                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - DS - " + item + " - " + inputLst.get(i));
                     classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
 
                 } else {
-                    // Handle for number (eg. TAMPINES ONE > TAMPINES 1)
-                    if (!classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucher, buildingName, voucherDesc, buildingName.toLowerCase(), voucherDesc)
-                            && !classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase())) {
-                        buildingName = handleForNumberWord(buildingName);
 
-                    }
+                    String buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
+                    String baseAddress = baseLst.get(i);
 
-                    if (buildingName.equalsIgnoreCase(classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName))) {
+                    System.out.println("Short address when entering postal code " + index + ": " + buildingName);
+                    if (baseAddress.toLowerCase().contains(buildingName.toLowerCase())) {
                         Assert.assertTrue(true);
                         classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Destination Search - " + buildingName);
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - DS - " + item + " - " + inputLst.get(i));
                     } else {
-                        System.out.println("The building name searched by " + buildingName + " does not match the building name searched by " + postalCodeList.get(i));
-                        failedBuildingNameLst.add(buildingName);
+                        System.out.println("The full address " + baseAddress + " does not contain building name " + buildingName);
+                        failedLst.add(inputLst.get(i));
                         classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Destination Search - " + buildingName);
+                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - DS - " + item + " - " + inputLst.get(i));
                     }
 
-                    // Get the building name again to match search bar in the next step
-                    buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
-                    System.out.println("Short address when entering building name " + index + ": " + buildingName);
-
+                    // Click on the address with attached voucher
                     if (voucherDesc.contains("%")) {
                         classDecl.searchDestinationPage.lblVoucherAddress = classDecl.searchDestinationPage.lblVoucherAddress.replace("%s", voucherDesc);
-                        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress);
-                    } else if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc)) {
+                    }
+
+                    if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc)) {
                         classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblVoucherAddress, voucherDesc);
                     } else {
                         classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.lblhiddenVoucher, buildingName.toLowerCase(), buildingName.toLowerCase());
@@ -410,7 +405,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
                     if (!classDecl.commonKeyword.getText(classDecl.landingPage.lblPromptBarDest).isEmpty()) {
                         classDecl.landingPage.verifyPromptBarText();
-                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Prompt bar - " + buildingName);
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Prompt bar - " + inputLst.get(i));
 
                         // tap on the prompt bar & verify voucher card in the voucher search page
                         classDecl.landingPage.tapOnPromptBar();
@@ -418,62 +413,79 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
                         classDecl.voucherModuleSearchPage.verifySearchBar(buildingName);
                         classDecl.voucherDiscoveryFeature.verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Vouchers nearby section");
-                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher Search - " + buildingName);
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher nearby - " + inputLst.get(i));
 
-                        if (postalCodeList.size() != index) {
-                            // Go back to destination search page
-                            classDecl.commonKeyword.tapOnNativeBackBtn();
-                            classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                            classDecl.landingPage.tapOnSearchBarName(buildingName);
+                        // Back to landing
+                        classDecl.commonKeyword.tapOnNativeBackBtn();
+                        classDecl.commonKeyword.closeInAppAlertsIfVisible();
 
-                        } else {
-                            System.out.println("index i " + index + " is equal to address size " + postalCodeList.size() + ". No more items to search");
-                        }
                     } else {
                         Assert.assertTrue(true);
-                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Prompt bar - " + buildingName);
+                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Prompt bar - " + inputLst.get(i));
+                    }
+
+                    if (inputLst.size() != index && classDecl.commonKeyword.elementIsVisible(classDecl.landingPage.lblHomeTab)) {
+                        classDecl.commonKeyword.clickElement(classDecl.landingPage.btnSearch);
+                    }
+
+                    if (inputLst.size() == index) {
+                        classDecl.commonKeyword.clickElement(classDecl.landingPage.btnSearch);
+                        classDecl.searchDestinationPage.clearHistory();
+                        classDecl.commonKeyword.closeKeyboard();
+                        classDecl.commonKeyword.tapOnNativeBackBtn();
+                        classDecl.commonKeyword.closeInAppAlertsIfVisible();
                     }
                 }
-            }
-        }
 
-        System.out.println("List of failed postal code: " + failedPostalCodeLst);
-        System.out.println("List of failed building name: " + failedBuildingNameLst);
-
-    }
-
-    public List<String> getBuildingNameListFromDestinationSearch(String filePath, String sheetName, String rowName) {
-        List<String> postalCodeList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
-        List<String> buildingNameList = new ArrayList<>();
-
-        classDecl.landingPage.clickOnSearchBar();
-
-        // Get the list of building name from destination search
-        for (int i = 0; i < postalCodeList.size(); i++) {
-            int index = i + 1;
-            // input postal code
-            System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
-            classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i));
-            classDecl.commonKeyword.closeKeyboard();
-            String buildingName = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
-
-            if (buildingName.contains("Singapore") || buildingName.contains("SINGAPORE")) {
-                buildingName = buildingName.replaceAll(" SINGAPORE \\d+", "")
-                        .replaceAll(" Singapore \\d+", "")
-                        .replaceAll(" \\d{6}$", "");
             }
 
-            System.out.println("Get building name " + buildingName + " by searching postal code " + postalCodeList.get(i));
-            buildingNameList.add(buildingName);
+            System.out.println("List of failed " + item + ": " + failedLst);
 
-            // clear text
-            classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
+        } else if (input.equals("Building name") || input.equals("Full address") || input.equals("One map address") || input.equals("GG map address")) {
+            if (classDecl.commonKeyword.elementIsVisible(classDecl.landingPage.lblSearchBar)) {
+                classDecl.landingPage.clickOnSearchBar();
+            } else if (classDecl.commonKeyword.elementIsVisible(classDecl.landingPage.lblHomeTab)) {
+                classDecl.commonKeyword.clickElement(classDecl.landingPage.btnSearch);
+            }
+
+            for (int i = 0; i < inputLst.size(); i++) {
+                    int index = i + 1;
+                    String inputAddress = inputLst.get(i);
+                    String baseAddress = baseLst.get(i);
+                    classDecl.searchDestinationPage.inputAddress(inputAddress);
+                    classDecl.commonKeyword.closeKeyboard();
+
+                    if ((!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "not display"))
+                            && (!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "display"))) {
+
+                        failedLst.add(inputAddress);
+                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - DS - " + item + " - " + inputLst.get(i));
+                        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
+
+                    } else {
+                        if (baseAddress.toLowerCase().contains(inputAddress.toLowerCase())) {
+                            Assert.assertTrue(true);
+                            classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                            classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - DS - " + item + " - " + inputLst.get(i));
+                        } else {
+                            System.out.println("The full address " + baseAddress + " does not contain the input address " + inputAddress);
+                            failedLst.add(inputAddress);
+                            classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                            classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - DS - " + item + " - " + inputLst.get(i));
+                        }
+                        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
+                    }
+
+                    if (inputLst.size() == index) {
+                        // Go back to landing page
+                        classDecl.commonKeyword.tapOnNativeBackBtn();
+                        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                    }
+                }
+
+            System.out.println("List of failed " + item + ": " + failedLst);
+
         }
-
-        System.out.println("List of building names retrieved from the destination search: " + buildingNameList);
-        classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnBack);
-
-        return buildingNameList;
     }
 
     public void verifyVoucherModuleSearch(String input, String filePath, String sheetName, String rowName, String startDate, String endDate) {
@@ -481,47 +493,69 @@ public class VoucherDiscoveryFeature extends BaseTest {
         List<String> failedLst = new ArrayList<>();
 
         String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, rowName, "Voucher card details");
+        String item = "";
+        String btBack = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
 
         switch (input) {
             case "Postal code":
+                item = "Postal code";
                 inputLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
                 break;
             case "Building name":
-                inputLst = getBuildingNameListFromDestinationSearch(filePath, sheetName, rowName);
+                item = "Building";
+                if (classDecl.commonKeyword.elementIsVisible(btBack)) {
+                    classDecl.commonKeyword.clickElement(btBack);
+                }
+                classDecl.commonPage.tabOnMenu("Home");
+                Map<String, String> listBuilding = getAddressFromDestinationSearch(filePath, sheetName, rowName);
+                inputLst = new ArrayList<>(listBuilding.keySet());
                 classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
                 break;
             case "Full address":
-
+                item = "Full add";
+                if (classDecl.commonKeyword.elementIsVisible(btBack)) {
+                    classDecl.commonKeyword.clickElement(btBack);
+                }
+                classDecl.commonPage.tabOnMenu("Home");
+                Map<String, String> listFullAddress = getAddressFromDestinationSearch(filePath, sheetName, rowName);
+                inputLst = new ArrayList<>(listFullAddress.values());
+                classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
+                break;
+            case "One map address":
+                item = "One map";
+                inputLst = getOneMapAddress(filePath, sheetName, rowName);
                 break;
             case "GG map address":
-
+                item = "GG map";
+                inputLst = getGGMapAddress(filePath, sheetName, rowName);
                 break;
         }
 
         classDecl.myVoucherPage.clickSearchBtn();
 
+
         for (int i = 0; i < inputLst.size(); i++) {
             int index = i + 1;
-            // input postal code
+
             System.out.println("Address " + index + ": " + inputLst.get(i));
             classDecl.voucherModuleSearchPage.inputAddress(inputLst.get(i));
             classDecl.commonKeyword.closeKeyboard();
             if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblNoVoucherFound)) { // If no vouchers found
                 failedLst.add(inputLst.get(i));
-                classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + inputLst.get(i));
+                classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - VM - " + item + " - " + inputLst.get(i));
             } else {
                 int maxScrolls = 5;
                 for (int j = 0; j < maxScrolls; j++) {
                     if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)
                             && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)) { // If the voucher is visible, and nearby section is not visible
                         verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
-                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher module - " + inputLst.get(i));
+                        classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - VM - " + item + " - " + inputLst.get(i));
                         break;
 
                     } else if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)
                             && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)) { // If the voucher is not visible, and nearby section is visible
                         failedLst.add(inputLst.get(i));
-                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + inputLst.get(i));
+                        classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - VM - " + item + " - " + inputLst.get(i));
                         break;
 
                     } else if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc) // If both voucher and nearby is visible at the same time
@@ -530,12 +564,12 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         int nearbyLocation = classDecl.commonKeyword.getElementLocation(classDecl.voucherModuleSearchPage.lblVouchersNearby, null);
                         if (nearbyLocation > voucherLocation) { // If the voucher is displayed before nearby section
                             verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
-                            classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - Voucher module - " + inputLst.get(i));
+                            classDecl.extentReport.attachScreenshotToReport("P " + rowName + " - VM - " + item + " - " + inputLst.get(i));
                             break;
 
                         } else { // If the voucher is displayed after nearby section
                             failedLst.add(inputLst.get(i));
-                            classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + inputLst.get(i));
+                            classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - VM - " + item + " - " + inputLst.get(i));
                             break;
 
                         }
@@ -548,67 +582,112 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 if (!classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVoucherDesc, rowName, voucherDesc)
                         && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblVouchersNearby)) { // If neither the voucher or nearby section found
                     failedLst.add(inputLst.get(i));
-                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - Voucher module - " + inputLst.get(i));
+                    classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - VM - " + item + " - " + inputLst.get(i));
                 }
             }
 
-            // clear text
-            classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
+            if (inputLst.size() != index) {
+                // clear text
+                classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
+            } else {
+                classDecl.commonKeyword.closeInAppAlertsIfVisible();
+                classDecl.commonKeyword.tapOnNativeBackBtn();
+            }
         }
 
-        switch (input) {
-            case "Postal code":
-                System.out.println("List of failed postal code: " + failedLst);
-                break;
-            case "Building name":
-                System.out.println("List of failed building name: " + failedLst);
-                break;
-            case "Full address":
-                System.out.println("List of failed full address: " + failedLst);
-                break;
-            case "GG map address":
-                System.out.println("List of failed gg map address: " + failedLst);
-                break;
-        }
+        System.out.println("List of failed " + item + ": " + failedLst);
     }
 
-    public void verifySearchingByPostalCodeInVoucherModule_WithValidation(String filePath, String sheetName, String rowName, String startDate, String endDate) {
+
+    public Map<String, String> getAddressFromDestinationSearch (String filePath, String sheetName, String rowName) {
+        Map<String, String> address = new LinkedHashMap<>();
+        String buildingName = "";
+        String fullAddress = "";
         List<String> postalCodeList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
+        List<String> addressList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
 
-        classDecl.myVoucherPage.clickSearchBtn();
+        if (classDecl.commonKeyword.elementIsVisible(classDecl.landingPage.lblSearchBar)) {
+            classDecl.landingPage.clickOnSearchBar();
+        } else if (classDecl.commonKeyword.elementIsVisible(classDecl.landingPage.lblHomeTab)) {
+            classDecl.commonKeyword.clickElement(classDecl.landingPage.btnSearch);
+        }
 
-        for (int i = 0; i < postalCodeList.size(); i++) {
+        for (int i = 0; i < addressList.size(); i++) {
             int index = i + 1;
             // input postal code
             System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
-            classDecl.voucherModuleSearchPage.inputAddress(postalCodeList.get(i));
+            classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i));
             classDecl.commonKeyword.closeKeyboard();
-            verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
-            classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher module search - " + postalCodeList.get(i));
+            if ((!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "not display"))
+                    && (!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "display"))) {
+                address.put(postalCodeList.get(i) + " does not return voucher", postalCodeList.get(i) + " does not return voucher");
+                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
 
-            // clear text
-            classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
+            } else {
+                String shortAddress = classDecl.searchDestinationPage.getVoucherAddressText(filePath, sheetName, rowName);
+                shortAddress = Pattern.quote(shortAddress); // Use pattern to escape all special regex characters in the building name (eg. SAFRA CLUBHOUSE (PUNGGOL))
+                if (shortAddress.toLowerCase().contains("singapore")) {
+                    buildingName = shortAddress.replaceAll("(?i)" + " singapore \\d+", "");
+                    fullAddress = addressList.get(i).replaceAll("(?i)" + " singapore \\d+", "");
+                } else {
+                    buildingName = shortAddress;
+                    fullAddress = addressList.get(i).replaceAll("(?i)" + shortAddress + " singapore \\d+", "");
+                }
+                buildingName = buildingName.replaceAll("\\\\Q", "").replaceAll("\\\\E", "");
+                address.put(buildingName, fullAddress);
+            }
+
+            if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.btnClearSearch)) {
+                classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
+            }
         }
+
+        // Go back to landing
+        classDecl.commonKeyword.tapOnNativeBackBtn();
+        classDecl.commonKeyword.closeInAppAlertsIfVisible();
+        System.out.println("List of building name & full address return by searching postal code: " + address);
+
+        return address;
     }
 
-    public void verifySearchingByBuildingNameInVoucherModule_WithValidation(String filePath, String sheetName, String rowName, String startDate, String endDate) {
-        List<String> buildingNameList = getBuildingNameListFromDestinationSearch(filePath, sheetName, rowName);
-
-        classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
-        classDecl.myVoucherPage.clickSearchBtn();
-
-        for (int i = 0; i < buildingNameList.size(); i++) {
-            int index = i + 1;
-            System.out.println("Building name " + index + ": " + buildingNameList.get(i));
-            classDecl.voucherModuleSearchPage.inputAddress(buildingNameList.get(i));
-            classDecl.commonKeyword.closeKeyboard();
-            verifyVoucherCard(filePath, sheetName, rowName, startDate, endDate, "Matched address vouchers section");
-            classDecl.extentReport.attachScreenshotToReport(rowName + " - Voucher module search - " + buildingNameList.get(i));
-
-            // clear text
-            classDecl.commonKeyword.clickElement(classDecl.voucherModuleSearchPage.btnClearSearch);
-
+    public List<String> getGGMapAddress(String filePath, String sheetName, String rowName) {
+        List<String> addressExcelList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Google Map Addresses");
+        List<String> ggMapAddressLst = new ArrayList<>();
+        String address;
+        for (int i = 0; i < addressExcelList.size(); i++) {
+            String[] splitPipe = addressExcelList.get(i).split("\\|", -1);
+            if (splitPipe.length == 3) { // If there are 2 pipes (3 parts) => add middle part
+                address =  splitPipe[1].trim();
+            } else if (splitPipe.length == 2) { // If there are 1 pipe (2 parts)
+                if (splitPipe[0].toLowerCase().contains("singapore")) { // If the first part contain 'singapore' => add first part
+                    address = splitPipe[0].trim();
+                } else { // If the second part contain 'singapore' => add second part
+                    address = splitPipe[1].trim();
+                }
+            } else { // If there are no parentheses, keep it as-is
+                address = addressExcelList.get(i).trim();
+            }
+            ggMapAddressLst.add(address);
         }
+        System.out.println("GG map address list: " + ggMapAddressLst);
+        return ggMapAddressLst;
+    }
+
+    public List<String> getOneMapAddress(String filePath, String sheetName, String rowName) {
+        List<String> addressExcelList = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "One Map Address");
+        List<String> oneMapAddressLst = new ArrayList<>();
+        String address;
+        for (int i = 0; i < addressExcelList.size(); i++) {
+            String[] splitPipe = addressExcelList.get(i).split("\\|", -1);
+            if (splitPipe.length == 3) { // If there are 2 pipes (3 parts) => add middle part
+                address =  splitPipe[1].trim();
+            } else { // If there are no pipe, keep it as-is
+                address = addressExcelList.get(i).trim();
+            }
+            oneMapAddressLst.add(address);
+        }
+        System.out.println("One map address list: " + oneMapAddressLst);
+        return oneMapAddressLst;
     }
 
     public void selectVoucherCategory(String voucherCategory) {
