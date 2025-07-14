@@ -106,4 +106,13 @@ public class VoucherDiscoveryTest extends Setup {
 
     }
 
+    @Test
+    public void verify_voucher_sort () {
+        classDecl.practice.getMin(pathToVoucherFile, sheetName, rowName);
+        classDecl.practice.getMax(pathToVoucherFile, sheetName, rowName);
+        classDecl.practice.getSecondToMax(pathToVoucherFile, sheetName, rowName);
+        classDecl.practice.sortListInteger(pathToVoucherFile, sheetName, rowName);
+        classDecl.practice.sortListString(pathToVoucherFile, sheetName, rowName);
+    }
+
 }

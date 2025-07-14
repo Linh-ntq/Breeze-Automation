@@ -27,5 +27,6 @@ public class ClassDeclaration {
     public ExtentReport extentReport = new ExtentReport();
     public VoucherDetailPage voucherDetailPage = new VoucherDetailPage();
     public MyVoucherPage myVoucherPage = new MyVoucherPage();
+    public Practice practice = new Practice();
 
 }
