@@ -6,8 +6,8 @@ import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
     String sheetName = "Sheet1";
-    String rowName = "McDonald’s";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - NTUC voucher - McDonald's - Free Sundae #3 (Final 250621).xlsx";
+    String rowName = "Dunkin’";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - NTUC voucher - Dunkin' - 1 free regular donut with any ala carte Dunkin’ house drink purchase (Final 250624).xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");

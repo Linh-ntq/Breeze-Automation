@@ -366,7 +366,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 // input postal code
                 System.out.println("Postal code " + index + ": " + inputLst.get(i));
                 classDecl.commonKeyword.closeInAppAlertsIfVisible();
-                classDecl.searchDestinationPage.inputAddress(inputLst.get(i));
+                classDecl.searchDestinationPage.inputAddress(inputLst.get(i).trim());
                 classDecl.commonKeyword.closeKeyboard();
                 if ((!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "not display"))
                         && (!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "display"))) {
@@ -538,7 +538,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             int index = i + 1;
 
             System.out.println("Address " + index + ": " + inputLst.get(i));
-            classDecl.voucherModuleSearchPage.inputAddress(inputLst.get(i));
+            classDecl.voucherModuleSearchPage.inputAddress(inputLst.get(i).trim());
             classDecl.commonKeyword.closeKeyboard();
             if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblNoVoucherFound)) { // If no vouchers found
                 failedLst.add(inputLst.get(i));
@@ -616,7 +616,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
             int index = i + 1;
             // input postal code
             System.out.println("Postal code " + index + ": " + postalCodeList.get(i));
-            classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i));
+            classDecl.searchDestinationPage.inputAddress(postalCodeList.get(i).trim());
             classDecl.commonKeyword.closeKeyboard();
             if ((!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "not display"))
                     && (!classDecl.searchDestinationPage.voucherIsVisible(filePath, sheetName, rowName, "display"))) {
@@ -634,7 +634,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     fullAddress = addressList.get(i).replaceAll("(?i)" + shortAddress + " singapore \\d+", "");
                 }
                 buildingName = buildingName.replaceAll("\\\\Q", "").replaceAll("\\\\E", "");
-                address.put(buildingName, fullAddress);
+                address.put(buildingName.trim(), fullAddress.trim());
             }
 
             if (classDecl.commonKeyword.elementIsVisible(classDecl.searchDestinationPage.btnClearSearch)) {
