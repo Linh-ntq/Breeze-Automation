@@ -684,6 +684,10 @@ public class VoucherDiscoveryFeature extends BaseTest {
             } else { // If there are no pipe, keep it as-is
                 address = addressExcelList.get(i).trim();
             }
+
+            if (address.toLowerCase().contains("singapore")) {
+                address = address.replaceAll("(?i)" + " singapore \\d+", "");
+            }
             oneMapAddressLst.add(address);
         }
         System.out.println("One map address list: " + oneMapAddressLst);
