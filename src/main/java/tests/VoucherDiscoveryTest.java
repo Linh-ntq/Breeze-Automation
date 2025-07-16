@@ -5,9 +5,11 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class VoucherDiscoveryTest extends Setup {
+    String ntucMobile = "89912121";
+    String ntucNRIC = "119z";
     String sheetName = "Sheet1";
-    String rowName = "Dunkin’";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - NTUC voucher - Dunkin' - 1 free regular donut with any ala carte Dunkin’ house drink purchase (Final 250624).xlsx";
+    String rowName = "Singtel";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/NTUC@Breeze - Singtel Phone Plan.xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
@@ -24,7 +26,7 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.commonKeyword.pause(35);
         classDecl.commonPage.tabOnMenu("Inbox");
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
-        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
+        classDecl.inboxFeature.enterNTUCDetails(ntucMobile, ntucNRIC);
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
 
@@ -74,7 +76,7 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.commonPage.tabOnMenu("Inbox");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
-        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
+        classDecl.inboxFeature.enterNTUCDetails(ntucMobile, ntucNRIC);
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.landingPage.clickOnSearchBar();
         classDecl.extentReport.startTest("Verify vouchers in the destination search");
@@ -94,7 +96,7 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.commonPage.tabOnMenu("Inbox");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
-        classDecl.inboxFeature.enterNTUCDetails("89912121", "119Z");
+        classDecl.inboxFeature.enterNTUCDetails(ntucMobile, ntucNRIC);
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
         classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");

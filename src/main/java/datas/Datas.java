@@ -21,6 +21,7 @@ public class Datas {
     public String platformVersion = "14";
     public String automationName = "UiAutomator2";
     public String appPackage = "com.ncs.breeze.demo";
+//    public String appPackage = "com.sg.ncs.breeze";
     public String appActivity = "com.ncs.breeze.ui.splash.SplashActivity";
 
     // Path
