@@ -60,7 +60,7 @@ public class VoucherDiscoveryTest extends Setup {
 
             // Verify voucher detail in History tab
             classDecl.extentReport.startTest("Verify voucher detail - After utilization");
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("History", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("History", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
 
         } finally {
             classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Voucher detail");
