@@ -2,14 +2,16 @@ package tests;
 
 import commons.Setup;
 import org.testng.annotations.Test;
+
 import java.util.List;
 
-public class VoucherDiscoveryTest extends Setup {
+public class CPVoucherDiscoveryTest extends Setup {
     String ntucMobile = "89912121";
     String ntucNRIC = "119z";
+    String carNo = classDecl.datas.nonIncomeInsuredNo;
     String sheetName = "Sheet1";
-    String rowName = "Singtel";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/NTUC@Breeze - Singtel Phone Plan.xlsx";
+    String rowName = "Lendlease malls $3 parking voucher";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - Lendlease carpark template.xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
@@ -20,10 +22,8 @@ public class VoucherDiscoveryTest extends Setup {
     List<String> termConditionSection = classDecl.excelReader.getVoucherDataList(pathToVoucherFile, sheetName, rowName, "T& C");
 
     @Test(priority = 1)
-    public void verify_voucher_card_and_detail_in_voucher_module() {
+    public void verify_Lendlease_voucher_in_voucher_module_() {
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
-        // Pause to scan QR invitation
-        classDecl.commonKeyword.pause(35);
         classDecl.commonPage.tabOnMenu("Inbox");
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
         classDecl.inboxFeature.enterNTUCDetails(ntucMobile, ntucNRIC);
@@ -45,22 +45,11 @@ public class VoucherDiscoveryTest extends Setup {
 
             // Verify voucher detail in Claimed tab
             classDecl.extentReport.startTest("Verify voucher detail - After claim");
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Claimed", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Claimed", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection, carNo);
 
             // Verify voucher card in Claimed tab
             classDecl.extentReport.startTest("Verify voucher card - After claim");
-            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "Claimed tab");
-
-            classDecl.myVoucherPage.clickViewBtn(voucherDescription);
-            classDecl.voucherDiscoveryFeature.confirmUseVoucher(rowName, voucherDescription);
-
-            // Verify voucher card in History tab
-            classDecl.extentReport.startTest("Verify voucher card - After utilization");
-            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "History tab");
-
-            // Verify voucher detail in History tab
-            classDecl.extentReport.startTest("Verify voucher detail - After utilization");
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("History", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "Claimed tab", carNo);
 
         } finally {
             classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Voucher detail");
@@ -69,10 +58,8 @@ public class VoucherDiscoveryTest extends Setup {
     }
 
     @Test(priority = 2)
-    public void verify_voucher_destination_search() {
+    public void verify_Lendlease_voucher_destination_search() {
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
-        // Pause to scan QR invitation
-        classDecl.commonKeyword.pause(35);
         classDecl.commonPage.tabOnMenu("Inbox");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
@@ -81,18 +68,14 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.landingPage.clickOnSearchBar();
         classDecl.extentReport.startTest("Verify vouchers in the destination search");
         classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Postal code", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Full address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("One map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("GG map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "Carpark");
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Full address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate,"Carpark");
 
     }
 
     @Test(priority = 3)
-    public void verify_voucher_module_search() {
+    public void verify_Lendlease_voucher_module_search() {
         classDecl.loginFeature.goToLandingPageByGuest("Guest");
-        // Pause to scan QR invitation
-        classDecl.commonKeyword.pause(35);
         classDecl.commonPage.tabOnMenu("Inbox");
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.inboxPage.tapOnInbMsg(classDecl.datas.discoveryNTUCTitle, classDecl.datas.discoveryNTUCDesc);
@@ -101,11 +84,8 @@ public class VoucherDiscoveryTest extends Setup {
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
         classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");
         classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Postal code", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Full address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("One map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("GG map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate,"Carpark");
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Full address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate,"Carpark");
 
     }
-
 }

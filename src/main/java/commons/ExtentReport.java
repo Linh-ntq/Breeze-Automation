@@ -29,6 +29,7 @@ public class ExtentReport extends BaseTest{
     }
 
     public String captureScreenshot(String imageName) {
+        imageName = imageName.replaceAll("[\\\\/:*?\"<>|]", "_");
         File screenshotFile = driver.getScreenshotAs(OutputType.FILE);
         String dateFolder = new SimpleDateFormat("ddMMMyyyy").format(new Date());
         String screenshotPath = "target/screenshots/" + dateFolder + "/" + imageName + "_" + System.currentTimeMillis() + ".png";

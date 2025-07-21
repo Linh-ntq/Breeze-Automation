@@ -4,6 +4,7 @@ import commons.BaseTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -22,7 +23,7 @@ public class VoucherModuleSearchPage extends BaseTest {
     public String lblNoVoucherFound = "//android.widget.TextView[@text=\"No vouchers found.\"]";
     public String lblVouchersNearby = "//android.widget.TextView[@text=\"Vouchers nearby\"]";
 
-    public void verifyVoucherExpiry(String voucherDesc, String startDate, String endDate) {
+    public void verifyVoucherExpiry(String voucherDesc, String startDate, String endDate, String ... carNo) {
         if (voucherDesc.contains("TM")){
             voucherDesc = voucherDesc.replaceAll("TM",  "™");
         }
@@ -40,16 +41,30 @@ public class VoucherModuleSearchPage extends BaseTest {
             String formattedStart = outputFormat.format(startD);
             String formattedEnd = outputFormat.format(endD);
 
-            if (startD.before(currentDate)) {
-                classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid until " + formattedEnd);
+            if (carNo != null && carNo.length > 0) {
+                if (startD.before(currentDate)) {
+                        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid until " + formattedEnd + " (" + carNo[0] + ")");
+                    } else {
+                        String xpath = "//android.view.ViewGroup/android.widget.TextView[contains(@text, 'Valid for use from')]";
+                        if (classDecl.commonKeyword.elementIsVisible(xpath)){
+                            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid for use from " + formattedStart + " to " + formattedEnd + " (" + carNo[0] + ")");
+                        } else {
+                            classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid from " + formattedStart + " to " + formattedEnd + " (" + carNo[0] + ")");
+                        }
+                    }
             } else {
-                String xpath = "//android.view.ViewGroup/android.widget.TextView[contains(@text, 'Valid for use from')]";
-                if (classDecl.commonKeyword.elementIsVisible(xpath)){
-                    classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid for use from " + formattedStart + " to " + formattedEnd);
+                if (startD.before(currentDate)) {
+                    classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid until " + formattedEnd);
                 } else {
-                    classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid from " + formattedStart + " to " + formattedEnd);
+                    String xpath = "//android.view.ViewGroup/android.widget.TextView[contains(@text, 'Valid for use from')]";
+                    if (classDecl.commonKeyword.elementIsVisible(xpath)){
+                        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid for use from " + formattedStart + " to " + formattedEnd);
+                    } else {
+                        classDecl.commonKeyword.scrollUntilElementVisible(lblVoucherExpiry, voucherDesc, "Valid from " + formattedStart + " to " + formattedEnd);
+                    }
                 }
             }
+
         } catch (ParseException e) {
             logger.log(Level.SEVERE, "Error parsing voucher expiry dates", e);
         }

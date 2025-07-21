@@ -87,7 +87,7 @@ public class VehicleSettingPage extends BaseTest {
             classDecl.commonKeyword.verifyElementNotVisible(lblPointThreeTitle);
             classDecl.commonKeyword.verifyElementNotVisible(lblPointFourTitle);
         } else {
-            classDecl.commonKeyword.scrollToElementByXPath(lblPointFourTitle);
+            classDecl.voucherDetailPage.scrollUntilElementVisible(lblPointFourTitle);
             classDecl.commonKeyword.waitForElementVisible(lblPointOneTitle);
             classDecl.commonKeyword.waitForElementVisible(lblPointOneDesc);
             classDecl.commonKeyword.waitForElementVisible(lblPointTwoTitle);
@@ -95,7 +95,7 @@ public class VehicleSettingPage extends BaseTest {
             classDecl.commonKeyword.waitForElementVisible(lblPointThreeTitle);
             classDecl.commonKeyword.waitForElementVisible(lblPointThreeDesc);
             classDecl.commonKeyword.waitForElementVisible(lblPointFourTitle);
-            classDecl.commonKeyword.waitForElementVisible(lblPointFourDesc);
+            classDecl.commonKeyword.scrollUntilElementVisible(lblPointFourDesc);
         }
 
     }

@@ -36,7 +36,7 @@ public class Datas {
 
     // Vehicle setting
     public String incomeInsuredNo = "LLU8471T";
-    public String nonIncomeInsuredNo = "Sba1234G";
+    public String nonIncomeInsuredNo = "SBA123A";
     public String vehicleBrand = "MAZDA";
     public String vehicleBrand2 = "ALPINE";
     public String energy_PetrolDiesel = "Petrol/Diesel";
@@ -46,6 +46,5 @@ public class Datas {
     // Inbox msg
     public String discoveryNTUCTitle = "Discover vouchers exclusive to NTUC Members on Breeze!";
     public String discoveryNTUCDesc = "If you are an NTUC Member, unlock specially curated deals as you plan, drive and park with Breeze. Enter your details to access content for NTUC Members on Breeze!";
-
 }
 

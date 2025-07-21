@@ -24,7 +24,9 @@ public class VoucherDetailPage extends BaseTest {
     public String xpath1 = "//android.widget.TextView[@text=\"Where to use voucher?\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"View map\"]";
     public String xpath2 = "//android.widget.TextView[@text=\"Where to use this voucher?\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"View map\"]";
     public String lblWhereToUse = xpath1 + " | " + xpath2;
-    public String lblHowToUseDesc = "//android.widget.TextView[@text=\"How to use voucher?\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"%s\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
+    public String xpath5 = "//android.widget.TextView[@text=\"How to use voucher?\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"%s\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
+    public String xpath6 = "//android.widget.TextView[@text=\"How to use this voucher?\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"%s\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
+    public String lblHowToUseDesc = xpath5 + " | " + xpath6;
     public String xpath3 = "//android.widget.TextView[@text=\"Terms & Conditions\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"•\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
     public String xpath4 = "//android.view.ViewGroup//android.widget.TextView[@text=\"•\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
     public String lblTermnCondition = xpath3 + " | " + xpath4;
@@ -37,6 +39,7 @@ public class VoucherDetailPage extends BaseTest {
     public String lblOBUNo = "//android.widget.TextView[@text=\"IU/ OBU no.\"]";
     public String lblOBUNoEmpty = "//android.widget.EditText[@text=\"IU/ OBU no.\"]";
     public String btnCloseConfirmUse = "//android.widget.TextView[@text=\"Are you at the merchant’s Payment or Collection booth now?\"]/following-sibling::android.view.ViewGroup/android.widget.ImageView";
+    public String lblAboutVoucherDesc_CP = "//android.widget.TextView[@text=\"About this voucher\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[contains(@text, \"%s\")]";
 
     // Create a new wait element method to reduce wait time
     public void waitForElementVisible(String xpathExpression, String... text) {
@@ -101,12 +104,18 @@ public class VoucherDetailPage extends BaseTest {
 
     }
 
-    public void verifyVoucherExpiry(String startDate, String endDate) {
+    public void verifyVoucherDesc_LendleaseCP (String voucherName){
+        String[] updateTitle = voucherName.split("\\$");
+//        classDecl.commonKeyword.waitForElementVisible(lblVoucherDesc, voucherName);
+        classDecl.commonKeyword.waitForElementVisible(lblVoucherDesc, updateTitle[0] + "- $" + updateTitle[1]); // add "-" to the title
+    }
+
+    public void verifyVoucherExpiry(String startDate, String endDate, String ... carNo) {
         Logger logger = Logger.getLogger(getClass().getName());
 
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("d-MMM-yyyy", Locale.ENGLISH);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("d MMM yyyy", Locale.ENGLISH);
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
 
         try {
             Date startD = inputFormat.parse(startDate);
@@ -116,14 +125,28 @@ public class VoucherDetailPage extends BaseTest {
             String formattedStart = outputFormat.format(startD);
             String formattedEnd = outputFormat.format(endD);
 
-            if (startD.before(currentDate)) {
-                waitForElementVisible(lblVoucherExpiry, "Valid until " + formattedEnd);
-            } else {
-                String xpath = "//android.view.ViewGroup/android.widget.TextView[contains(@text, 'Valid for use from')]";
-                if (classDecl.commonKeyword.elementIsVisible(xpath)){
-                    waitForElementVisible(lblVoucherExpiry, "Valid for use from " + formattedStart + " to " + formattedEnd);
+            if (carNo != null && carNo.length > 0) {
+                if (startD.before(currentDate)) {
+                    waitForElementVisible(lblVoucherExpiry, "Valid until " + formattedEnd + " (" + carNo[0] + ")");
                 } else {
-                    waitForElementVisible(lblVoucherExpiry, "Valid from " + formattedStart + " to " + formattedEnd);
+                    String xpath = "//android.view.ViewGroup/android.widget.TextView[contains(@text, 'Valid for use from')]";
+                    if (classDecl.commonKeyword.elementIsVisible(xpath)){
+                        waitForElementVisible(lblVoucherExpiry, "Valid for use from " + formattedStart + " to " + formattedEnd + " (" + carNo[0] + ")");
+                    } else {
+                        waitForElementVisible(lblVoucherExpiry, "Valid from " + formattedStart + " to " + formattedEnd + " (" + carNo[0] + ")");
+                    }
+                }
+
+            } else {
+                if (startD.before(currentDate)) {
+                    waitForElementVisible(lblVoucherExpiry, "Valid until " + formattedEnd);
+                } else {
+                    String xpath = "//android.view.ViewGroup/android.widget.TextView[contains(@text, 'Valid for use from')]";
+                    if (classDecl.commonKeyword.elementIsVisible(xpath)){
+                        waitForElementVisible(lblVoucherExpiry, "Valid for use from " + formattedStart + " to " + formattedEnd);
+                    } else {
+                        waitForElementVisible(lblVoucherExpiry, "Valid from " + formattedStart + " to " + formattedEnd);
+                    }
                 }
             }
         } catch (ParseException e) {
@@ -147,6 +170,14 @@ public class VoucherDetailPage extends BaseTest {
         }
     }
 
+    public void verifyAboutVoucherSection_LendleaseCP(List<String> aboutVoucherList) {
+        for (String item : aboutVoucherList) {
+            System.out.println("About this voucher: " + item);
+            scrollUntilElementVisible(lblAboutVoucherDesc_CP, item);
+
+        }
+    }
+
     public void verifyHowToUseVoucherSection(List<String> howToUseList) {
         for (int i = 0; i < howToUseList.size(); i++) {
             String item = "";
@@ -160,9 +191,9 @@ public class VoucherDetailPage extends BaseTest {
             if (item.contains("<")) {
                 String regex = "<\\s*a[^>]*>(.*?)<\\s*/\\s*a\\s*>";
                 String removeTag = item.replaceAll("(?i)" + regex, "$1");
-                scrollUntilElementVisible(lblHowToUseDesc, index, removeTag.trim());
+                scrollUntilElementVisible(lblHowToUseDesc, index, removeTag.trim(), index, removeTag.trim());
             } else {
-                scrollUntilElementVisible(lblHowToUseDesc, index, item.trim());
+                scrollUntilElementVisible(lblHowToUseDesc, index, item.trim(), index, item.trim());
             }
         }
     }
@@ -239,8 +270,13 @@ public class VoucherDetailPage extends BaseTest {
         classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, "Successfully claimed");
     }
 
-    public void verifySuccessfullyClaimedDesc(String voucherTitle) {
-        classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, voucherTitle + " voucher is now ready to use");
+    public void verifySuccessfullyClaimedDesc(String voucherTitle, String ... category) {
+        if (category != null && category.length > 0) {
+            classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, voucherTitle + " at Lendlease retail mall carparks.");
+            classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, "You do not have to remove your CEPAS/ cashcard from the IU/ OBU when you exit the carpark.");
+        } else {
+            classDecl.commonKeyword.waitForElementVisible(lblClaimPopup, voucherTitle + " voucher is now ready to use");
+        }
     }
 
     public void verifySuccessfullyClaimedDate(String startDate, String endDate) {
