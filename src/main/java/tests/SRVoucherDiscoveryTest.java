@@ -8,8 +8,8 @@ import java.util.List;
 public class SRVoucherDiscoveryTest extends Setup {
     String voucherType = "Singtel Rewards";
     String sheetName = "Sheet1";
-    String rowName = "The Original Vadai";
-    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - Voucher details - Singtel Rewards - The Original Vadai - 1-for-1 Vadai (QA 250719).xlsx";
+    String rowName = "Takagi Ramen";
+    String pathToVoucherFile = "C:/Users/linh.nguyen39/IdeaProjects/Breeze Data/Voucher_detail_file/Breeze - Voucher details - Singtel Rewards - Takagi Ramen - 1-for-1 Ramen (QA 250719).xlsx";
     String voucherStartDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption start date");
     String voucherEndDate = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Redemption end date");
     String voucherDescription = classDecl.excelReader.getVoucherData(pathToVoucherFile, sheetName, rowName, "Voucher card details");
@@ -30,16 +30,18 @@ public class SRVoucherDiscoveryTest extends Setup {
         try {
             // Verify voucher card in Unclaimed tab
             classDecl.extentReport.startTest("Verify voucher card - Before claim");
-            classDecl.voucherDiscoveryFeature.selectVoucherCategory(voucherCategory);
             classDecl.extentReport.startRecordingScreen();
+            classDecl.voucherDiscoveryFeature.selectVoucherCategory(voucherCategory);
             classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "Unclaimed tab");
 
             // Verify voucher detail in Unclaimed tab
             classDecl.extentReport.startTest("Verify voucher detail - Before claim");
             classDecl.myVoucherPage.clickViewBtn(voucherDescription);
             classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Unclaimed", voucherType, pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
+            classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Unclaimed");
 
             // Verify voucher detail in Claimed tab
+            classDecl.extentReport.startRecordingScreen();
             classDecl.extentReport.startTest("Verify voucher detail - After claim");
             classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Claimed", voucherType, pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
 
@@ -49,8 +51,10 @@ public class SRVoucherDiscoveryTest extends Setup {
 
             classDecl.myVoucherPage.clickViewBtn(voucherDescription);
             classDecl.voucherDiscoveryFeature.confirmUseVoucher(rowName, voucherDescription);
+            classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Claimed");
 
             // Verify voucher card in History tab
+            classDecl.extentReport.startRecordingScreen();
             classDecl.extentReport.startTest("Verify voucher card - After utilization");
             classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "History tab");
 
@@ -59,7 +63,7 @@ public class SRVoucherDiscoveryTest extends Setup {
             classDecl.voucherDiscoveryFeature.verifyVoucherDetail("History", voucherType, pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection);
 
         } finally {
-            classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Voucher detail");
+            classDecl.extentReport.attachScreenRecordingToReport(rowName + " - History");
 
         }
     }

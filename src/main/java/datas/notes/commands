@@ -1,0 +1,2 @@
+command merge file:
+ffmpeg -f concat -safe 0 -i "C:/Users/linh.nguyen39/IdeaProjects/BreezeAutomation/target/screenshots/file-list.txt" -c:v libx264 -crf 23 -preset veryfast "C:/Users/linh.nguyen39/IdeaProjects/BreezeAutomation/target/screenshots/25Jul2025/merged_output.mp4"
