@@ -59,7 +59,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
         classDecl.commonPage.tabOnMenu("My Vouchers");
     }
 
-    public void verifyVoucherDetail(String voucherTab, String filePath, String sheetName, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition, String ... carNo) {
+    public void verifyVoucherDetail(String voucherTab, String voucherType, String filePath, String sheetName, String voucherName, String voucherDesc, String startDate, String endDate, List<String> aboutVoucher, List<String> howToUseVoucher, List<String> termnCondition, String ... carNo) {
         String hideVehicleDetails = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "hideVehicleDetailsInput");
         String isClaimRepeatable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isClaimRepeatable");
         String isExternalClaimable = classDecl.excelReader.getVoucherData(filePath, sheetName, voucherName, "isExternalClaimable");
@@ -68,6 +68,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 + " isClaimRepeatable: " + isClaimRepeatable
                 + " isExternalClaimable: " + isExternalClaimable);
         String btnClaimFairPrice = "//android.widget.TextView[@text='Claim on FairPrice Group app']";
+        String btnClaimMySingtel = "//android.widget.TextView[@text='Claim on My Singtel app']";
 
         if (hideVehicleDetails.equals("TRUE")) { // vehicle detail is hidden - merchant non cp voucher
             if (voucherTab.equals("Unclaimed")) { // before claim - unclaimed tab
@@ -81,13 +82,13 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
                 classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                 classDecl.voucherDetailPage.verifyVehicleDetailSection("not display");
-                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
+                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, voucherType, "display");
             } else if (voucherTab.equals("Claimed")) { // after claim - claimed tab
                 System.out.println("Log02");
                 // If claim button = Claim on FairPrice Group app > Tap on native back button to return Breeze app
-                if (classDecl.commonKeyword.elementIsVisible(btnClaimFairPrice)) {
+                if (classDecl.commonKeyword.elementIsVisible(btnClaimFairPrice) || classDecl.commonKeyword.elementIsVisible(btnClaimMySingtel)) {
                     System.out.println("Log03");
-                    classDecl.voucherDetailPage.clickClaimBtn(isExternalClaimable);
+                    classDecl.voucherDetailPage.clickClaimBtn(isExternalClaimable, voucherType);
                     if (isClaimRepeatable.equals("TRUE")
                             || (isClaimRepeatable.equals("FALSE")
                             && !classDecl.commonKeyword.elementIsVisible(classDecl.voucherDetailPage.lblClaimPopup, "Repeated voucher claim"))) {
@@ -101,6 +102,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         // Scroll up to go to top of page
                         classDecl.commonKeyword.pause(3);
                         classDecl.commonKeyword.scroll("UP", 0.5);
+                        classDecl.commonKeyword.pause(2);
                         classDecl.commonKeyword.scroll("UP", 0.5);
                         classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
                         classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherDetailPage.lblCarpark);
@@ -113,12 +115,12 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         if (isExternalClaimable.equals("TRUE")) {
                             System.out.println("Log05: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, button Use voucher now and Claim on FairPrice Group");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
-                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
+                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, voucherType, "display");
 
                         } else {
                             System.out.println("Log06: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = FALSE, button Claim on FairPrice Group");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
-                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
+                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, voucherType, "not display");
                         }
 
                     } else {
@@ -128,7 +130,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     }
                 } else {  // If claim button = Claim  > Tap on the button return claim popup
                     System.out.println("Log08");
-                    classDecl.voucherDetailPage.clickClaimBtn(isExternalClaimable);
+                    classDecl.voucherDetailPage.clickClaimBtn(isExternalClaimable, voucherType);
                     // if voucher can be claimed repeatedly or voucher can be claimed only one time per eid but this is the first time voucher claimed
                     if (isClaimRepeatable.equals("TRUE")
                             || (isClaimRepeatable.equals("FALSE")
@@ -140,6 +142,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         // Scroll up to go to top of page
                         classDecl.commonKeyword.pause(3);
                         classDecl.commonKeyword.scroll("UP", 0.5);
+                        classDecl.commonKeyword.pause(2);
                         classDecl.commonKeyword.scroll("UP", 0.5);
                         classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
                         classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherDetailPage.lblCarpark);
@@ -152,12 +155,12 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         if (isExternalClaimable.equals("TRUE")) {
                             System.out.println("Log10: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = TRUE, button Use voucher now and Claim");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
-                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
+                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, voucherType, "display");
 
                         } else {
                             System.out.println("Log11: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = FALSE, button Use voucher now");
                             classDecl.voucherDetailPage.verifyUseBtn("display");
-                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
+                            classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, voucherType, "not display");
                         }
                     } else { // if voucher can be claimed only one time per eid, and it was claimed by another before
                         System.out.println("Log12: hideVehicleDetails = TRUE, isClaimRepeatable = " + isClaimRepeatable + ", isExternalClaimable = " + isExternalClaimable + ", repeated claim voucher popup");
@@ -180,7 +183,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                 classDecl.voucherDetailPage.verifyVehicleDetailSection("not display");
                 classDecl.voucherDetailPage.verifyUseBtn("not display");
-                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
+                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, voucherType, "not display");
 
             }
         } else { // hideVehicleDetails.equals("FALSE") - vehicle detail is show - cp voucher
@@ -195,17 +198,18 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
                 classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                 classDecl.voucherDetailPage.verifyVehicleDetailSection("display");
-                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "display");
+                classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, voucherType, "display");
 
             } else { // after claim - claimed tab
                 classDecl.voucherDetailPage.enterVehicleDetail(classDecl.datas.nonIncomeInsuredNo);
-                classDecl.voucherDetailPage.clickClaimBtn(isExternalClaimable);
+                classDecl.voucherDetailPage.clickClaimBtn(isExternalClaimable, voucherType);
                     verifySuccessfullyClaimedPopup(voucherName, startDate, endDate, "Carpark");
                     classDecl.voucherDetailPage.clickViewVoucherDetailsBtn();
 
                     // Scroll up to go to top of page
                     classDecl.commonKeyword.pause(3);
                     classDecl.commonKeyword.scroll("UP", 0.5);
+                    classDecl.commonKeyword.pause(2);
                     classDecl.commonKeyword.scroll("UP", 0.5);
                     classDecl.voucherDetailPage.verifyPageTitle("Voucher Details");
                     classDecl.commonKeyword.verifyElementNotVisible(classDecl.voucherDetailPage.lblCarpark);
@@ -216,7 +220,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                     classDecl.voucherDetailPage.verifyHowToUseVoucherSection(howToUseVoucher);
                     classDecl.voucherDetailPage.verifyTermnConditionSection(termnCondition);
                     classDecl.voucherDetailPage.verifyVehicleDetailSection("not display");
-                    classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, "not display");
+                    classDecl.voucherDetailPage.verifyClaimBtn(isExternalClaimable, voucherType, "not display");
                     classDecl.voucherDetailPage.verifyUseBtn("not display");
             }
         }
@@ -433,7 +437,8 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
         String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, rowName, "Voucher card details");
         String item = "";
-        String btBack = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
+//        String btBack = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
+        String btBack = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
 
         switch (input) {
             case "Postal code":
@@ -442,9 +447,15 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 break;
             case "Building name":
                 item = "Building";
+
+                if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblSearchBar)) {
+                    classDecl.commonKeyword.tapOnNativeBackBtn();
+                }
+
                 if (classDecl.commonKeyword.elementIsVisible(btBack)) {
                     classDecl.commonKeyword.clickElement(btBack);
                 }
+
                 classDecl.commonPage.tabOnMenu("Home");
                 if (category != null && category.length > 0) {
                     inputLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Building name");
@@ -456,6 +467,11 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 break;
             case "Full address":
                 item = "Full add";
+
+                if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblSearchBar)) {
+                    classDecl.commonKeyword.tapOnNativeBackBtn();
+                }
+
                 if (classDecl.commonKeyword.elementIsVisible(btBack)) {
                     classDecl.commonKeyword.clickElement(btBack);
                 }

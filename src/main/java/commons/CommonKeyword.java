@@ -365,4 +365,36 @@ public class CommonKeyword extends BaseTest{
         return location;
     }
 
+    public String buildConcatForXPath(String input) {
+        // If input contains neither ' nor ", just return quoted string
+        if (!input.contains("'") && !input.contains("\"")) {
+            return "'" + input + "'";
+        }
+
+        // We'll split the input by single quotes and insert the escaped parts
+        StringBuilder concatBuilder = new StringBuilder("concat(");
+
+        // Split input by single quote '
+        String[] parts = input.split("'");
+
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+
+            // If part contains double quotes, wrap in single quotes, else double quotes
+            if (part.contains("\"")) {
+                concatBuilder.append("'").append(part).append("'");
+            } else {
+                concatBuilder.append("\"").append(part).append("\"");
+            }
+
+            // After every part except last, add , "'",  (the single quote character)
+            if (i != parts.length - 1) {
+                concatBuilder.append(", \"'\", ");
+            }
+        }
+
+        concatBuilder.append(")");
+        return concatBuilder.toString();
+    }
+
 }

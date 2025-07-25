@@ -8,6 +8,7 @@ import java.util.List;
 public class CPVoucherDiscoveryTest extends Setup {
     String ntucMobile = "89912121";
     String ntucNRIC = "119z";
+    String voucherType = "Carpark";
     String carNo = classDecl.datas.nonIncomeInsuredNo;
     String sheetName = "Sheet1";
     String rowName = "Lendlease malls $3 parking voucher";
@@ -41,15 +42,15 @@ public class CPVoucherDiscoveryTest extends Setup {
             // Verify voucher detail in Unclaimed tab
             classDecl.extentReport.startTest("Verify voucher detail - Before claim");
             classDecl.myVoucherPage.clickViewBtn(voucherDescription);
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Unclaimed", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Unclaimed", voucherType, pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionBeforeClaim, termConditionSection);
 
             // Verify voucher detail in Claimed tab
             classDecl.extentReport.startTest("Verify voucher detail - After claim");
-            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Claimed", pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection, carNo);
+            classDecl.voucherDiscoveryFeature.verifyVoucherDetail("Claimed", voucherType, pathToVoucherFile, sheetName, rowName, voucherDescription, voucherStartDate, voucherEndDate, aboutVoucherSection, howToUseSectionAfterClaim, termConditionSection, carNo);
 
             // Verify voucher card in Claimed tab
             classDecl.extentReport.startTest("Verify voucher card - After claim");
-            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate, "Claimed tab", carNo);
+            classDecl.voucherDiscoveryFeature.verifyVoucherCard(pathToVoucherFile, voucherType, sheetName, rowName, voucherStartDate, voucherEndDate, "Claimed tab", carNo);
 
         } finally {
             classDecl.extentReport.attachScreenRecordingToReport(rowName + " - Voucher detail");

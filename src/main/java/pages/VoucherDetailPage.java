@@ -27,8 +27,8 @@ public class VoucherDetailPage extends BaseTest {
     public String xpath5 = "//android.widget.TextView[@text=\"How to use voucher?\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"%s\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
     public String xpath6 = "//android.widget.TextView[@text=\"How to use this voucher?\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"%s\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
     public String lblHowToUseDesc = xpath5 + " | " + xpath6;
-    public String xpath3 = "//android.widget.TextView[@text=\"Terms & Conditions\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"•\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
-    public String xpath4 = "//android.view.ViewGroup//android.widget.TextView[@text=\"•\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=\"%s\"]";
+    public String xpath3 = "//android.widget.TextView[@text=\"Terms & Conditions\"]/following-sibling::android.view.ViewGroup//android.widget.TextView[@text=\"•\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=%s]";
+    public String xpath4 = "//android.view.ViewGroup//android.widget.TextView[@text=\"•\"]/following-sibling::android.view.ViewGroup[@resource-id=\"html\"]//android.widget.TextView[@text=%s]";
     public String lblTermnCondition = xpath3 + " | " + xpath4;
     public String btnClaim = "//android.widget.TextView[@text=\"%s\"]";
     public String lblClaimPopup = "//android.widget.TextView[@text=\"%s\"]";
@@ -45,7 +45,7 @@ public class VoucherDetailPage extends BaseTest {
     public void waitForElementVisible(String xpathExpression, String... text) {
         // Temporarily disable implicit wait
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
 
         try {
             if (text != null && text.length > 0) {
@@ -203,27 +203,35 @@ public class VoucherDetailPage extends BaseTest {
             if (item.contains("TM")) {
                 item = item.replaceAll("TM", "™");
             }
+
             System.out.println("Terms & Conditions: " + item);
             if (item.contains("<")) {
                 String regex = "<\\s*a[^>]*>(.*?)<\\s*/\\s*a\\s*>";
                 String removeTag = item.replaceAll("(?i)" + regex, "$1");
+                removeTag = classDecl.commonKeyword.buildConcatForXPath(removeTag);
                 scrollUntilElementVisible(lblTermnCondition, removeTag.trim(), removeTag.trim());
             } else {
+                item = classDecl.commonKeyword.buildConcatForXPath(item);
                 scrollUntilElementVisible(lblTermnCondition, item.trim(), item.trim());
             }
         }
         // Scroll down to see full content of T & C
-        classDecl.commonKeyword.scroll("DOWN", 1);
+        classDecl.commonKeyword.pause(2);
+        classDecl.commonKeyword.scroll("DOWN", 0.5);
     }
 
     public void verifyWhereToUsSection() {
         scrollUntilElementVisible(lblWhereToUse);
     }
 
-    public void verifyClaimBtn(String isExternalClaimable, String status) {
+    public void verifyClaimBtn(String isExternalClaimable, String voucherType, String status) {
         String ClaimBtnText;
         if (isExternalClaimable.equals("TRUE")) {
-            ClaimBtnText = "Claim on FairPrice Group app";
+            if (voucherType.equals("Singtel Rewards")) {
+                ClaimBtnText = "Claim on My Singtel app";
+            } else {
+                ClaimBtnText = "Claim on FairPrice Group app";
+            }
         } else {
             ClaimBtnText = "Claim";
         }
@@ -244,10 +252,14 @@ public class VoucherDetailPage extends BaseTest {
         }
     }
 
-    public void clickClaimBtn(String isExternalClaimable) {
+    public void clickClaimBtn(String isExternalClaimable, String voucherType) {
         String ClaimBtnText;
         if (isExternalClaimable.equals("TRUE")) {
-            ClaimBtnText = "Claim on FairPrice Group app";
+            if (voucherType.equals("Singtel Rewards")) {
+                ClaimBtnText = "Claim on My Singtel app";
+            } else {
+                ClaimBtnText = "Claim on FairPrice Group app";
+            }
         } else {
             ClaimBtnText = "Claim";
         }
