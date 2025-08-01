@@ -46,5 +46,14 @@ public class Datas {
     // Inbox msg
     public String discoveryNTUCTitle = "Discover vouchers exclusive to NTUC Members on Breeze!";
     public String discoveryNTUCDesc = "If you are an NTUC Member, unlock specially curated deals as you plan, drive and park with Breeze. Enter your details to access content for NTUC Members on Breeze!";
+
+    // Voucher inputs
+    public String postalCode = "Postal code";
+    public String buildingName = "Building name";
+    public String fullAddress = "Full address";
+    public String buildingN_n_FullA = "Building name, Full address";
+    public String oneMapAddress = "One map address";
+    public String ggMapAddress = "GG map address";
+
 }
 

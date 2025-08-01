@@ -7,6 +7,12 @@ import java.util.regex.Pattern;
 import static datas.ExcelReader.getValueByRowAndColumnName;
 
 public class VoucherDiscoveryFeature extends BaseTest {
+    public static final String POSTAL_CODE = "Postal code";
+    public static final String BUILDING_NAME = "Building name";
+    public static final String FULL_ADDRESS = "Full address";
+    public static final String BUILDINGN_N_FULLA = "Building name, Full address";
+    public static final String ONE_MAP_ADDRESS = "One map address";
+    public static final String GG_MAP_ADDRESS = "GG map address";
 
     public void verifyVoucherCard(String filePath, String sheetName, String voucherName, String startDate, String endDate, String voucherPosition, String ... carNo) {
         String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, voucherName, "Voucher card details");
@@ -266,12 +272,12 @@ public class VoucherDiscoveryFeature extends BaseTest {
         }
 
         switch (input) {
-            case "Postal code":
+            case POSTAL_CODE:
                 item = "Postal code";
                 inputLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
                 baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
                 break;
-            case "Building name":
+            case BUILDING_NAME:
                 item = "Building";
                 if (category != null && category.length > 0) {
                     inputLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Building");
@@ -281,7 +287,7 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 }
                 baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
                 break;
-            case "Full address":
+            case FULL_ADDRESS:
                 item = "Full add";
                 if (category != null && category.length > 0) {
                     inputLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Full address");
@@ -291,19 +297,28 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 }
                 baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
                 break;
-            case "One map address":
+            case BUILDINGN_N_FULLA:
+                item = "Building_FullAdd";
+                list = getAddressFromDestinationSearch(filePath, sheetName, rowName);
+                List<String> buildingLst = new ArrayList<>(list.keySet());
+                List<String> fullAddLst = new ArrayList<>(list.values());
+                inputLst.addAll(buildingLst);
+                inputLst.addAll(fullAddLst);
+                baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Address");
+                break;
+            case ONE_MAP_ADDRESS:
                 item = "One map";
                 inputLst = getOneMapAddress(filePath, sheetName, rowName);
                 baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "One Map Address");
                 break;
-            case "GG map address":
+            case GG_MAP_ADDRESS:
                 item = "GG map";
                 inputLst = getGGMapAddress(filePath, sheetName, rowName);
                 baseLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Google Map Addresses");
                 break;
         }
 
-        if (input.equals("Postal code")) {
+        if (input.equals(POSTAL_CODE)) {
             for (int i = 0; i < inputLst.size(); i++) {
                 int index = i + 1;
                 // input postal code
@@ -384,17 +399,29 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
             System.out.println("List of failed " + item + ": " + failedLst);
 
-        } else if (input.equals("Building name") || input.equals("Full address") || input.equals("One map address") || input.equals("GG map address")) {
+        } else if (input.equals(BUILDING_NAME) || input.equals(FULL_ADDRESS) || input.equals(BUILDINGN_N_FULLA) || input.equals(ONE_MAP_ADDRESS) || input.equals(GG_MAP_ADDRESS)) {
             if (classDecl.commonKeyword.elementIsVisible(classDecl.landingPage.lblSearchBar)) {
                 classDecl.landingPage.clickOnSearchBar();
             } else if (classDecl.commonKeyword.elementIsVisible(classDecl.landingPage.lblHomeTab)) {
                 classDecl.commonKeyword.clickElement(classDecl.landingPage.btnSearch);
             }
 
+            List<String> duplicatedBaseLst = new ArrayList<>();
+            for (String base : baseLst) {
+                duplicatedBaseLst.add(base);
+                duplicatedBaseLst.add(base);
+            }
+
             for (int i = 0; i < inputLst.size(); i++) {
                     int index = i + 1;
                     String inputAddress = inputLst.get(i);
-                    String baseAddress = baseLst.get(i);
+                    String baseAddress;
+
+                    if (input.equals(BUILDINGN_N_FULLA)) {
+                        baseAddress = duplicatedBaseLst.get(i);
+                    } else {
+                        baseAddress = baseLst.get(i);
+                    }
                     classDecl.searchDestinationPage.inputAddress(inputAddress);
                     classDecl.commonKeyword.closeKeyboard();
 
@@ -404,7 +431,6 @@ public class VoucherDiscoveryFeature extends BaseTest {
                         failedLst.add(inputAddress);
                         classDecl.extentReport.attachScreenshotToReport("F " + rowName + " - DS - " + item + " - " + inputLst.get(i));
                         classDecl.commonKeyword.clickElement(classDecl.searchDestinationPage.btnClearSearch);
-
                     } else {
                         if (baseAddress.toLowerCase().contains(inputAddress.toLowerCase())) {
                             Assert.assertTrue(true);
@@ -437,23 +463,24 @@ public class VoucherDiscoveryFeature extends BaseTest {
 
         String voucherDesc = getValueByRowAndColumnName(filePath, sheetName, rowName, "Voucher card details");
         String item = "";
-//        String btBack = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
-        String btBack = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
+        String xpath1 = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
+        String xpath2 = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/preceding-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
+        String btnBack = xpath1 + " | " + xpath2;
 
         switch (input) {
-            case "Postal code":
+            case POSTAL_CODE:
                 item = "Postal code";
                 inputLst = classDecl.excelReader.getVoucherDataList(filePath, sheetName, rowName, "Merchant locations");
                 break;
-            case "Building name":
+            case BUILDING_NAME:
                 item = "Building";
 
                 if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblSearchBar)) {
                     classDecl.commonKeyword.tapOnNativeBackBtn();
                 }
 
-                if (classDecl.commonKeyword.elementIsVisible(btBack)) {
-                    classDecl.commonKeyword.clickElement(btBack);
+                if (classDecl.commonKeyword.elementIsVisible(btnBack)) {
+                    classDecl.commonKeyword.clickElement(btnBack);
                 }
 
                 classDecl.commonPage.tabOnMenu("Home");
@@ -465,15 +492,15 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 }
                 classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
                 break;
-            case "Full address":
+            case FULL_ADDRESS:
                 item = "Full add";
 
                 if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblSearchBar)) {
                     classDecl.commonKeyword.tapOnNativeBackBtn();
                 }
 
-                if (classDecl.commonKeyword.elementIsVisible(btBack)) {
-                    classDecl.commonKeyword.clickElement(btBack);
+                if (classDecl.commonKeyword.elementIsVisible(btnBack)) {
+                    classDecl.commonKeyword.clickElement(btnBack);
                 }
                 classDecl.commonPage.tabOnMenu("Home");
                 if (category != null && category.length > 0) {
@@ -484,11 +511,28 @@ public class VoucherDiscoveryFeature extends BaseTest {
                 }
                 classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
                 break;
-            case "One map address":
+            case BUILDINGN_N_FULLA:
+                item = "Building_FullAdd";
+                if (classDecl.commonKeyword.elementIsVisible(classDecl.voucherModuleSearchPage.lblSearchBar)) {
+                    classDecl.commonKeyword.tapOnNativeBackBtn();
+                }
+
+                if (classDecl.commonKeyword.elementIsVisible(btnBack)) {
+                    classDecl.commonKeyword.clickElement(btnBack);
+                }
+                classDecl.commonPage.tabOnMenu("Home");
+                Map<String, String> list = getAddressFromDestinationSearch(filePath, sheetName, rowName);
+                List<String> buildingLst = new ArrayList<>(list.keySet());
+                List<String> fullAddLst = new ArrayList<>(list.values());
+                inputLst.addAll(buildingLst);
+                inputLst.addAll(fullAddLst);
+                classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
+                break;
+            case ONE_MAP_ADDRESS:
                 item = "One map";
                 inputLst = getOneMapAddress(filePath, sheetName, rowName);
                 break;
-            case "GG map address":
+            case GG_MAP_ADDRESS:
                 item = "GG map";
                 inputLst = getGGMapAddress(filePath, sheetName, rowName);
                 break;

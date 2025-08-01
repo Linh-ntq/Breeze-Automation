@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class MyVoucherPage extends BaseTest {
     public String btnView = "//android.widget.TextView[@text=\"%s\"]/ancestor::android.view.ViewGroup/android.view.ViewGroup/android.widget.TextView[@text=\"View\"]"; // voucher detail
-    public String btnSearch = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup/android.view.ViewGroup/android.widget.ImageView";
+    public String btnSearch = "//android.widget.TextView[@text=\"My Vouchers\"]/ancestor::android.view.ViewGroup/following-sibling::android.view.ViewGroup[2]/android.view.ViewGroup/android.widget.ImageView";
     public String btnFilterPill = "//android.widget.TextView[@text=\"%s\"]";
     public String lblCategory = "//android.widget.TextView[translate(@text, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = \"%s\"]";
     public String btnApply = "//android.widget.TextView[@text=\"Apply\"]";

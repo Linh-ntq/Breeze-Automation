@@ -75,11 +75,12 @@ public class SRVoucherDiscoveryTest extends Setup {
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.landingPage.clickOnSearchBar();
         classDecl.extentReport.startTest("Verify vouchers in the destination search");
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Postal code", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("Full address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("One map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch("GG map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(classDecl.datas.postalCode, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(classDecl.datas.buildingN_n_FullA, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+//        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(classDecl.datas.buildingName, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+//        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(classDecl.datas.fullAddress, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(classDecl.datas.oneMapAddress, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherDestinationSearch(classDecl.datas.ggMapAddress, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 
@@ -89,12 +90,13 @@ public class SRVoucherDiscoveryTest extends Setup {
         classDecl.commonKeyword.pause(20); // Pause to active SR
         classDecl.commonKeyword.closeInAppAlertsIfVisible();
         classDecl.voucherDiscoveryFeature.goToVoucherModulePage();
-        classDecl.extentReport.startTest("Verify vouchers in Voucher module by searching with postal code");
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Postal code", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Building name", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("Full address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("One map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
-        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch("GG map address", pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.extentReport.startTest("Verify vouchers in Voucher module");
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch(classDecl.datas.postalCode, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch(classDecl.datas.buildingN_n_FullA, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+//        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch(classDecl.datas.buildingName, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+//        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch(classDecl.datas.fullAddress, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch(classDecl.datas.oneMapAddress, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
+        classDecl.voucherDiscoveryFeature.verifyVoucherModuleSearch(classDecl.datas.ggMapAddress, pathToVoucherFile, sheetName, rowName, voucherStartDate, voucherEndDate);
 
     }
 }
